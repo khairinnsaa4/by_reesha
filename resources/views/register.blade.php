@@ -9,7 +9,7 @@
 </head>
 <body class="bg-[#FFF8F9] font-[Poppins] min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white p-8 rounded-3xl shadow-xl shadow-pink-100 border border-pink-100 w-full max-w-md space-y-6">
+    <div class="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl shadow-pink-100 border border-pink-100 w-full max-w-md space-y-6">
         <div class="text-center space-y-2">
             <div class="flex justify-center">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-14 w-14 rounded-full bg-pink-100">

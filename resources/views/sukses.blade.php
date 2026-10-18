@@ -15,16 +15,16 @@
     <div class="bg-white max-w-md w-full rounded-2xl shadow-xl overflow-hidden text-center relative">
         <div class="bg-pink-600 h-2 w-full absolute top-0 left-0"></div>
         
-        <div class="p-8 pb-10">
+        <div class="p-5 sm:p-8 pb-8 sm:pb-10">
             <!-- Checkmark Icon -->
-            <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 shadow-sm border-4 border-white ring-2 ring-green-50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mb-5 sm:mb-6 shadow-sm border-4 border-white ring-2 ring-green-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                 </svg>
             </div>
             
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Pesanan Berhasil Dibuat!</h1>
-            <p class="text-gray-500 text-sm mb-8">Terima kasih telah berbelanja di By.Reesha. Mohon segera lakukan pembayaran agar pesanan Anda bisa diproses.</p>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Pesanan Berhasil Dibuat!</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8">Terima kasih telah berbelanja di By.Reesha. Mohon segera lakukan pembayaran agar pesanan Anda bisa diproses.</p>
             
             <!-- Order Info -->
             <div class="bg-gray-50 rounded-xl p-5 mb-8 border border-gray-100">

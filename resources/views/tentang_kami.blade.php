@@ -14,14 +14,14 @@
 
     <!-- NAVIGATION BAR -->
     <nav class="bg-white shadow-sm border-b border-pink-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex justify-between items-center">
             
-            <div class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="h-10 w-10 object-contain rounded-full bg-pink-100" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
-                <a href="/" class="text-2xl font-bold text-pink-600 tracking-wider">BY.REESHA</a>
+            <div class="flex items-center gap-2.5">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="h-9 w-9 sm:h-10 sm:w-10 object-contain rounded-full bg-pink-100" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
+                <a href="/" class="text-xl sm:text-2xl font-bold text-pink-600 tracking-wider">BY.REESHA</a>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-6 text-sm font-semibold text-gray-600">
+            <div class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-600">
                 <a href="/" class="hover:text-pink-600 transition">HOME</a>
                 <a href="/produk" class="hover:text-pink-600 transition">SEMUA PRODUK</a>
                 <a href="/keranjang" class="hover:text-pink-600 transition">KERANJANG</a>
@@ -29,7 +29,7 @@
                 <a href="/tentang-kami" class="text-pink-600 border-b-2 border-pink-600 pb-1">TENTANG KAMI</a>
             </div>
 
-            <div class="flex items-center gap-4">
+            <div class="hidden md:flex items-center gap-4">
                @auth
                     <a href="/profil" class="text-sm font-semibold text-gray-700 bg-pink-50 px-3 py-1.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition block">
                          Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong>
@@ -43,50 +43,106 @@
                     <a href="/register" class="text-sm font-bold bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl shadow-md shadow-pink-100 transition">Daftar</a>
                 @endauth
             </div>
+
+            <!-- Mobile Actions -->
+            <div class="flex items-center gap-2 md:hidden">
+                <a href="/keranjang" class="p-2 text-gray-600 hover:text-pink-600 transition rounded-lg hover:bg-pink-50" aria-label="Keranjang">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </a>
+                <button type="button" id="mobile-menu-btn" class="p-2 text-gray-700 hover:text-pink-600 rounded-lg hover:bg-pink-50 transition focus:outline-none" aria-label="Buka Menu">
+                    <svg id="hamburger-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg id="close-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-pink-100 bg-white px-4 pt-3 pb-5 space-y-2.5 shadow-lg">
+            <a href="/" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">HOME</a>
+            <a href="/produk" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">SEMUA PRODUK</a>
+            <a href="/keranjang" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">KERANJANG</a>
+            <a href="/kontak" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">KONTAK KAMI</a>
+            <a href="/tentang-kami" class="block px-3 py-2 rounded-lg font-semibold text-sm text-pink-600 bg-pink-50">TENTANG KAMI</a>
+
+            <div class="border-t border-gray-100 pt-3 mt-3">
+                @auth
+                    <div class="flex items-center justify-between mb-2">
+                        <a href="/profil" class="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                            <span>👤</span>
+                            <span>Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong></span>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <a href="/profil" class="text-center text-xs font-bold text-gray-700 bg-pink-50 py-2.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition">
+                            Akun Saya
+                        </a>
+                        <form action="/logout" method="POST" class="w-full">
+                            @csrf
+                            <button type="submit" class="w-full text-center text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition">
+                                Keluar
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <a href="/login" class="text-center text-sm font-bold text-pink-600 py-2.5 border border-pink-200 rounded-xl hover:bg-pink-50 transition">
+                            Masuk
+                        </a>
+                        <a href="/register" class="text-center text-sm font-bold bg-pink-600 text-white py-2.5 rounded-xl shadow-md shadow-pink-100 hover:bg-pink-700 transition">
+                            Daftar
+                        </a>
+                    </div>
+                @endauth
+            </div>
         </div>
     </nav>
 
     <!-- CONTENT -->
-    <main class="flex-grow max-w-5xl mx-auto px-6 py-16 w-full">
-        <div class="text-center mb-16">
-            <span class="text-pink-600 font-bold text-sm uppercase tracking-wider">Mengenal Lebih Dekat</span>
-            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mt-2">Tentang By.Reesha</h2>
-            <div class="w-24 h-1 bg-pink-600 mx-auto mt-4 rounded-full"></div>
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 py-10 md:py-16 w-full">
+        <div class="text-center mb-10 md:mb-16">
+            <span class="text-pink-600 font-bold text-xs sm:text-sm uppercase tracking-wider">Mengenal Lebih Dekat</span>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 mt-2">Tentang By.Reesha</h2>
+            <div class="w-20 sm:w-24 h-1 bg-pink-600 mx-auto mt-3 rounded-full"></div>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-sm border border-pink-50 overflow-hidden">
+        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-pink-50 overflow-hidden">
             <div class="grid grid-cols-1 md:grid-cols-2">
-                <div class="p-8 md:p-12 flex flex-col justify-center space-y-6">
-                    <h3 class="text-2xl font-bold text-gray-800">Bermula dari Cinta pada Rasa dan Estetika</h3>
-                    <p class="text-gray-600 leading-relaxed text-sm md:text-base">
+                <div class="p-6 sm:p-8 md:p-12 flex flex-col justify-center space-y-4 md:space-y-6">
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800">Bermula dari Cinta pada Rasa dan Estetika</h3>
+                    <p class="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base">
                         By.Reesha lahir dari sebuah gairah untuk menghadirkan kebahagiaan melalui sepotong kue. Kami percaya bahwa setiap perayaan—mulai dari ulang tahun, hari jadi, hingga momen kecil dalam hidup—layak mendapatkan kue yang tidak hanya lezat, tetapi juga indah dipandang.
                     </p>
-                    <p class="text-gray-600 leading-relaxed text-sm md:text-base">
+                    <p class="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base">
                         Dengan komitmen untuk menggunakan bahan-bahan premium berkualitas tinggi, By.Reesha hadir dengan spesialisasi custom cake, bento cake, hingga kreasi elegan lainnya yang disesuaikan secara personal untuk memenuhi ekspektasi Anda.
                     </p>
                 </div>
-                <div class="h-64 md:h-auto bg-pink-100 flex items-center justify-center">
-                    <!-- Placeholder untuk foto toko atau owner, atau gambar kue cantik -->
+                <div class="h-56 sm:h-64 md:h-auto bg-pink-100 flex items-center justify-center">
                     <img src="{{ asset('images/bento_cake.jpg') }}" alt="Tentang By.Reesha" class="w-full h-full object-cover">
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div class="bg-white p-8 rounded-3xl text-center shadow-sm border border-pink-50">
-                <div class="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🍰</div>
-                <h4 class="text-lg font-bold text-gray-800 mb-2">Bahan Premium</h4>
-                <p class="text-gray-500 text-sm">Hanya menggunakan bahan baku pilihan terbaik untuk menjamin rasa yang konsisten dan lezat.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8 md:mt-12">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-center shadow-sm border border-pink-50">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-2xl">🍰</div>
+                <h4 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Bahan Premium</h4>
+                <p class="text-gray-500 text-xs sm:text-sm">Hanya menggunakan bahan baku pilihan terbaik untuk menjamin rasa yang konsisten dan lezat.</p>
             </div>
-            <div class="bg-white p-8 rounded-3xl text-center shadow-sm border border-pink-50">
-                <div class="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🎨</div>
-                <h4 class="text-lg font-bold text-gray-800 mb-2">Desain Kustom</h4>
-                <p class="text-gray-500 text-sm">Setiap kue dibuat dengan ketelitian dan nilai estetika tinggi sesuai dengan request desain pelanggan.</p>
+            <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-center shadow-sm border border-pink-50">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-2xl">🎨</div>
+                <h4 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Desain Kustom</h4>
+                <p class="text-gray-500 text-xs sm:text-sm">Setiap kue dibuat dengan ketelitian dan nilai estetika tinggi sesuai dengan request desain pelanggan.</p>
             </div>
-            <div class="bg-white p-8 rounded-3xl text-center shadow-sm border border-pink-50">
-                <div class="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">💖</div>
-                <h4 class="text-lg font-bold text-gray-800 mb-2">Dibuat dengan Cinta</h4>
-                <p class="text-gray-500 text-sm">Fresh from the oven. Setiap pesanan dibuat khusus di hari yang sama agar tetap fresh dan higienis.</p>
+            <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-center shadow-sm border border-pink-50">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-2xl">💖</div>
+                <h4 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Dibuat dengan Cinta</h4>
+                <p class="text-gray-500 text-xs sm:text-sm">Fresh from the oven. Setiap pesanan dibuat khusus di hari yang sama agar tetap fresh dan higienis.</p>
             </div>
         </div>
 
@@ -96,5 +152,19 @@
         &copy; 2026 By.Reesha. All rights reserved.
     </footer>
 
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                hamburgerIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
+        }
+    </script>
 </body>
 </html>

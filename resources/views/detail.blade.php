@@ -13,22 +13,22 @@
 <body class="min-h-screen flex flex-col">
 
     <nav class="bg-white shadow-sm border-b border-pink-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex justify-between items-center">
             
-            <div class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="h-10 w-10 object-contain rounded-full bg-pink-100" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
-                <a href="/" class="text-2xl font-bold text-pink-600 tracking-wider">BY.REESHA</a>
+            <div class="flex items-center gap-2.5">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="h-9 w-9 sm:h-10 sm:w-10 object-contain rounded-full bg-pink-100" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
+                <a href="/" class="text-xl sm:text-2xl font-bold text-pink-600 tracking-wider">BY.REESHA</a>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-6 text-sm font-semibold text-gray-600">
+            <div class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-600">
                 <a href="/" class="hover:text-pink-600 transition">HOME</a>
-                <a href="/produk" class="hover:text-pink-600 transition">SEMUA PRODUK</a>
+                <a href="/produk" class="text-pink-600 border-b-2 border-pink-600 pb-1">SEMUA PRODUK</a>
                 <a href="/keranjang" class="hover:text-pink-600 transition">KERANJANG</a>
                 <a href="/kontak" class="hover:text-pink-600 transition">KONTAK KAMI</a>
                 <a href="/tentang-kami" class="hover:text-pink-600 transition">TENTANG KAMI</a>
             </div>
 
-            <div class="flex items-center gap-4">
+            <div class="hidden md:flex items-center gap-4">
                @auth
                     <a href="/profil" class="text-sm font-semibold text-gray-700 bg-pink-50 px-3 py-1.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition block">
                          Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong>
@@ -40,6 +40,63 @@
                 @else
                     <a href="/login" class="text-sm font-bold text-pink-600 hover:text-pink-700 px-4 py-2 border border-pink-200 rounded-xl hover:bg-pink-50 transition">Masuk</a>
                     <a href="/register" class="text-sm font-bold bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl shadow-md shadow-pink-100 transition">Daftar</a>
+                @endauth
+            </div>
+
+            <!-- Mobile Actions -->
+            <div class="flex items-center gap-2 md:hidden">
+                <a href="/keranjang" class="p-2 text-gray-600 hover:text-pink-600 transition rounded-lg hover:bg-pink-50" aria-label="Keranjang">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </a>
+                <button type="button" id="mobile-menu-btn" class="p-2 text-gray-700 hover:text-pink-600 rounded-lg hover:bg-pink-50 transition focus:outline-none" aria-label="Buka Menu">
+                    <svg id="hamburger-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg id="close-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-pink-100 bg-white px-4 pt-3 pb-5 space-y-2.5 shadow-lg">
+            <a href="/" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">HOME</a>
+            <a href="/produk" class="block px-3 py-2 rounded-lg font-semibold text-sm text-pink-600 bg-pink-50">SEMUA PRODUK</a>
+            <a href="/keranjang" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">KERANJANG</a>
+            <a href="/kontak" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">KONTAK KAMI</a>
+            <a href="/tentang-kami" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">TENTANG KAMI</a>
+
+            <div class="border-t border-gray-100 pt-3 mt-3">
+                @auth
+                    <div class="flex items-center justify-between mb-2">
+                        <a href="/profil" class="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                            <span>👤</span>
+                            <span>Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong></span>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <a href="/profil" class="text-center text-xs font-bold text-gray-700 bg-pink-50 py-2.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition">
+                            Akun Saya
+                        </a>
+                        <form action="/logout" method="POST" class="w-full">
+                            @csrf
+                            <button type="submit" class="w-full text-center text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition">
+                                Keluar
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <a href="/login" class="text-center text-sm font-bold text-pink-600 py-2.5 border border-pink-200 rounded-xl hover:bg-pink-50 transition">
+                            Masuk
+                        </a>
+                        <a href="/register" class="text-center text-sm font-bold bg-pink-600 text-white py-2.5 rounded-xl shadow-md shadow-pink-100 hover:bg-pink-700 transition">
+                            Daftar
+                        </a>
+                    </div>
                 @endauth
             </div>
         </div>
@@ -97,10 +154,10 @@
                     <div class="text-3xl md:text-4xl font-semibold text-pink-600">Rp {{ number_format($cake->harga, 0, ',', '.') }}</div>
                 </div>
 
-                <div class="space-y-6 text-sm mb-8 flex-grow">
+                <div class="space-y-5 text-sm mb-8 flex-grow">
             
-                    <div class="flex items-center gap-6">
-                        <div class="w-24 text-gray-500 shrink-0">Ukuran</div>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                        <div class="w-auto sm:w-24 text-gray-500 shrink-0 font-medium sm:font-normal">Ukuran</div>
                         <div class="flex flex-wrap gap-2" id="ukuran-container">
                             <button onclick="selectOption(this, 'ukuran')" class="px-4 py-2 border rounded transition border-pink-500 text-pink-600 bg-pink-50 font-medium relative overflow-hidden group">
                                 Standard
@@ -113,8 +170,8 @@
                         </div>
                     </div>
                     
-                    <div class="flex items-center gap-6">
-                        <div class="w-24 text-gray-500 shrink-0">Rasa / Varian</div>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                        <div class="w-auto sm:w-24 text-gray-500 shrink-0 font-medium sm:font-normal">Rasa / Varian</div>
                         <div class="flex flex-wrap gap-2" id="rasa-container">
                             <button onclick="selectOption(this, 'rasa')" class="px-4 py-2 border rounded transition border-gray-200 text-gray-700 hover:border-pink-500 hover:text-pink-600">Coklat Premium</button>
                             <button onclick="selectOption(this, 'rasa')" class="px-4 py-2 border rounded transition border-pink-500 text-pink-600 bg-pink-50 font-medium relative overflow-hidden group">
@@ -129,29 +186,28 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-6 pt-2">
-                        <div class="w-24 text-gray-500 shrink-0">Kuantitas</div>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 pt-1">
+                        <div class="w-auto sm:w-24 text-gray-500 shrink-0 font-medium sm:font-normal">Kuantitas</div>
                         <div class="flex items-center gap-4">
                             <div class="flex items-center border border-gray-300 rounded overflow-hidden">
                                 <button onclick="decreaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-r border-gray-300">-</button>
                                 <input type="text" id="qty-input" value="1" class="w-12 h-8 text-center text-gray-800 focus:outline-none" readonly>
                                 <button onclick="increaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-l border-gray-300">+</button>
                             </div>
-                            <span class="text-gray-500 text-sm">Tersedia (Sistem PO 2 Hari)</span>
+                            <span class="text-gray-500 text-xs sm:text-sm">Tersedia (Sistem PO 2 Hari)</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex flex-col md:flex-row items-center gap-4 pt-6 mt-auto w-full">
-                    <a href="javascript:void(0)" onclick="addToCart()" class="w-full md:flex-1 flex items-center justify-center gap-2 bg-pink-50 border border-pink-500 text-pink-600 hover:bg-pink-100 font-medium py-3 px-4 rounded shadow-sm transition whitespace-nowrap">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 mt-auto w-full">
+                    <a href="javascript:void(0)" onclick="addToCart()" class="w-full flex items-center justify-center gap-2 bg-pink-50 border border-pink-500 text-pink-600 hover:bg-pink-100 font-semibold py-3 px-4 rounded-xl shadow-sm transition">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
                         </svg>
-                        Masukkan Keranjang
+                        <span>Masukkan Keranjang</span>
                     </a>
-                    <a href="javascript:void(0)" onclick="checkout()" class="w-full md:flex-1 flex items-center justify-center bg-pink-600 hover:bg-pink-700 text-white font-medium py-3 px-4 rounded shadow-sm transition whitespace-nowrap">
-                        Beli Sekarang
-                    </a>
+                    <a href="javascript:void(0)" onclick="checkout()" class="w-full flex items-center justify-center bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-pink-100 transition">
+                        <span>Beli Sekarang</span>
                 </div>
             </div>
         </div>
@@ -295,6 +351,19 @@
             const varian = encodeURIComponent(selectedVarian);
 
             window.location.href = `/checkout?id=${id}&nama=${nama}&gambar=${gambar}&harga=${harga}&qty=${qty}&ukuran=${ukuran}&varian=${varian}`;
+        }
+
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                hamburgerIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
         }
     </script>
 </body>

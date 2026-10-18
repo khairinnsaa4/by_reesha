@@ -11,24 +11,24 @@
 <body class="bg-[#FFF8F9] font-[Poppins] min-h-screen flex flex-col items-center p-4">
 
     <!-- Header -->
-    <div class="mt-8 mb-8 text-center">
-        <h1 class="text-pink-600 text-2xl font-bold tracking-wide">Akun Saya</h1>
+    <div class="mt-4 sm:mt-8 mb-4 sm:mb-8 text-center">
+        <h1 class="text-pink-600 text-xl sm:text-2xl font-bold tracking-wide">Akun Saya</h1>
     </div>
 
     <!-- Avatar & Info -->
     <div class="text-center w-full max-w-md flex flex-col items-center">
-        <div class="h-32 w-32 rounded-full bg-white shadow-xl flex items-center justify-center mb-6 border-4 border-pink-100 overflow-hidden">
+        <div class="h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-white shadow-xl flex items-center justify-center mb-4 sm:mb-6 border-4 border-pink-100 overflow-hidden">
             @if(Auth::user()->avatar)
                 <img src="{{ url('/') . '/' . Auth::user()->avatar }}" class="h-full w-full object-cover">
             @else
-                <span class="text-5xl font-bold text-pink-600 uppercase">
+                <span class="text-3xl sm:text-5xl font-bold text-pink-600 uppercase">
                     {{ substr(Auth::user()->name, 0, 1) }}
                 </span>
             @endif
         </div>
 
-        <h2 class="text-3xl font-bold text-gray-800 mb-2 capitalize">{{ Auth::user()->name }}</h2>
-        <p class="text-gray-500 text-lg mb-6">{{ Auth::user()->email }}</p>
+        <h2 class="text-xl sm:text-3xl font-bold text-gray-800 mb-1 capitalize">{{ Auth::user()->name }}</h2>
+        <p class="text-gray-500 text-sm sm:text-base mb-5 sm:mb-6">{{ Auth::user()->email }}</p>
 
         @if(session('sukses'))
         <div class="w-full mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl">
