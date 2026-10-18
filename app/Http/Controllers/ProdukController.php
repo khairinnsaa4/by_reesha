@@ -15,7 +15,7 @@ class ProdukController extends Controller
             Produk::create([
                 'nama_kue' => 'Mini Cake',
                 'harga' => 35000,
-                'gambar' => 'Mini_cake.jpg',
+                'gambar' => 'mini_cake.jpg',
                 'deskripsi' => 'Mini cake super gemas dengan porsi yang sesuai, tampilan estetik, dan rasa manis yang pas untuk memanjakan dirimu atau orang tersayang.'
             ]);
 
@@ -50,7 +50,7 @@ class ProdukController extends Controller
              Produk::create([
                 'nama_kue' => 'Midi Cake',
                 'harga' => 120000,
-                'gambar' => 'Midi_cake.jpg',
+                'gambar' => 'midi_cake.jpg',
                 'deskripsi' => 'Cake midi dengan ukuran yang lebih pas, tekstur selembut awan, dan tampilan estetik yang siap menyempurnakan setiap sudut foto perayaanmu.'
             ]);
 

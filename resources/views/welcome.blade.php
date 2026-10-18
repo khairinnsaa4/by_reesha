@@ -144,7 +144,8 @@
                 <div class="relative overflow-hidden h-48 sm:h-56 md:h-64">
                     <img src="{{ asset('images/' . $produk->gambar) }}"
                          alt="{{ $produk->nama_kue }}"
-                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                         onerror="this.src='{{ asset('images/logo.png') }}'">
                     <div class="absolute top-3 left-3">
                         <span class="bg-pink-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Best Seller</span>
                     </div>

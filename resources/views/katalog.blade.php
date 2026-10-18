@@ -122,7 +122,7 @@
             @foreach($semua_cake as $cake)
             <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-pink-100 overflow-hidden flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition duration-300">
                 <div class="relative overflow-hidden h-48 sm:h-56">
-                    <img src="{{ asset('images/' . $cake->gambar) }}" alt="{{ $cake->nama_kue }}" class="w-full h-full object-cover">
+                    <img src="{{ asset('images/' . $cake->gambar) }}" alt="{{ $cake->nama_kue }}" class="w-full h-full object-cover" onerror="this.src='{{ asset('images/logo.png') }}'">
                 </div>
                 <div class="p-4 sm:p-6 flex flex-col justify-between flex-grow space-y-3 sm:space-y-4">
                     <div>

@@ -123,7 +123,7 @@
                     </p>
                 </div>
                 <div class="h-56 sm:h-64 md:h-auto bg-pink-100 flex items-center justify-center">
-                    <img src="{{ asset('images/bento_cake.jpg') }}" alt="Tentang By.Reesha" class="w-full h-full object-cover">
+                    <img src="{{ asset('images/bento_cake.jpg') }}" alt="Tentang By.Reesha" class="w-full h-full object-cover" onerror="this.src='{{ asset('images/logo.png') }}'">
                 </div>
             </div>
         </div>
