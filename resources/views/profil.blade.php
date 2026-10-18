@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>By.Reesha - Akun Saya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body class="bg-[#FFF8F9] font-[Poppins] min-h-screen flex flex-col items-center p-4">
+
+    <!-- Header -->
+    <div class="mt-8 mb-8 text-center">
+        <h1 class="text-pink-600 text-2xl font-bold tracking-wide">Akun Saya</h1>
+    </div>
+
+    <!-- Avatar & Info -->
+    <div class="text-center w-full max-w-md flex flex-col items-center">
+        <div class="h-32 w-32 rounded-full bg-white shadow-xl flex items-center justify-center mb-6 border-4 border-pink-100 overflow-hidden">
+            @if(Auth::user()->avatar)
+                <img src="{{ url('/') . '/' . Auth::user()->avatar }}" class="h-full w-full object-cover">
+            @else
+                <span class="text-5xl font-bold text-pink-600 uppercase">
+                    {{ substr(Auth::user()->name, 0, 1) }}
+                </span>
+            @endif
+        </div>
+
+        <h2 class="text-3xl font-bold text-gray-800 mb-2 capitalize">{{ Auth::user()->name }}</h2>
+        <p class="text-gray-500 text-lg mb-6">{{ Auth::user()->email }}</p>
+
+        @if(session('sukses'))
+        <div class="w-full mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl">
+            ✅ {{ session('sukses') }}
+        </div>
+        @endif
+
+
+        <!-- Buttons Container -->
+        <div class="w-full space-y-3 mt-2">
+            @if(Auth::user()->role === 'owner')
+                <a href="/dashboard-owner" class="block w-full text-center bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 text-sm">
+                    Masuk ke Dashboard Owner
+                </a>
+            @elseif(Auth::user()->role === 'karyawan')
+                <a href="/dashboard-karyawan" class="block w-full text-center bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 text-sm">
+                    Masuk ke Dashboard Karyawan
+                </a>
+                @if(Auth::user()->isPembuatKue())
+                <a href="/resep" class="block w-full text-center bg-pink-600 hover:bg-pink-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-pink-100 transition transform hover:-translate-y-0.5 text-sm flex items-center justify-center gap-2">
+                    <span>🍰</span>
+                    <span>Buku Resep & Bahan Kue</span>
+                </a>
+                @endif
+            @endif
+
+            <!-- Riwayat Transaksi (Khusus Pelanggan) -->
+            @if(Auth::user()->role === 'pelanggan')
+            <a href="/riwayat-transaksi" class="block w-full text-center bg-pink-600 hover:bg-pink-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 text-sm flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                </svg>
+                Riwayat Transaksi
+            </a>
+            @endif
+
+            <!-- Kembali ke Beranda -->
+            <a href="/" class="block w-full text-center border-2 border-pink-200 text-pink-600 hover:bg-pink-50 font-bold py-3.5 rounded-xl transition transform hover:-translate-y-0.5 text-sm">
+                Kembali ke Beranda 
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
+

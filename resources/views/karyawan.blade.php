@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>By.Reesha - Karyawan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #FFF8F9; }
+    </style>
+</head>
+<body class="flex min-h-screen text-gray-800">
+
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between h-screen sticky top-0 p-5 hidden md:flex">
+        <div>
+            <a href="/profil" class="flex items-center gap-3 mb-8 p-2 -ml-2 rounded-xl hover:bg-gray-50 transition cursor-pointer group">
+                <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-lg">
+                    {{ substr(Auth::user()->name, 0, 1) }}
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-800 text-sm group-hover:text-pink-600 transition">{{ Auth::user()->name }}</h4>
+                    <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
+                </div>
+            </a>
+
+            <nav class="space-y-1">
+                <a href="/dashboard-owner" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
+                    Dashboard
+                </a>
+                @if(Auth::check() && Auth::user()->role === 'owner')
+                <a href="/karyawan" class="block w-full text-left px-4 py-2.5 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm">
+                    Karyawan
+                </a>
+                @endif
+                @if(Auth::check() && Auth::user()->role === 'owner')
+                <a href="/pelanggan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
+                    Pelanggan
+                </a>
+                @endif
+                <a href="/pemesanan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
+                    Pemesanan
+                </a>
+                @if(Auth::check() && Auth::user()->role === 'owner')
+                <a href="/transaksi" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
+                    Transaksi
+                </a>
+                @endif
+                <a href="/logistik" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
+                    Logistik
+                </a>
+                <a href="/supplier" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
+                    Supplier
+                </a>
+                @if(Auth::check() && Auth::user()->isPembuatKue())
+                <a href="/resep" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm flex items-center justify-between">
+                    <span>Resep Produk</span>
+                    <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded font-semibold">Baker</span>
+                </a>
+                @endif
+                @if(Auth::check() && Auth::user()->role === 'owner')
+                <a href="/laporan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm mb-4">
+                    Laporan
+                </a>
+                @endif
+            </nav>
+        </div>
+
+        <div class="mt-8 border-t border-gray-100 pt-4">
+            <a href="/" class="block w-full text-left px-4 py-2 text-gray-500 font-medium hover:text-gray-800 transition text-sm mb-2">
+                Lihat Website
+            </a>
+            <form action="/logout" method="POST">
+                @csrf
+                <button type="submit" class="w-full text-left px-4 py-2 text-red-500 font-medium hover:bg-red-50 rounded-lg transition text-sm">
+                    Keluar
+                </button>
+            </form>
+        </div>
+    </aside>
+    
+    <main class="flex-1 p-8">
+
+        {{-- Alert sukses / error --}}
+        @if(session('sukses'))
+        <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">
+            ✅ {{ session('sukses') }}
+        </div>
+        @endif
+        @if(session('error'))
+        <div class="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">
+            ⚠️ {{ session('error') }}
+        </div>
+        @endif
+        
+        {{-- ===== HEADER ===== --}}
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-semibold text-gray-800">Manajemen Karyawan</h1>
+                <p class="text-sm text-gray-500 mt-1">Kelola akun karyawan dan divisi mereka</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="document.getElementById('modal-tambah').classList.remove('hidden')"
+                    class="bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tambah Karyawan
+                </button>
+            </div>
+        </div>
+
+        {{-- ===== TABEL KARYAWAN ===== --}}
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="p-4 border-b border-gray-200 flex items-center gap-2">
+                <div class="relative flex-1 max-w-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input type="text" id="search-karyawan" placeholder="Cari nama atau email karyawan..." oninput="cariKaryawan()"
+                        class="text-sm border border-gray-300 rounded-lg pl-9 pr-3 py-2 focus:outline-none focus:border-pink-500 w-full transition">
+                </div>
+                <button onclick="cariKaryawan()" class="bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Cari
+                </button>
+                <span id="result-count-kar" class="text-xs text-gray-400 ml-1"></span>
+                <span class="ml-auto text-sm text-gray-500">Total karyawan: <span id="kar-count" class="font-semibold text-gray-800">{{ $karyawan->count() }}</span> orang</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-500 border-b border-gray-200">
+                            <th class="px-5 py-3 font-medium">Nama</th>
+                            <th class="px-5 py-3 font-medium">Email</th>
+                            <th class="px-5 py-3 font-medium text-center">Divisi</th>
+                            <th class="px-5 py-3 font-medium">Terdaftar</th>
+                            <th class="px-5 py-3 font-medium text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100" id="tabel-karyawan">
+                        @forelse($karyawan as $i => $k)
+                        {{-- ===== Row Karyawan ===== --}}
+                        <tr class="hover:bg-gray-50 kar-row cursor-default">
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-sm flex-shrink-0">
+                                        {{ substr($k->name, 0, 1) }}
+                                    </div>
+                                    <span class="font-medium text-gray-800">{{ $k->name }}</span>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 text-gray-500">{{ $k->email }}</td>
+                            <td class="px-5 py-4 text-center">
+                                @if($k->divisi)
+                                    <span class="px-2.5 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-md">{{ $k->divisi }}</span>
+                                @else
+                                    <span class="text-gray-400 text-xs italic">-</span>
+                                @endif
+                            </td>
+                            <td class="px-5 py-4 text-gray-400 text-xs">{{ $k->created_at->format('d M Y') }}</td>
+                            <td class="px-5 py-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button onclick="openModalEdit({{ $k->id }}, '{{ addslashes($k->name) }}', '{{ addslashes($k->email) }}', '{{ $k->divisi }}')"
+                                        class="text-xs text-blue-500 hover:text-blue-700 font-medium hover:underline transition">Edit</button>
+                                    <span class="text-gray-200">|</span>
+                                    <form action="/karyawan/{{ $k->id }}/hapus" method="POST"
+                                        onsubmit="return confirm('Yakin ingin menghapus akun karyawan {{ $k->name }}?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-red-500 hover:text-red-700 font-medium hover:underline transition">Hapus</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+
+                        @empty
+                        <tr id="row-empty-kar">
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                                <div class="flex flex-col items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
+                                    </svg>
+                                    <p class="text-sm">Belum ada karyawan terdaftar.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    {{-- ===== MODAL TAMBAH KARYAWAN ===== --}}
+    <div id="modal-tambah" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-semibold text-gray-800">Tambah Akun Karyawan</h2>
+                <button onclick="document.getElementById('modal-tambah').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form action="/karyawan/tambah" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                    <input type="text" name="name" required placeholder="Contoh: Siti Rahmah"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="email" required placeholder="Contoh: siti@gmail.com"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Divisi / Jabatan</label>
+                    <select name="divisi" required
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        <option value="">-- Pilih Divisi --</option>
+                        <optgroup label="🍰 Dapur & Produksi">
+                            <option value="Baker (Pembuat Kue)">Baker (Pembuat Kue)</option>
+                            <option value="Dekorasi Kue">Dekorasi Kue</option>
+                            <option value="Pembuat Adonan">Pembuat Adonan</option>
+                            <option value="Pastry Chef">Pastry Chef</option>
+                        </optgroup>
+                        <optgroup label="📦 Operasional">
+                            <option value="Packaging">Packaging</option>
+                            <option value="Quality Control">Quality Control</option>
+                            <option value="Gudang & Logistik">Gudang & Logistik</option>
+                        </optgroup>
+                        <optgroup label="🏪 Pelayanan">
+                            <option value="Kasir">Kasir</option>
+                            <option value="Customer Service">Customer Service</option>
+                            <option value="Kurir / Pengiriman">Kurir / Pengiriman</option>
+                        </optgroup>
+                        <optgroup label="📋 Administrasi">
+                            <option value="Admin">Admin</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password Awal</label>
+                    <input type="password" name="password" required placeholder="Minimal 6 karakter"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <p class="text-xs text-gray-400 mt-1">Karyawan bisa mengganti password lewat profil.</p>
+                </div>
+                <div class="pt-2 flex gap-3">
+                    <button type="button" onclick="document.getElementById('modal-tambah').classList.add('hidden')"
+                        class="flex-1 border border-gray-300 text-gray-600 text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit"
+                        class="flex-1 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium py-2.5 rounded-lg transition">Simpan Karyawan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- ===== MODAL EDIT KARYAWAN ===== --}}
+    <div id="modal-edit" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-semibold text-gray-800">Edit Akun Karyawan</h2>
+                <button onclick="document.getElementById('modal-edit').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <form id="form-edit" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                    <input type="text" id="edit-name" name="name" required
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="edit-email" name="email" required
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Divisi / Jabatan</label>
+                    <select id="edit-divisi" name="divisi" required
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        <option value="">-- Pilih Divisi --</option>
+                        <optgroup label="🍰 Dapur & Produksi">
+                            <option value="Baker (Pembuat Kue)">Baker (Pembuat Kue)</option>
+                            <option value="Dekorasi Kue">Dekorasi Kue</option>
+                            <option value="Pembuat Adonan">Pembuat Adonan</option>
+                            <option value="Pastry Chef">Pastry Chef</option>
+                        </optgroup>
+                        <optgroup label="📦 Operasional">
+                            <option value="Packaging">Packaging</option>
+                            <option value="Quality Control">Quality Control</option>
+                            <option value="Gudang & Logistik">Gudang & Logistik</option>
+                        </optgroup>
+                        <optgroup label="🏪 Pelayanan">
+                            <option value="Kasir">Kasir</option>
+                            <option value="Customer Service">Customer Service</option>
+                            <option value="Kurir / Pengiriman">Kurir / Pengiriman</option>
+                        </optgroup>
+                        <optgroup label="📋 Administrasi">
+                            <option value="Admin">Admin</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru <span class="text-gray-400 font-normal">(opsional)</span></label>
+                    <input type="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah password"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                </div>
+                <div class="pt-2 flex gap-3">
+                    <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
+                        class="flex-1 border border-gray-300 text-gray-600 text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit"
+                        class="flex-1 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium py-2.5 rounded-lg transition">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<script>
+    // Buka modal edit dan isi datanya
+    function openModalEdit(id, name, email, divisi) {
+        document.getElementById('modal-edit').classList.remove('hidden');
+        document.getElementById('form-edit').action = '/karyawan/' + id + '/edit';
+        document.getElementById('edit-name').value = name;
+        document.getElementById('edit-email').value = email;
+        document.getElementById('edit-divisi').value = divisi;
+    }
+
+    // Search karyawan
+    function cariKaryawan() {
+        const keyword = document.getElementById('search-karyawan').value.toLowerCase();
+        const rows    = document.querySelectorAll('#tabel-karyawan .kar-row');
+        let visible   = 0;
+
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            if (text.includes(keyword)) {
+                row.style.display = '';
+                visible++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        document.getElementById('result-count-kar').innerText =
+            keyword ? `${visible} hasil ditemukan` : '';
+        document.getElementById('kar-count').innerText =
+            keyword ? visible : {{ $karyawan->count() }};
+    }
+
+    document.getElementById('search-karyawan').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') cariKaryawan();
+    });
+</script>
