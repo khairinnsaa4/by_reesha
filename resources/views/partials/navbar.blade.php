@@ -36,8 +36,8 @@
             {{-- 3. KERANJANG --}}
             <a href="/keranjang" class="flex items-center gap-1.5 transition pb-1 relative {{ $currentActive === 'keranjang' ? 'text-pink-600 border-b-2 border-pink-600 font-bold' : 'text-gray-600 hover:text-pink-600' }}">
                 <div class="relative">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="{{ $currentActive === 'keranjang' ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="{{ $currentActive === 'keranjang' ? '2.4' : '2' }}" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                     <span id="desktop-nav-cart-badge" class="hidden absolute -top-2 -right-2 bg-pink-600 text-white text-[9px] font-bold rounded-full h-3.5 min-w-[14px] px-1 flex items-center justify-center">0</span>
                 </div>
@@ -80,8 +80,8 @@
         <!-- Mobile Action Buttons (Quick Cart Shortcut) -->
         <div class="flex items-center gap-2 md:hidden">
             <a href="/keranjang" class="p-2 text-gray-600 hover:text-pink-600 transition rounded-xl hover:bg-pink-50 relative" aria-label="Keranjang">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <span id="mobile-top-cart-badge" class="hidden absolute top-1 right-1 bg-pink-600 text-white text-[9px] font-bold rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center border border-white">0</span>
             </a>
