@@ -389,6 +389,8 @@ Route::get('/laporan', function (Request $request) {
     $total_pendapatan  = $transaksis->sum('total_harga');
     $total_pesanan     = $transaksis->count();
     $total_produk      = $transaksis->sum('qty');
+    $rata_rata_pesanan = $total_pesanan > 0 ? round($total_pendapatan / $total_pesanan) : 0;
+    
     $per_produk        = $transaksis->groupBy('nama_produk')->map(function ($items) {
         return [
             'nama'  => $items->first()->nama_produk,
@@ -398,10 +400,14 @@ Route::get('/laporan', function (Request $request) {
     })->values();
     $logistik = Logistik::latest()->get();
 
-    // Data laporan tahunan — rekap per bulan
-    $allYears = Transaksi::selectRaw('YEAR(created_at) as tahun')
-        ->groupBy('tahun')->orderByDesc('tahun')->pluck('tahun')->toArray();
-    if (empty($allYears)) $allYears = [now()->year];
+    // Data laporan tahunan — daftar tahun database-agnostic (kompatibel PostgreSQL & MySQL)
+    $allYears = Transaksi::all()->pluck('created_at')
+        ->map(fn($d) => $d ? (int)$d->format('Y') : null)
+        ->filter()->unique()->sortDesc()->values()->toArray();
+    if (!in_array(now()->year, $allYears)) {
+        array_unshift($allYears, now()->year);
+    }
+    $allYears = array_values(array_unique($allYears));
 
     $per_bulan = collect(range(1, 12))->map(function ($bulan) use ($tahun) {
         $rows = Transaksi::whereYear('created_at', $tahun)->whereMonth('created_at', $bulan)->get();
@@ -414,10 +420,21 @@ Route::get('/laporan', function (Request $request) {
         ];
     });
 
+    $label_periode = 'Semua Waktu';
+    if ($filter === 'harian') {
+        $label_periode = 'Harian (' . \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('dddd, D MMMM Y') . ')';
+    } elseif ($filter === 'mingguan') {
+        $label_periode = 'Mingguan (' . $tanggal_awal . ' s/d ' . $tanggal_akhir . ')';
+    } elseif ($filter === 'bulanan') {
+        $label_periode = 'Bulanan (' . $nama_bulan . ' ' . $tahun_bulan . ')';
+    } elseif ($filter === 'tahunan') {
+        $label_periode = 'Tahunan (Tahun ' . $tahun . ')';
+    }
+
     return view('laporan', compact(
-        'transaksis','total_pendapatan','total_pesanan','total_produk',
+        'transaksis','total_pendapatan','total_pesanan','total_produk','rata_rata_pesanan',
         'per_produk','logistik','filter','tahun','allYears','per_bulan','tanggal',
-        'minggu','bulan_input','tanggal_awal','tanggal_akhir','nama_bulan','tahun_bulan'
+        'minggu','bulan_input','tanggal_awal','tanggal_akhir','nama_bulan','tahun_bulan','label_periode'
     ));
 })->middleware('auth');
 
