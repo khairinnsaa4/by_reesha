@@ -24,18 +24,40 @@
     <!-- Content -->
     <main class="max-w-4xl mx-auto px-4 py-8">
         
+        @if(session('sukses'))
+        <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
+            <span>✓</span> <span>{{ session('sukses') }}</span>
+        </div>
+        @endif
+
         <div class="flex flex-col gap-4">
             @forelse($transaksis as $trx)
+            @php
+                $badgeStyle = 'bg-gray-100 text-gray-700';
+                if (in_array($trx->status, ['Diproses', 'Sedang Diproses'])) $badgeStyle = 'bg-amber-100 text-amber-800';
+                elseif (in_array($trx->status, ['Dikemas'])) $badgeStyle = 'bg-purple-100 text-purple-800';
+                elseif (in_array($trx->status, ['Dikirim', 'Dalam Pengiriman'])) $badgeStyle = 'bg-blue-100 text-blue-800';
+                elseif (in_array($trx->status, ['Selesai', 'Diterima'])) $badgeStyle = 'bg-emerald-100 text-emerald-800';
+                elseif (in_array($trx->status, ['Dibatalkan', 'Batal'])) $badgeStyle = 'bg-rose-100 text-rose-800';
+            @endphp
             <div class="bg-white rounded-xl shadow-sm border border-pink-50 overflow-hidden">
                 <div class="border-b border-gray-100 p-3.5 sm:p-4 flex justify-between items-center bg-gray-50/50">
                     <div class="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-pink-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
                         </svg>
-                        <span class="text-xs sm:text-sm font-semibold text-gray-700">Belanja</span>
-                        <span class="text-gray-400 text-[11px] sm:text-xs ml-1 sm:ml-2">{{ $trx->created_at->format('d M Y') }}</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-700">Pesanan Kue</span>
+                        <span class="text-gray-400 text-[11px] sm:text-xs ml-1 sm:ml-2">#TRX-{{ str_pad($trx->id, 3, '0', STR_PAD_LEFT) }} • {{ $trx->created_at->format('d M Y, H:i') }}</span>
                     </div>
-                    <span class="bg-yellow-100 text-yellow-700 text-[11px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded">{{ $trx->status }}</span>
+                    <span class="{{ $badgeStyle }} text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full">
+                        @if(in_array($trx->status, ['Diproses', 'Sedang Diproses'])) 🍳 Sedang Dibuat
+                        @elseif($trx->status === 'Dikemas') 📦 Sedang Dikemas
+                        @elseif(in_array($trx->status, ['Dikirim', 'Dalam Pengiriman'])) 🚚 Dalam Pengiriman
+                        @elseif(in_array($trx->status, ['Selesai', 'Diterima'])) ✓ Selesai
+                        @elseif(in_array($trx->status, ['Dibatalkan', 'Batal'])) ❌ Dibatalkan
+                        @else {{ $trx->status }}
+                        @endif
+                    </span>
                 </div>
                 <div class="p-3.5 sm:p-4 flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
                     <div class="flex gap-3 sm:gap-4 items-start flex-1 min-w-0 w-full">
@@ -57,8 +79,30 @@
                         <p class="font-bold text-base sm:text-lg text-pink-600">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</p>
                     </div>
                 </div>
-                <div class="border-t border-gray-100 p-3 sm:p-4 text-right bg-white">
-                    <a href="/produk" class="inline-block bg-pink-600 hover:bg-pink-700 text-white text-xs sm:text-sm font-semibold py-1.5 sm:py-2 px-4 sm:px-6 rounded-lg transition shadow-sm">
+                <div class="border-t border-gray-100 p-3 sm:p-4 flex flex-wrap justify-between items-center gap-2 bg-white">
+                    <div>
+                        @if(in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']))
+                        <form action="/riwayat-transaksi/{{ $trx->id }}/terima" method="POST" onsubmit="return confirm('Konfirmasi bahwa kue telah Anda terima dengan baik?')" class="inline">
+                            @csrf
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold py-1.5 sm:py-2 px-4 rounded-xl shadow transition flex items-center gap-1.5">
+                                <span>✓</span> <span>Konfirmasi Pesanan Diterima</span>
+                            </button>
+                        </form>
+                        @elseif(in_array($trx->status, ['Diproses', 'Sedang Diproses']))
+                        <span class="text-xs text-amber-700 font-medium flex items-center gap-1">
+                            <span>⏳</span> <span>Kue sedang dipersiapkan oleh tim dapur</span>
+                        </span>
+                        @elseif($trx->status === 'Dikemas')
+                        <span class="text-xs text-purple-700 font-medium flex items-center gap-1">
+                            <span>📦</span> <span>Kue telah selesai & sedang dikemas rapi</span>
+                        </span>
+                        @elseif(in_array($trx->status, ['Selesai', 'Diterima']))
+                        <span class="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                            <span>✓</span> <span>Pesanan telah selesai diterima</span>
+                        </span>
+                        @endif
+                    </div>
+                    <a href="/produk" class="inline-block bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs sm:text-sm font-semibold py-1.5 sm:py-2 px-4 rounded-xl transition">
                         Beli Lagi
                     </a>
                 </div>

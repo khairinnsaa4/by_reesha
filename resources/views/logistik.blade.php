@@ -168,6 +168,62 @@
         </div>
         @endif
 
+        @if(session('error'))
+        <div class="mb-6 p-4 bg-red-100 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
+            ⚠️ {{ session('error') }}
+        </div>
+        @endif
+
+        @php
+            $totalBarang = $logistiks->count();
+            $stokAman    = $logistiks->where('status', 'Aman')->count();
+            $stokMenipis = $logistiks->where('status', 'Menipis')->count();
+            $stokKritis  = $logistiks->where('status', 'Kritis')->count();
+        @endphp
+
+        {{-- KPI Cards Ringkasan Stok Logistik --}}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+            <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    📦
+                </div>
+                <div>
+                    <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block">Total Logistik</span>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">{{ $totalBarang }} <span class="text-xs font-normal text-gray-500">Item</span></h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-emerald-100 shadow-sm flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    ✓
+                </div>
+                <div>
+                    <span class="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider block">Stok Aman</span>
+                    <h3 class="text-lg sm:text-xl font-bold text-emerald-800">{{ $stokAman }} <span class="text-xs font-normal text-emerald-600">Bahan</span></h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-amber-100 shadow-sm flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    ⚡
+                </div>
+                <div>
+                    <span class="text-[11px] font-semibold text-amber-600 uppercase tracking-wider block">Stok Menipis</span>
+                    <h3 class="text-lg sm:text-xl font-bold text-amber-800">{{ $stokMenipis }} <span class="text-xs font-normal text-amber-600">Perlu Pantau</span></h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-rose-100 shadow-sm flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    🔴
+                </div>
+                <div>
+                    <span class="text-[11px] font-semibold text-rose-600 uppercase tracking-wider block">Stok Kritis</span>
+                    <h3 class="text-lg sm:text-xl font-bold text-rose-800">{{ $stokKritis }} <span class="text-xs font-normal text-rose-600">Harus Belanja</span></h3>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
             <div class="p-4 border-b border-gray-200 flex items-center gap-2">
                 <div class="relative flex-1 max-w-sm">
@@ -222,8 +278,14 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div class="inline-flex items-center gap-1">
-                                    <button onclick="openEditModal({{ $item }})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit Barang">
+                                <div class="inline-flex items-center gap-1.5">
+                                    <button onclick="openRestockModal({{ $item }})" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-lg transition" title="Catat Stok Masuk / Restock">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                        </svg>
+                                        <span>+ Masuk</span>
+                                    </button>
+                                    <button onclick="openEditModal({{ $item }})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit / Opname Barang">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
@@ -323,10 +385,53 @@
             </form>
         </div>
     </div>
+    {{-- ===== MODAL CATAT STOK MASUK (RESTOCK) ===== --}}
+    <div id="modal-restock" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-base">📦</span>
+                    <div>
+                        <h3 class="text-base font-bold text-gray-800">Catat Barang Masuk (Restock)</h3>
+                        <p class="text-[11px] text-gray-400">Input manual pengiriman barang masuk dari supplier</p>
+                    </div>
+                </div>
+                <button type="button" onclick="toggleModal('modal-restock')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            </div>
+            <form id="form-restock" method="POST" class="space-y-4">
+                @csrf
+                <div class="p-3.5 bg-gray-50 rounded-xl border border-gray-100">
+                    <p class="text-xs text-gray-500 mb-0.5">Nama Bahan / Barang:</p>
+                    <h4 id="restock-nama" class="font-bold text-gray-900 text-sm"></h4>
+                    <p class="text-xs text-gray-500 mt-1">Stok Saat Ini: <strong id="restock-stok-saat-ini" class="text-pink-600 font-bold"></strong></p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Jumlah Masuk Diterima:</label>
+                    <div class="flex items-center gap-2">
+                        <input type="number" name="jumlah_masuk" min="1" required placeholder="Contoh: 10" class="w-full text-base font-bold border border-gray-300 rounded-xl p-2.5 focus:border-emerald-500 focus:outline-none">
+                        <span id="restock-satuan" class="text-xs font-bold text-gray-600 bg-gray-100 px-3.5 py-3 rounded-xl border border-gray-200">Kg</span>
+                    </div>
+                    <p class="text-[11px] text-gray-500 mt-1.5">💡 Sistem akan otomatis menambahkan jumlah ini ke sisa stok saat ini.</p>
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t border-gray-100">
+                    <button type="button" onclick="toggleModal('modal-restock')" class="px-4 py-2 border border-gray-300 rounded-xl text-sm text-gray-600 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-700 transition shadow">Simpan Stok Masuk</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         function toggleModal(id) {
             document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function openRestockModal(item) {
+            document.getElementById('form-restock').action = '/logistik/' + item.id + '/restock';
+            document.getElementById('restock-nama').innerText = item.nama;
+            document.getElementById('restock-stok-saat-ini').innerText = item.stok + ' ' + item.satuan;
+            document.getElementById('restock-satuan').innerText = item.satuan;
+            toggleModal('modal-restock');
         }
 
         function openEditModal(item) {

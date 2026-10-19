@@ -162,6 +162,43 @@
         </div>
         @endif
 
+        @php
+            $countSemua     = $transaksis->count();
+            $countDiproses  = $transaksis->filter(fn($t) => in_array($t->status, ['Diproses', 'Sedang Diproses']))->count();
+            $countDikemas   = $transaksis->filter(fn($t) => in_array($t->status, ['Dikemas', 'Menunggu Dikirim']))->count();
+            $countDikirim   = $transaksis->filter(fn($t) => in_array($t->status, ['Dikirim', 'Dalam Pengiriman']))->count();
+            $countSelesai   = $transaksis->filter(fn($t) => in_array($t->status, ['Selesai', 'Diterima']))->count();
+            $countBatal     = $transaksis->filter(fn($t) => in_array($t->status, ['Dibatalkan', 'Batal']))->count();
+        @endphp
+
+        {{-- Filter Status Pills --}}
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button type="button" onclick="filterStatusPemesanan('semua')" id="btn-filter-semua"
+                class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-pink-600 text-white shadow-sm border border-pink-600 transition">
+                Semua ({{ $countSemua }})
+            </button>
+            <button type="button" onclick="filterStatusPemesanan('diproses')" id="btn-filter-diproses"
+                class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
+                🍳 Diproses ({{ $countDiproses }})
+            </button>
+            <button type="button" onclick="filterStatusPemesanan('dikemas')" id="btn-filter-dikemas"
+                class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
+                📦 Dikemas ({{ $countDikemas }})
+            </button>
+            <button type="button" onclick="filterStatusPemesanan('dikirim')" id="btn-filter-dikirim"
+                class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
+                🚚 Dikirim ({{ $countDikirim }})
+            </button>
+            <button type="button" onclick="filterStatusPemesanan('selesai')" id="btn-filter-selesai"
+                class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
+                ✓ Selesai ({{ $countSelesai }})
+            </button>
+            <button type="button" onclick="filterStatusPemesanan('dibatalkan')" id="btn-filter-dibatalkan"
+                class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
+                ❌ Dibatalkan ({{ $countBatal }})
+            </button>
+        </div>
+
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
             <div class="p-3.5 sm:p-4 border-b border-gray-200 flex flex-wrap sm:flex-nowrap items-center gap-2">
                 <div class="relative flex-1 min-w-[200px]">
@@ -194,27 +231,58 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100" id="tabel-pemesanan">
                         @forelse($transaksis as $trx)
-                        <tr class="hover:bg-gray-50 pms-row">
+                        <tr class="hover:bg-gray-50 pms-row" data-status="{{ strtolower($trx->status) }}">
                             <td class="px-6 py-4 font-semibold text-gray-800">#TRX-{{ str_pad($trx->id, 3, '0', STR_PAD_LEFT) }}</td>
                             <td class="px-6 py-4 font-medium text-gray-800">{{ $trx->user ? $trx->user->name : 'Pelanggan' }}</td>
                             <td class="px-6 py-4 text-gray-600">{{ $trx->nama_produk }} ({{ $trx->qty }} pcs)</td>
                             <td class="px-6 py-4 text-gray-500 text-xs">{{ $trx->created_at->format('d M Y, H:i') }}</td>
                             <td class="px-6 py-4 font-semibold text-pink-600">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 text-center">
-                                <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline-block">
-                                    @csrf
-                                    <select name="status" onchange="this.form.submit()" 
-                                        class="text-xs font-semibold px-3 py-1.5 rounded-full border border-gray-200 outline-none cursor-pointer shadow-sm transition
-                                        {{ $trx->status === 'Dikemas' ? 'bg-amber-100 text-amber-800' : '' }}
-                                        {{ $trx->status === 'Dikirim' ? 'bg-blue-100 text-blue-800' : '' }}
-                                        {{ $trx->status === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : '' }}
-                                        {{ $trx->status === 'Dibatalkan' ? 'bg-rose-100 text-rose-800' : '' }}">
-                                        <option value="Dikemas" {{ $trx->status === 'Dikemas' ? 'selected' : '' }}>📦 Dikemas</option>
-                                        <option value="Dikirim" {{ $trx->status === 'Dikirim' ? 'selected' : '' }}>🚚 Dikirim</option>
-                                        <option value="Selesai" {{ $trx->status === 'Selesai' ? 'selected' : '' }}>✓ Selesai</option>
-                                        <option value="Dibatalkan" {{ $trx->status === 'Dibatalkan' ? 'selected' : '' }}>❌ Dibatalkan</option>
-                                    </select>
-                                </form>
+                                <div class="flex flex-col items-center gap-1.5">
+                                    <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline-block">
+                                        @csrf
+                                        <select name="status" onchange="this.form.submit()" 
+                                            class="text-xs font-bold px-3 py-1.5 rounded-full border outline-none cursor-pointer shadow-sm transition
+                                            {{ in_array($trx->status, ['Diproses', 'Sedang Diproses']) ? 'bg-amber-100 text-amber-800 border-amber-300' : '' }}
+                                            {{ in_array($trx->status, ['Dikemas']) ? 'bg-purple-100 text-purple-800 border-purple-300' : '' }}
+                                            {{ in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']) ? 'bg-blue-100 text-blue-800 border-blue-300' : '' }}
+                                            {{ in_array($trx->status, ['Selesai', 'Diterima']) ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : '' }}
+                                            {{ in_array($trx->status, ['Dibatalkan', 'Batal']) ? 'bg-rose-100 text-rose-800 border-rose-300' : '' }}">
+                                            <option value="Diproses" {{ in_array($trx->status, ['Diproses', 'Sedang Diproses']) ? 'selected' : '' }}>🍳 Diproses</option>
+                                            <option value="Dikemas" {{ $trx->status === 'Dikemas' ? 'selected' : '' }}>📦 Dikemas</option>
+                                            <option value="Dikirim" {{ in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']) ? 'selected' : '' }}>🚚 Dikirim</option>
+                                            <option value="Selesai" {{ in_array($trx->status, ['Selesai', 'Diterima']) ? 'selected' : '' }}>✓ Selesai</option>
+                                            <option value="Dibatalkan" {{ in_array($trx->status, ['Dibatalkan', 'Batal']) ? 'selected' : '' }}>❌ Dibatalkan</option>
+                                        </select>
+                                    </form>
+
+                                    {{-- Quick Action Button --}}
+                                    @if(in_array($trx->status, ['Diproses', 'Sedang Diproses']))
+                                        <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="Dikemas">
+                                            <button type="submit" class="text-[10px] font-bold bg-purple-50 hover:bg-purple-100 text-purple-700 px-2 py-0.5 rounded border border-purple-200 transition" title="Lanjut ke tahap Packing">
+                                                Siap Dikemas →
+                                            </button>
+                                        </form>
+                                    @elseif($trx->status === 'Dikemas')
+                                        <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="Dikirim">
+                                            <button type="submit" class="text-[10px] font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200 transition" title="Kirim ke Kurir">
+                                                Kirim Kurir →
+                                            </button>
+                                        </form>
+                                    @elseif(in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']))
+                                        <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="Selesai">
+                                            <button type="submit" class="text-[10px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 transition" title="Tandai Selesai">
+                                                Selesaikan ✓
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                         @empty
@@ -229,6 +297,25 @@
     </main>
 
     <script>
+        let activeStatusFilter = 'semua';
+
+        function filterStatusPemesanan(status) {
+            activeStatusFilter = status;
+
+            document.querySelectorAll('.status-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-600', 'text-white', 'border-pink-600', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+            });
+
+            const activeBtn = document.getElementById('btn-filter-' + status);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+                activeBtn.classList.add('bg-pink-600', 'text-white', 'border-pink-600', 'shadow-sm');
+            }
+
+            cariPemesanan();
+        }
+
         function cariPemesanan() {
             const keyword = document.getElementById('search-pemesanan').value.toLowerCase();
             const rows    = document.querySelectorAll('#tabel-pemesanan .pms-row');
@@ -236,7 +323,25 @@
 
             rows.forEach(row => {
                 const text = row.innerText.toLowerCase();
-                if (text.includes(keyword)) {
+                const rowStatus = (row.getAttribute('data-status') || '').toLowerCase();
+                
+                const matchKeyword = text.includes(keyword);
+                let matchStatus = false;
+                if (activeStatusFilter === 'semua') {
+                    matchStatus = true;
+                } else if (activeStatusFilter === 'diproses') {
+                    matchStatus = rowStatus.includes('proses');
+                } else if (activeStatusFilter === 'dikemas') {
+                    matchStatus = rowStatus.includes('kemas');
+                } else if (activeStatusFilter === 'dikirim') {
+                    matchStatus = rowStatus.includes('kirim');
+                } else if (activeStatusFilter === 'selesai') {
+                    matchStatus = rowStatus.includes('selesai') || rowStatus.includes('terima');
+                } else if (activeStatusFilter === 'dibatalkan') {
+                    matchStatus = rowStatus.includes('batal');
+                }
+
+                if (matchKeyword && matchStatus) {
                     row.style.display = '';
                     visible++;
                 } else {
@@ -244,10 +349,10 @@
                 }
             });
 
-            document.getElementById('result-count-pms').innerText =
-                keyword ? `${visible} hasil ditemukan` : '';
-            document.getElementById('pms-count').innerText =
-                keyword ? visible : {{ $transaksis->count() }};
+            const countEl = document.getElementById('result-count-pms');
+            if (countEl) {
+                countEl.innerText = (keyword || activeStatusFilter !== 'semua') ? `${visible} pesanan ditemukan` : '';
+            }
         }
 
         document.getElementById('search-pemesanan').addEventListener('keydown', function(e) {

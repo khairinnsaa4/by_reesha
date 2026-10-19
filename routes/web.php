@@ -208,7 +208,7 @@ Route::post('/pemesanan/{id}/update-status', function (Request $request, $id) {
     $trx = Transaksi::findOrFail($id);
     $trx->status = $request->input('status');
     $trx->save();
-    return back()->with('sukses', 'Status pesanan #TRX-' . str_pad($id, 3, '0', STR_PAD_LEFT) . ' berhasil diperbarui!');
+    return back()->with('sukses', 'Status pesanan #TRX-' . str_pad($id, 3, '0', STR_PAD_LEFT) . ' berhasil diperbarui ke "' . $trx->status . '"!');
 })->middleware('auth');
 
 Route::get('/transaksi', function (Request $request) {
@@ -361,6 +361,19 @@ Route::post('/logistik/{id}/update', function (Request $request, $id) {
         'status'   => $status,
     ]);
     return back()->with('sukses', 'Data logistik berhasil diperbarui!');
+})->middleware('auth');
+
+// Catat barang masuk (Restock) manual oleh staf gudang
+Route::post('/logistik/{id}/restock', function (Request $request, $id) {
+    $item = Logistik::findOrFail($id);
+    $tambah = (int) $request->input('jumlah_masuk', 0);
+    if ($tambah > 0) {
+        $item->stok += $tambah;
+        $item->status = $item->stok <= 5 ? 'Kritis' : ($item->stok <= 15 ? 'Menipis' : 'Aman');
+        $item->save();
+        return back()->with('sukses', "Stok masuk +{$tambah} {$item->satuan} berhasil ditambahkan untuk {$item->nama}! Total stok sekarang: {$item->stok} {$item->satuan}.");
+    }
+    return back()->with('error', 'Jumlah barang masuk harus lebih dari 0.');
 })->middleware('auth');
 
 Route::post('/logistik/{id}/hapus', function ($id) {
@@ -568,7 +581,7 @@ Route::post('/checkout/proses', function (Request $request) {
         'total_harga' => $request->input('total_harga', 0),
         'metode_pengiriman' => $request->input('metode_pengiriman', 'Kurir Instan'),
         'metode_pembayaran' => $request->input('metode_pembayaran', 'QRIS'),
-        'status' => 'Dikemas',
+        'status' => 'Diproses',
     ]);
 
     return redirect('/sukses?id=' . $trx->id);
@@ -585,6 +598,14 @@ Route::get('/riwayat-transaksi', function () {
     }
     $transaksis = Transaksi::where('user_id', Auth::id())->latest()->get();
     return view('riwayat-transaksi', compact('transaksis'));
+})->middleware('auth');
+
+// Konfirmasi pesanan telah diterima oleh pelanggan
+Route::post('/riwayat-transaksi/{id}/terima', function ($id) {
+    $trx = Transaksi::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+    $trx->status = 'Selesai';
+    $trx->save();
+    return back()->with('sukses', 'Terima kasih telah berbelanja di By.Reesha! Pesanan Anda telah selesai.');
 })->middleware('auth');
 
 Route::get('/tentang-kami', function () {
