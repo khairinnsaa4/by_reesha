@@ -10,7 +10,7 @@
         body { background-color: #fce7f3; font-family: 'Poppins', sans-serif; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center justify-center p-4 pb-20 md:pb-4">
 
     <div class="bg-white max-w-md w-full rounded-2xl shadow-xl overflow-hidden text-center relative">
         <div class="bg-pink-600 h-2 w-full absolute top-0 left-0"></div>
@@ -54,5 +54,6 @@
         </div>
     </div>
 
+    @include('partials.bottom_nav', ['active' => 'profil'])
 </body>
 </html>

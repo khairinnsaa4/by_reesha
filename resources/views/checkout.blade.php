@@ -13,7 +13,7 @@
         .checkout-step { color: #9ca3af; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col pb-16 md:pb-0">
 
     <!-- NAVIGATION BAR -->
     <nav class="bg-white shadow-sm border-b border-pink-100 sticky top-0 z-50">
@@ -546,5 +546,7 @@
             document.getElementById('input-metode-pembayaran').value = paymentName || 'QRIS';
         }
     </script>
+
+    @include('partials.bottom_nav', ['active' => 'keranjang'])
 </body>
 </html>

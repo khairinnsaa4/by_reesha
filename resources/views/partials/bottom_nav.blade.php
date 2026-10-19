@@ -1,0 +1,85 @@
+{{-- ========================================================================= --}}
+{{-- BY.REESHA MOBILE BOTTOM NAVIGATION BAR (Aplikasi HP Modern)               --}}
+{{-- ========================================================================= --}}
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-pink-100 shadow-[0_-4px_20px_rgba(0,0,0,0.07)] px-2 py-1.5 transition-all">
+    <div class="grid grid-cols-5 items-center max-w-md mx-auto">
+        
+        {{-- 1. Home --}}
+        @php $isHome = ($active ?? '') === 'home'; @endphp
+        <a href="/" class="flex flex-col items-center justify-center py-1 rounded-xl transition {{ $isHome ? 'text-pink-600 font-bold' : 'text-gray-500 hover:text-pink-600 font-medium' }}">
+            <div class="relative {{ $isHome ? 'scale-110' : '' }} transition-transform">
+                <svg class="w-5 h-5" fill="{{ $isHome ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">Home</span>
+        </a>
+
+        {{-- 2. Produk --}}
+        @php $isProduk = ($active ?? '') === 'produk'; @endphp
+        <a href="/produk" class="flex flex-col items-center justify-center py-1 rounded-xl transition {{ $isProduk ? 'text-pink-600 font-bold' : 'text-gray-500 hover:text-pink-600 font-medium' }}">
+            <div class="relative {{ $isProduk ? 'scale-110' : '' }} transition-transform">
+                <svg class="w-5 h-5" fill="{{ $isProduk ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">Produk</span>
+        </a>
+
+        {{-- 3. Keranjang --}}
+        @php $isKeranjang = ($active ?? '') === 'keranjang'; @endphp
+        <a href="/keranjang" class="flex flex-col items-center justify-center py-1 rounded-xl transition {{ $isKeranjang ? 'text-pink-600 font-bold' : 'text-gray-500 hover:text-pink-600 font-medium' }}">
+            <div class="relative {{ $isKeranjang ? 'scale-110' : '' }} transition-transform">
+                <svg class="w-5 h-5" fill="{{ $isKeranjang ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                </svg>
+                <span id="mobile-bottom-cart-badge" class="hidden absolute -top-1.5 -right-2 bg-pink-600 text-white text-[9px] font-bold rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center border border-white">0</span>
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">Keranjang</span>
+        </a>
+
+        {{-- 4. Kontak --}}
+        @php $isKontak = ($active ?? '') === 'kontak'; @endphp
+        <a href="/kontak" class="flex flex-col items-center justify-center py-1 rounded-xl transition {{ $isKontak ? 'text-pink-600 font-bold' : 'text-gray-500 hover:text-pink-600 font-medium' }}">
+            <div class="relative {{ $isKontak ? 'scale-110' : '' }} transition-transform">
+                <svg class="w-5 h-5" fill="{{ $isKontak ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">Kontak</span>
+        </a>
+
+        {{-- 5. Akun / Profil --}}
+        @php $isAkun = in_array(($active ?? ''), ['profil', 'akun', 'login', 'register']); @endphp
+        <a href="{{ Auth::check() ? '/profil' : '/login' }}" class="flex flex-col items-center justify-center py-1 rounded-xl transition {{ $isAkun ? 'text-pink-600 font-bold' : 'text-gray-500 hover:text-pink-600 font-medium' }}">
+            <div class="relative {{ $isAkun ? 'scale-110' : '' }} transition-transform">
+                <svg class="w-5 h-5" fill="{{ $isAkun ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">{{ Auth::check() ? 'Akun' : 'Masuk' }}</span>
+        </a>
+
+    </div>
+</nav>
+
+<script>
+    (function() {
+        function refreshMobileBottomCartBadge() {
+            try {
+                const cart = JSON.parse(localStorage.getItem('my_cart') || '[]');
+                const badge = document.getElementById('mobile-bottom-cart-badge');
+                if (badge) {
+                    if (cart.length > 0) {
+                        badge.innerText = cart.length;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            } catch (e) {}
+        }
+        document.addEventListener('DOMContentLoaded', refreshMobileBottomCartBadge);
+        window.addEventListener('storage', refreshMobileBottomCartBadge);
+    })();
+</script>

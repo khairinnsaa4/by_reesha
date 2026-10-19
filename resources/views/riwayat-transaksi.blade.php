@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-[#FFF8F9] font-[Poppins] min-h-screen">
+<body class="bg-[#FFF8F9] font-[Poppins] min-h-screen pb-16 md:pb-0">
 
     <!-- Header -->
     <header class="bg-white border-b border-pink-100 shadow-sm sticky top-0 z-50">
@@ -124,5 +124,6 @@
 
     </main>
 
+    @include('partials.bottom_nav', ['active' => 'profil'])
 </body>
 </html>

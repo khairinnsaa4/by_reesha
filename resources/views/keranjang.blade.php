@@ -10,93 +10,10 @@
         body { background-color: #f5f5f5; font-family: 'Poppins', sans-serif; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col pb-16 md:pb-0">
 
     <!-- NAVIGATION BAR -->
-    <nav class="bg-white shadow-sm border-b border-pink-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex justify-between items-center">
-            
-            <div class="flex items-center gap-2.5">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="h-9 w-9 sm:h-10 sm:w-10 object-contain rounded-full bg-pink-100" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
-                <a href="/" class="text-xl sm:text-2xl font-bold text-pink-600 tracking-wider">BY.REESHA</a>
-            </div>
-
-            <div class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-600">
-                <a href="/" class="hover:text-pink-600 transition">HOME</a>
-                <a href="/produk" class="hover:text-pink-600 transition">SEMUA PRODUK</a>
-                <a href="/keranjang" class="text-pink-600 border-b-2 border-pink-600 pb-1">KERANJANG</a>
-                <a href="/kontak" class="hover:text-pink-600 transition">KONTAK KAMI</a>
-                <a href="/tentang-kami" class="hover:text-pink-600 transition">TENTANG KAMI</a>
-            </div>
-
-            <div class="hidden md:flex items-center gap-4">
-               @auth
-                    <a href="/profil" class="text-sm font-semibold text-gray-700 bg-pink-50 px-3 py-1.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition block">
-                         Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong>
-                    </a>
-                    <form action="/logout" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="text-sm font-bold text-gray-400 hover:text-red-500 transition">Keluar</button>
-                    </form>
-                @else
-                    <a href="/login" class="text-sm font-bold text-pink-600 hover:text-pink-700 px-4 py-2 border border-pink-200 rounded-xl hover:bg-pink-50 transition">Masuk</a>
-                    <a href="/register" class="text-sm font-bold bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl shadow-md shadow-pink-100 transition">Daftar</a>
-                @endauth
-            </div>
-
-            <!-- Mobile Actions -->
-            <div class="flex items-center gap-2 md:hidden">
-                <button type="button" id="mobile-menu-btn" class="p-2 text-gray-700 hover:text-pink-600 rounded-lg hover:bg-pink-50 transition focus:outline-none" aria-label="Buka Menu">
-                    <svg id="hamburger-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <svg id="close-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-pink-100 bg-white px-4 pt-3 pb-5 space-y-2.5 shadow-lg">
-            <a href="/" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">HOME</a>
-            <a href="/produk" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">SEMUA PRODUK</a>
-            <a href="/keranjang" class="block px-3 py-2 rounded-lg font-semibold text-sm text-pink-600 bg-pink-50">KERANJANG</a>
-            <a href="/kontak" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">KONTAK KAMI</a>
-            <a href="/tentang-kami" class="block px-3 py-2 rounded-lg font-semibold text-sm text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition">TENTANG KAMI</a>
-
-            <div class="border-t border-gray-100 pt-3 mt-3">
-                @auth
-                    <div class="flex items-center justify-between mb-2">
-                        <a href="/profil" class="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            <span>Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong></span>
-                        </a>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <a href="/profil" class="text-center text-xs font-bold text-gray-700 bg-pink-50 py-2.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition">
-                            Akun Saya
-                        </a>
-                        <form action="/logout" method="POST" class="w-full">
-                            @csrf
-                            <button type="submit" class="w-full text-center text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition">
-                                Keluar
-                            </button>
-                        </form>
-                    </div>
-                @else
-                    <div class="grid grid-cols-2 gap-2 pt-1">
-                        <a href="/login" class="text-center text-sm font-bold text-pink-600 py-2.5 border border-pink-200 rounded-xl hover:bg-pink-50 transition">
-                            Masuk
-                        </a>
-                        <a href="/register" class="text-center text-sm font-bold bg-pink-600 text-white py-2.5 rounded-xl shadow-md shadow-pink-100 hover:bg-pink-700 transition">
-                            Daftar
-                        </a>
-                    </div>
-                @endauth
-            </div>
-        </div>
-    </nav>
+    @include('partials.navbar', ['active' => 'keranjang'])
 
     <!-- MAIN CONTENT -->
     <div class="max-w-6xl mx-auto px-4 py-8 w-full flex-grow">
@@ -183,6 +100,7 @@
             let cart = JSON.parse(localStorage.getItem('my_cart')) || [];
             cart.splice(index, 1);
             localStorage.setItem('my_cart', JSON.stringify(cart));
+            if (typeof window.updateCartBadges === 'function') window.updateCartBadges();
             
             cartItem.style.opacity = '0';
             setTimeout(() => {
@@ -347,20 +265,10 @@
                 }
             });
             localStorage.setItem('my_cart', JSON.stringify(cart));
-        }
-
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const hamburgerIcon = document.getElementById('hamburger-icon');
-        const closeIcon = document.getElementById('close-icon');
-
-        if (mobileMenuBtn && mobileMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-                hamburgerIcon.classList.toggle('hidden');
-                closeIcon.classList.toggle('hidden');
-            });
+            if (typeof window.updateCartBadges === 'function') window.updateCartBadges();
         }
     </script>
+
+    @include('partials.bottom_nav', ['active' => 'keranjang'])
 </body>
 </html>

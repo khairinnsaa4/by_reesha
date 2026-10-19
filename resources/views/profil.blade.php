@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<body class="bg-[#FFF8F9] font-[Poppins] min-h-screen flex flex-col items-center p-4">
+<body class="bg-[#FFF8F9] font-[Poppins] min-h-screen flex flex-col items-center p-4 pb-20 md:pb-6">
 
     <!-- Header -->
     <div class="mt-4 sm:mt-8 mb-4 sm:mb-8 text-center">
@@ -73,6 +73,7 @@
         </div>
     </div>
 
+    @include('partials.bottom_nav', ['active' => 'profil'])
 </body>
 </html>
 
