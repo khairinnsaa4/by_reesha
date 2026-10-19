@@ -13,11 +13,13 @@
         @media print {
             body * { visibility: hidden !important; }
             #print-area, #print-area * { visibility: visible !important; }
-            #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 24px; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px 24px; color: #000 !important; background: #fff !important; }
             .no-print { display: none !important; }
-            table { border-collapse: collapse; width: 100%; }
-            th, td { border: 1px solid #e5e7eb; padding: 8px 12px; font-size: 13px; }
-            th { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; }
+            table { border-collapse: collapse !important; width: 100% !important; margin-bottom: 16px !important; }
+            th, td { border: 1px solid #1f2937 !important; padding: 6px 10px !important; font-size: 11px !important; color: #000 !important; }
+            th { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; font-weight: 700 !important; }
+            tr { page-break-inside: avoid !important; }
+            .print-footer { page-break-inside: avoid !important; }
         }
     </style>
 </head>
@@ -414,11 +416,25 @@
 
                 {{-- Printable Content Area --}}
                 <div id="print-penjualan" class="p-4 sm:p-6 space-y-6">
-                    <div class="hidden print-header text-center mb-6">
-                        <h2 class="text-xl font-bold">BY.REESHA — Custom Cake Bakery</h2>
-                        <p class="text-sm text-gray-600 font-semibold mt-1">Laporan Penjualan ({{ $label_periode }})</p>
-                        <p class="text-xs text-gray-400">Dicetak pada: {{ now()->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm') }} WIB</p>
-                        <hr class="my-3">
+                    <div class="hidden print-header border-b-2 border-black pb-3 mb-4 text-center">
+                        <div class="flex items-center justify-center gap-3 mb-1">
+                            <img src="{{ asset('images/logo.png') }}" class="h-14 w-14 object-contain rounded-full" alt="Logo">
+                            <div class="text-left">
+                                <h1 class="text-xl font-extrabold tracking-wider text-black uppercase">BY.REESHA CAKE & BAKERY</h1>
+                                <p class="text-xs text-gray-700 font-medium">Spesialisasi Custom Cake, Bento Cake, & Artisan Pastry</p>
+                                <p class="text-[11px] text-gray-500">Jl. By Reesha No. 1, Jakarta • Telp/WhatsApp: 0812-3456-7890 • byreesha.vercel.app</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3 pt-2 border-t border-gray-300">
+                            <h2 class="text-base font-bold uppercase tracking-wide text-black underline">
+                                LAPORAN REKAPITULASI PENJUALAN KUE
+                            </h2>
+                            <p class="text-xs text-gray-700 font-semibold mt-0.5">Periode Laporan: {{ $label_periode }}</p>
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] text-gray-700 mt-2">
+                            <span>Dicetak Oleh: <strong>Owner By.Reesha</strong> ({{ Auth::user()->email }})</span>
+                            <span>Tanggal Cetak: <strong>{{ now()->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm') }} WIB</strong></span>
+                        </div>
                     </div>
 
                     {{-- 1. Rekap Per Produk --}}
@@ -545,6 +561,24 @@
                             </table>
                         </div>
                     </div>
+
+                    {{-- Formal Signature Block --}}
+                    <div class="hidden print-footer pt-6 grid grid-cols-2 text-center text-xs text-black" style="page-break-inside: avoid;">
+                        <div>
+                            <p class="text-gray-600 mb-1">Dibuat & Diverifikasi Oleh:</p>
+                            <p class="font-bold">Staff Administrasi By.Reesha</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold">( __________________________ )</p>
+                            <p class="text-[10px] text-gray-500">Bagian Keuangan & Kasir</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 mb-1">Mengetahui & Menyetujui:</p>
+                            <p class="font-bold">Owner By.Reesha</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold underline">{{ Auth::user()->name }}</p>
+                            <p class="text-[10px] text-gray-500">Pemilik Usaha / Manajemen</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -566,11 +600,25 @@
                 </div>
 
                 <div id="print-keuangan" class="p-4 sm:p-6 space-y-6">
-                    <div class="hidden print-header text-center mb-6">
-                        <h2 class="text-xl font-bold">BY.REESHA — Custom Cake Bakery</h2>
-                        <p class="text-sm text-gray-600 font-semibold mt-1">Laporan Keuangan & Estimasi Laba ({{ $label_periode }})</p>
-                        <p class="text-xs text-gray-400">Dicetak pada: {{ now()->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm') }} WIB</p>
-                        <hr class="my-3">
+                    <div class="hidden print-header border-b-2 border-black pb-3 mb-4 text-center">
+                        <div class="flex items-center justify-center gap-3 mb-1">
+                            <img src="{{ asset('images/logo.png') }}" class="h-14 w-14 object-contain rounded-full" alt="Logo">
+                            <div class="text-left">
+                                <h1 class="text-xl font-extrabold tracking-wider text-black uppercase">BY.REESHA CAKE & BAKERY</h1>
+                                <p class="text-xs text-gray-700 font-medium">Spesialisasi Custom Cake, Bento Cake, & Artisan Pastry</p>
+                                <p class="text-[11px] text-gray-500">Jl. By Reesha No. 1, Jakarta • Telp/WhatsApp: 0812-3456-7890 • byreesha.vercel.app</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3 pt-2 border-t border-gray-300">
+                            <h2 class="text-base font-bold uppercase tracking-wide text-black underline">
+                                LAPORAN KEUANGAN & ARUS KAS
+                            </h2>
+                            <p class="text-xs text-gray-700 font-semibold mt-0.5">Periode Laporan: {{ $label_periode }}</p>
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] text-gray-700 mt-2">
+                            <span>Dicetak Oleh: <strong>Owner By.Reesha</strong> ({{ Auth::user()->email }})</span>
+                            <span>Tanggal Cetak: <strong>{{ now()->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm') }} WIB</strong></span>
+                        </div>
                     </div>
 
                     {{-- Cards Ringkasan Keuangan --}}
@@ -634,6 +682,23 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                    </div>
+
+                    {{-- Formal Signature Block --}}
+                    <div class="hidden print-footer pt-6 grid grid-cols-2 text-center text-xs text-black" style="page-break-inside: avoid;">
+                        <div>
+                            <p class="text-gray-600 mb-1">Dibuat & Diverifikasi Oleh:</p>
+                            <p class="font-bold">Staff Administrasi By.Reesha</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold">( __________________________ )</p>
+                            <p class="text-[10px] text-gray-500">Bagian Keuangan & Kasir</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 mb-1">Mengetahui & Menyetujui:</p>
+                            <p class="font-bold">Owner By.Reesha</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold underline">{{ Auth::user()->name }}</p>
+                            <p class="text-[10px] text-gray-500">Pemilik Usaha / Manajemen</p>
                         </div>
                     </div>
                 </div>
@@ -657,11 +722,25 @@
                 </div>
 
                 <div id="print-tahunan" class="p-4 sm:p-6 space-y-6">
-                    <div class="hidden print-header text-center mb-6">
-                        <h2 class="text-xl font-bold">BY.REESHA — Custom Cake Bakery</h2>
-                        <p class="text-sm text-gray-600 font-semibold mt-1">Laporan Tahunan Tahun {{ $tahun }}</p>
-                        <p class="text-xs text-gray-400">Dicetak pada: {{ now()->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm') }} WIB</p>
-                        <hr class="my-3">
+                    <div class="hidden print-header border-b-2 border-black pb-3 mb-4 text-center">
+                        <div class="flex items-center justify-center gap-3 mb-1">
+                            <img src="{{ asset('images/logo.png') }}" class="h-14 w-14 object-contain rounded-full" alt="Logo">
+                            <div class="text-left">
+                                <h1 class="text-xl font-extrabold tracking-wider text-black uppercase">BY.REESHA CAKE & BAKERY</h1>
+                                <p class="text-xs text-gray-700 font-medium">Spesialisasi Custom Cake, Bento Cake, & Artisan Pastry</p>
+                                <p class="text-[11px] text-gray-500">Jl. By Reesha No. 1, Jakarta • Telp/WhatsApp: 0812-3456-7890 • byreesha.vercel.app</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3 pt-2 border-t border-gray-300">
+                            <h2 class="text-base font-bold uppercase tracking-wide text-black underline">
+                                LAPORAN REKAPITULASI TAHUNAN {{ $tahun }}
+                            </h2>
+                            <p class="text-xs text-gray-700 font-semibold mt-0.5">Periode Laporan: Rekap 12 Bulan (Januari - Desember {{ $tahun }})</p>
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] text-gray-700 mt-2">
+                            <span>Dicetak Oleh: <strong>Owner By.Reesha</strong> ({{ Auth::user()->email }})</span>
+                            <span>Tanggal Cetak: <strong>{{ now()->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm') }} WIB</strong></span>
+                        </div>
                     </div>
 
                     @php
@@ -743,6 +822,24 @@
                             </tfoot>
                         </table>
                     </div>
+
+                    {{-- Formal Signature Block --}}
+                    <div class="hidden print-footer pt-6 grid grid-cols-2 text-center text-xs text-black" style="page-break-inside: avoid;">
+                        <div>
+                            <p class="text-gray-600 mb-1">Dibuat & Diverifikasi Oleh:</p>
+                            <p class="font-bold">Staff Administrasi By.Reesha</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold">( __________________________ )</p>
+                            <p class="text-[10px] text-gray-500">Bagian Keuangan & Kasir</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 mb-1">Mengetahui & Menyetujui:</p>
+                            <p class="font-bold">Owner By.Reesha</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold underline">{{ Auth::user()->name }}</p>
+                            <p class="text-[10px] text-gray-500">Pemilik Usaha / Manajemen</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -764,11 +861,25 @@
                 </div>
 
                 <div id="print-logistik" class="p-4 sm:p-6 space-y-6">
-                    <div class="hidden print-header text-center mb-6">
-                        <h2 class="text-xl font-bold">BY.REESHA — Custom Cake Bakery</h2>
-                        <p class="text-sm text-gray-600 font-semibold mt-1">Laporan Logistik & Ketersediaan Stok</p>
-                        <p class="text-xs text-gray-400">Dicetak pada: {{ now()->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm') }} WIB</p>
-                        <hr class="my-3">
+                    <div class="hidden print-header border-b-2 border-black pb-3 mb-4 text-center">
+                        <div class="flex items-center justify-center gap-3 mb-1">
+                            <img src="{{ asset('images/logo.png') }}" class="h-14 w-14 object-contain rounded-full" alt="Logo">
+                            <div class="text-left">
+                                <h1 class="text-xl font-extrabold tracking-wider text-black uppercase">BY.REESHA CAKE & BAKERY</h1>
+                                <p class="text-xs text-gray-700 font-medium">Spesialisasi Custom Cake, Bento Cake, & Artisan Pastry</p>
+                                <p class="text-[11px] text-gray-500">Jl. By Reesha No. 1, Jakarta • Telp/WhatsApp: 0812-3456-7890 • byreesha.vercel.app</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3 pt-2 border-t border-gray-300">
+                            <h2 class="text-base font-bold uppercase tracking-wide text-black underline">
+                                LAPORAN KETERSEDIAAN STOK & LOGISTIK BAHAN BAKU
+                            </h2>
+                            <p class="text-xs text-gray-700 font-semibold mt-0.5">Inventaris Bahan Dapur & Packaging By.Reesha</p>
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] text-gray-700 mt-2">
+                            <span>Dicetak Oleh: <strong>Owner By.Reesha</strong> ({{ Auth::user()->email }})</span>
+                            <span>Tanggal Cetak: <strong>{{ now()->locale('id')->isoFormat('dddd, D MMMM Y, HH:mm') }} WIB</strong></span>
+                        </div>
                     </div>
 
                     @php
@@ -824,6 +935,24 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+
+                    {{-- Formal Signature Block --}}
+                    <div class="hidden print-footer pt-6 grid grid-cols-2 text-center text-xs text-black" style="page-break-inside: avoid;">
+                        <div>
+                            <p class="text-gray-600 mb-1">Dibuat & Diverifikasi Oleh:</p>
+                            <p class="font-bold">Staff Gudang & Logistik</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold">( __________________________ )</p>
+                            <p class="text-[10px] text-gray-500">Penanggung Jawab Stok Dapur</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 mb-1">Mengetahui & Menyetujui:</p>
+                            <p class="font-bold">Owner By.Reesha</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold underline">{{ Auth::user()->name }}</p>
+                            <p class="text-[10px] text-gray-500">Pemilik Usaha / Manajemen</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -910,6 +1039,7 @@
             if (!area || !source) return;
             area.innerHTML = source.innerHTML;
             area.querySelectorAll('.print-header').forEach(el => el.classList.remove('hidden'));
+            area.querySelectorAll('.print-footer').forEach(el => el.classList.remove('hidden'));
             area.classList.remove('hidden');
             window.print();
             area.classList.add('hidden');

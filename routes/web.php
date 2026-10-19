@@ -47,7 +47,35 @@ Route::get('/dashboard-owner', function () {
     $produk_terjual = Transaksi::sum('qty');
     $transaksis = Transaksi::with('user')->latest()->take(5)->get();
 
-    return view('dashboard_owner', compact('total_pendapatan', 'pesanan_aktif', 'total_pelanggan', 'produk_terjual', 'transaksis'));
+    // Data grafik tren penjualan 7 hari terakhir
+    $chartDays = collect(range(6, 0))->map(function ($daysAgo) {
+        $date = now()->subDays($daysAgo);
+        $omzet = Transaksi::whereDate('created_at', $date->toDateString())->sum('total_harga');
+        return [
+            'label' => $date->locale('id')->isoFormat('D MMM'),
+            'omzet' => (int) $omzet,
+        ];
+    });
+    $chartLabels = $chartDays->pluck('label')->toArray();
+    $chartOmzet = $chartDays->pluck('omzet')->toArray();
+
+    // Data grafik 5 produk terlaris
+    $produkStats = Transaksi::all()->groupBy('nama_produk')->map(function ($items, $nama) {
+        return [
+            'nama' => $nama,
+            'total_qty' => $items->sum('qty'),
+            'total_omzet' => (int) $items->sum('total_harga'),
+        ];
+    })->sortByDesc('total_omzet')->take(5);
+
+    $chartProdukLabels = $produkStats->pluck('nama')->values()->toArray();
+    $chartProdukOmzet  = $produkStats->pluck('total_omzet')->values()->toArray();
+    $chartProdukQty    = $produkStats->pluck('total_qty')->values()->toArray();
+
+    return view('dashboard_owner', compact(
+        'total_pendapatan', 'pesanan_aktif', 'total_pelanggan', 'produk_terjual', 'transaksis',
+        'chartLabels', 'chartOmzet', 'chartProdukLabels', 'chartProdukOmzet', 'chartProdukQty'
+    ));
 })->middleware('auth');
 
 Route::get('/dashboard-karyawan', function () {
@@ -183,12 +211,86 @@ Route::post('/pemesanan/{id}/update-status', function (Request $request, $id) {
     return back()->with('sukses', 'Status pesanan #TRX-' . str_pad($id, 3, '0', STR_PAD_LEFT) . ' berhasil diperbarui!');
 })->middleware('auth');
 
-Route::get('/transaksi', function () {
+Route::get('/transaksi', function (Request $request) {
     if (!Auth::check() || Auth::user()->role !== 'owner') {
         return redirect(Auth::check() && Auth::user()->role === 'karyawan' ? '/dashboard-owner' : '/riwayat-transaksi');
     }
-    $transaksis = Transaksi::with('user')->latest()->get();
-    return view('transaksi', compact('transaksis'));
+
+    $filter = $request->query('filter', 'semua');
+    $tahun  = (int) $request->query('tahun', now()->year);
+    $tanggal = $request->query('tanggal', now()->toDateString());
+    $minggu = $request->query('minggu', now()->format('Y-\WW'));
+    $bulan_input = $request->query('bulan', now()->format('Y-m'));
+
+    $query = Transaksi::with('user');
+
+    $tanggal_awal = null;
+    $tanggal_akhir = null;
+    $nama_bulan = null;
+    $tahun_bulan = null;
+
+    if ($filter === 'harian') {
+        $query->whereDate('created_at', $tanggal);
+    } elseif ($filter === 'mingguan') {
+        if (preg_match('/^(\d+)-W(\d+)$/', $minggu, $matches)) {
+            $year = (int)$matches[1];
+            $week = (int)$matches[2];
+            $date = new \Carbon\Carbon();
+            $date->setISODate($year, $week);
+            $awal = $date->copy()->startOfWeek()->startOfDay();
+            $akhir = $date->copy()->endOfWeek()->endOfDay();
+        } else {
+            $awal = now()->startOfWeek()->startOfDay();
+            $akhir = now()->endOfWeek()->endOfDay();
+        }
+        $query->whereBetween('created_at', [$awal, $akhir]);
+        $tanggal_awal = $awal->format('d M Y');
+        $tanggal_akhir = $akhir->format('d M Y');
+    } elseif ($filter === 'bulanan') {
+        $parts = explode('-', $bulan_input);
+        if (count($parts) === 2) {
+            $year = (int)$parts[0];
+            $month = (int)$parts[1];
+        } else {
+            $year = now()->year;
+            $month = now()->month;
+        }
+        $query->whereYear('created_at', $year)->whereMonth('created_at', $month);
+        $nama_bulan = \Carbon\Carbon::create()->month($month)->locale('id')->isoFormat('MMMM');
+        $tahun_bulan = $year;
+    } elseif ($filter === 'tahunan') {
+        $query->whereYear('created_at', $tahun);
+    }
+
+    $transaksis = $query->latest()->get();
+    $total_pendapatan = $transaksis->sum('total_harga');
+    $total_transaksi = $transaksis->count();
+    $total_produk = $transaksis->sum('qty');
+
+    $allYears = Transaksi::all()->pluck('created_at')
+        ->map(fn($d) => $d ? (int)$d->format('Y') : null)
+        ->filter()->unique()->sortDesc()->values()->toArray();
+    if (!in_array(now()->year, $allYears)) {
+        array_unshift($allYears, now()->year);
+    }
+    $allYears = array_values(array_unique($allYears));
+
+    $label_periode = 'Semua Waktu';
+    if ($filter === 'harian') {
+        $label_periode = 'Harian (' . \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('dddd, D MMMM Y') . ')';
+    } elseif ($filter === 'mingguan') {
+        $label_periode = 'Mingguan (' . $tanggal_awal . ' s/d ' . $tanggal_akhir . ')';
+    } elseif ($filter === 'bulanan') {
+        $label_periode = 'Bulanan (' . $nama_bulan . ' ' . $tahun_bulan . ')';
+    } elseif ($filter === 'tahunan') {
+        $label_periode = 'Tahunan (Tahun ' . $tahun . ')';
+    }
+
+    return view('transaksi', compact(
+        'transaksis', 'total_pendapatan', 'total_transaksi', 'total_produk',
+        'filter', 'tahun', 'tanggal', 'minggu', 'bulan_input', 'allYears',
+        'tanggal_awal', 'tanggal_akhir', 'nama_bulan', 'tahun_bulan', 'label_periode'
+    ));
 })->middleware('auth');
 
 Route::get('/logistik', function () {

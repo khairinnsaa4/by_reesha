@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>By.Reesha - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f9fafb; }
@@ -175,6 +176,38 @@
             </div>
         </div>
 
+        {{-- ===== VISUAL CHARTS SECTION ===== --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 sm:mb-8">
+            {{-- Tren Penjualan 7 Hari --}}
+            <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-base font-bold text-gray-800">📈 Tren Omzet Penjualan (7 Hari Terakhir)</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Perkembangan pendapatan harian toko kue By.Reesha</p>
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-pink-50 text-pink-700 rounded-lg">Real-Time</span>
+                </div>
+                <div class="relative h-64 w-full">
+                    <canvas id="chartTrenOmzet"></canvas>
+                </div>
+            </div>
+
+            {{-- 5 Produk Terlaris --}}
+            <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-gray-800">🍰 Produk Terlaris</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">Distribusi kontribusi omzet produk</p>
+                        </div>
+                    </div>
+                    <div class="relative h-64 w-full flex items-center justify-center">
+                        <canvas id="chartProdukTerlaris"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
             <div class="p-4 sm:p-5 border-b border-gray-200">
                 <h3 class="text-base sm:text-lg font-medium text-gray-800">Pesanan Masuk Terbaru</h3>
@@ -214,6 +247,113 @@
     </main>
 
     <script>
+        // Inisialisasi Grafik Chart.js
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. Grafik Tren Omzet
+            const ctxTren = document.getElementById('chartTrenOmzet');
+            if (ctxTren) {
+                new Chart(ctxTren, {
+                    type: 'line',
+                    data: {
+                        labels: {!! json_encode($chartLabels ?? []) !!},
+                        datasets: [{
+                            label: 'Omzet Harian (Rp)',
+                            data: {!! json_encode($chartOmzet ?? []) !!},
+                            borderColor: '#db2777',
+                            backgroundColor: 'rgba(219, 39, 119, 0.12)',
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: '#db2777',
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 2.5,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Omzet: Rp ' + context.parsed.y.toLocaleString('id-ID');
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value >= 1000000) return 'Rp ' + (value/1000000).toFixed(1) + 'M';
+                                        if (value >= 1000) return 'Rp ' + (value/1000).toFixed(0) + 'k';
+                                        return 'Rp ' + value;
+                                    },
+                                    font: { size: 10 }
+                                },
+                                grid: { color: 'rgba(0,0,0,0.05)' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { size: 11 } }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Grafik Produk Terlaris
+            const ctxProduk = document.getElementById('chartProdukTerlaris');
+            if (ctxProduk) {
+                const labelsProduk = {!! json_encode($chartProdukLabels ?? []) !!};
+                const omzetProduk = {!! json_encode($chartProdukOmzet ?? []) !!};
+
+                if (labelsProduk.length === 0) {
+                    labelsProduk.push('Belum ada data');
+                    omzetProduk.push(1);
+                }
+
+                new Chart(ctxProduk, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labelsProduk,
+                        datasets: [{
+                            data: omzetProduk,
+                            backgroundColor: [
+                                '#db2777',
+                                '#8b5cf6',
+                                '#f59e0b',
+                                '#10b981',
+                                '#06b6d4'
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#ffffff',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { boxWidth: 12, font: { size: 11 } }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': Rp ' + context.parsed.toLocaleString('id-ID');
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '65%'
+                    }
+                });
+            }
+        });
+
         const dashBtn = document.getElementById('mobile-dash-btn');
         const dashMenu = document.getElementById('mobile-dash-menu');
         if (dashBtn && dashMenu) {
