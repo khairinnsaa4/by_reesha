@@ -19,8 +19,8 @@
     <nav class="bg-white shadow-sm border-b border-pink-100 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-2.5 sm:gap-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="h-8 w-8 sm:h-10 sm:w-10 object-contain rounded-full bg-pink-100" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
-                <a href="/" class="text-lg sm:text-2xl font-bold text-pink-600 tracking-wider border-r border-gray-200 pr-3 sm:pr-4">BY.REESHA</a>
+                <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="h-11 w-11 sm:h-13 sm:w-13 object-contain rounded-full bg-pink-100 shadow-sm ring-2 ring-pink-100 p-0.5" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
+                <a href="/" class="text-xl sm:text-2xl font-extrabold text-pink-600 tracking-wider border-r border-gray-200 pr-3 sm:pr-4">BY.REESHA</a>
                 <span class="text-base sm:text-xl font-medium text-gray-700 pl-1 sm:pl-2">Checkout</span>
             </div>
             <a href="/keranjang" class="text-xs sm:text-sm font-semibold text-pink-600 hover:text-pink-700 transition">

@@ -17,7 +17,7 @@ use App\Models\Produk;
 */
 
 Route::get('/', function () {
-    $produkBestSeller = Produk::take(3)->get();
+    $produkBestSeller = Produk::take(4)->get();
     return view('welcome', compact('produkBestSeller'));
 });
 
@@ -609,7 +609,7 @@ Route::post('/riwayat-transaksi/{id}/terima', function ($id) {
 })->middleware('auth');
 
 Route::get('/tentang-kami', function () {
-    return view('tentang_kami');
+    return redirect('/');
 });
 
 Route::get('/kontak', function () {

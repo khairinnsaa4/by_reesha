@@ -23,20 +23,20 @@
             <p class="text-gray-500 text-xs sm:text-sm mt-2">Pilih kue impianmu untuk merayakan momen berharga</p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6 md:gap-8">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5 md:gap-6">
             @foreach($semua_cake as $cake)
-            <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-pink-100 overflow-hidden flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition duration-300">
-                <div class="relative overflow-hidden h-48 sm:h-56">
-                    <img src="{{ asset('images/' . $cake->gambar) }}" alt="{{ $cake->nama_kue }}" class="w-full h-full object-cover" onerror="this.src='{{ asset('images/logo.png') }}'">
+            <div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition duration-300 group">
+                <div class="relative overflow-hidden h-36 sm:h-44 md:h-52">
+                    <img src="{{ asset('images/' . $cake->gambar) }}" alt="{{ $cake->nama_kue }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='{{ asset('images/logo.png') }}'">
                 </div>
-                <div class="p-4 sm:p-6 flex flex-col justify-between flex-grow space-y-3 sm:space-y-4">
+                <div class="p-3 sm:p-4 flex flex-col justify-between flex-grow space-y-2 sm:space-y-3">
                     <div>
-                        <h3 class="font-bold text-gray-800 text-base sm:text-lg">{{ $cake->nama_kue }}</h3>
-                        <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ $cake->deskripsi }}</p>
+                        <h3 class="font-bold text-gray-800 text-xs sm:text-sm md:text-base line-clamp-1 group-hover:text-pink-600 transition-colors">{{ $cake->nama_kue }}</h3>
+                        <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed hidden sm:block">{{ $cake->deskripsi }}</p>
                     </div>
-                    <div class="pt-2 flex items-center justify-between">
-                        <span class="text-pink-600 font-extrabold text-sm sm:text-base">Rp {{ number_format($cake->harga, 0, ',', '.') }}</span>
-                        <a href="/produk/{{ $cake->id }}" class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl transition shadow-md shadow-pink-100">
+                    <div class="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-2">
+                        <span class="text-pink-600 font-extrabold text-xs sm:text-sm md:text-base">Rp {{ number_format($cake->harga, 0, ',', '.') }}</span>
+                        <a href="/produk/{{ $cake->id }}" class="bg-pink-600 hover:bg-pink-700 text-white text-[11px] sm:text-xs font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl transition shadow-sm shadow-pink-100 text-center">
                             Detail / Pesan
                         </a>
                     </div>

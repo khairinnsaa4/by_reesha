@@ -40,27 +40,27 @@
             <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-800 mt-2">Produk Best Seller</h3>
             <div class="w-20 sm:w-24 h-1 bg-pink-600 mx-auto mt-3 rounded-full"></div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5 md:gap-6">
             @foreach($produkBestSeller as $produk)
-            <div class="bg-white rounded-2xl shadow-lg border border-pink-100 overflow-hidden flex flex-col justify-between hover:shadow-xl transition-shadow duration-300">
-                <div class="relative overflow-hidden h-48 sm:h-56 md:h-64">
+            <div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition duration-300 group">
+                <div class="relative overflow-hidden h-36 sm:h-44 md:h-52">
                     <img src="{{ asset('images/' . $produk->gambar) }}"
                          alt="{{ $produk->nama_kue }}"
-                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          onerror="this.src='{{ asset('images/logo.png') }}'">
-                    <div class="absolute top-3 left-3">
-                        <span class="bg-pink-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Best Seller</span>
+                    <div class="absolute top-2 left-2">
+                        <span class="bg-pink-600 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Best Seller</span>
                     </div>
                 </div>
-                <div class="p-4 sm:p-6 space-y-3 flex-grow flex flex-col justify-between">
+                <div class="p-3 sm:p-4 space-y-2 flex-grow flex flex-col justify-between">
                     <div>
-                        <h4 class="text-lg sm:text-xl font-bold text-gray-800">{{ $produk->nama_kue }}</h4>
-                        <p class="text-gray-500 text-xs sm:text-sm mt-1 line-clamp-2">{{ $produk->deskripsi }}</p>
+                        <h4 class="text-xs sm:text-sm md:text-base font-bold text-gray-800 line-clamp-1 group-hover:text-pink-600 transition-colors">{{ $produk->nama_kue }}</h4>
+                        <p class="text-gray-500 text-[11px] sm:text-xs mt-0.5 line-clamp-2 leading-relaxed hidden sm:block">{{ $produk->deskripsi }}</p>
                     </div>
-                    <div class="pt-3 sm:pt-4 flex items-center justify-between">
-                        <span class="text-pink-600 font-extrabold text-base sm:text-lg">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
-                        <a href="/produk/{{ $produk->id }}" class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl transition shadow-md shadow-pink-100">
-                            Pesan Sekarang
+                    <div class="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-2">
+                        <span class="text-pink-600 font-extrabold text-xs sm:text-sm md:text-base">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                        <a href="/produk/{{ $produk->id }}" class="bg-pink-600 hover:bg-pink-700 text-white text-[11px] sm:text-xs font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl transition shadow-sm shadow-pink-100 text-center">
+                            Pesan
                         </a>
                     </div>
                 </div>
