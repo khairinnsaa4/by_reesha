@@ -10,7 +10,7 @@
         body { background-color: #FFF8F9; font-family: 'Poppins', sans-serif; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between pb-16 md:pb-0">
+<body class="min-h-screen flex flex-col justify-between pb-20 md:pb-0">
 
     <!-- NAVIGATION BAR -->
     @include('partials.navbar', ['active' => 'produk'])

@@ -10,7 +10,7 @@
         body { background-color: #f5f5f5; font-family: 'Poppins', sans-serif; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col pb-16 md:pb-0">
+<body class="min-h-screen flex flex-col pb-20 md:pb-0">
 
     <!-- NAVIGATION BAR -->
     @include('partials.navbar', ['active' => 'keranjang'])

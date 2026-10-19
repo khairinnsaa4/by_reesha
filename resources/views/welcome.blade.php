@@ -15,7 +15,7 @@
         }
     </style>
 </head>
-<body class="font-[Poppins] min-h-screen flex flex-col justify-between pb-16 md:pb-0">
+<body class="font-[Poppins] min-h-screen flex flex-col justify-between pb-20 md:pb-0">
 
     @include('partials.navbar', ['active' => 'home'])
 

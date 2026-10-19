@@ -618,7 +618,7 @@ Route::get('/tentang-kami', function () {
 });
 
 Route::get('/kontak', function () {
-    return view('kontak');
+    return redirect('/');
 });
 
 use App\Models\Resep;
