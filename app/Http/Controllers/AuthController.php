@@ -68,12 +68,40 @@ class AuthController extends Controller
         $user = User::find(Auth::id());
         
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'  => 'required|string|max:255',
+            'phone' => 'nullable|string|max:25',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
         ]);
 
         $user->name = $request->name;
+        $user->phone = $request->phone;
         $user->save();
 
-        return back()->with('sukses', 'Profil berhasil diperbarui!');
+        return back()->with('sukses', 'Data diri berhasil diperbarui!')->with('active_tab', 'data-diri');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password'     => 'required|string|min:6|confirmed',
+        ], [
+            'current_password.required' => 'Kata sandi saat ini wajib diisi.',
+            'new_password.required'     => 'Kata sandi baru wajib diisi.',
+            'new_password.min'          => 'Kata sandi baru minimal 6 karakter.',
+            'new_password.confirmed'    => 'Konfirmasi kata sandi baru tidak cocok.',
+        ]);
+
+        $user = User::find(Auth::id());
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Kata sandi saat ini tidak sesuai.'])->with('active_tab', 'keamanan');
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return back()->with('sukses', 'Kata sandi berhasil diperbarui!')->with('active_tab', 'keamanan');
     }
 }

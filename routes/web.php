@@ -86,8 +86,9 @@ Route::get('/profil', function () {
     return view('profil');
 })->middleware('auth');
 Route::post('/profil/update', [AuthController::class, 'updateProfil'])->middleware('auth');
+Route::post('/profil/update-password', [AuthController::class, 'updatePassword'])->middleware('auth');
 
-// Simpan alamat & telepon pelanggan ke database
+// Simpan alamat & telepon pelanggan ke database (AJAX)
 Route::post('/profil/update-alamat', function (Request $request) {
     $request->validate([
         'phone'   => 'nullable|string|max:20',
@@ -107,14 +108,18 @@ Route::post('/profil/update-alamat-form', function (Request $request) {
     $request->validate([
         'phone'   => 'nullable|string|max:20',
         'address' => 'required|string|max:500',
+    ], [
+        'address.required' => 'Alamat pengiriman wajib diisi.',
     ]);
 
     $user = Auth::user();
-    $user->phone   = $request->input('phone');
+    if ($request->filled('phone')) {
+        $user->phone = $request->input('phone');
+    }
     $user->address = $request->input('address');
     $user->save();
 
-    return back()->with('sukses', 'Alamat pengiriman berhasil disimpan!');
+    return back()->with('sukses', 'Alamat pengiriman berhasil disimpan!')->with('active_tab', 'alamat');
 })->middleware('auth');
 Route::get('/produk/{id}', [ProdukController::class, 'detailProduk']);
 Route::get('/lihat-produk-bestseller', function() {
