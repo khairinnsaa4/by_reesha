@@ -74,7 +74,7 @@
                 @auth
                     <div class="flex items-center justify-between mb-2">
                         <a href="/profil" class="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                            <span>👤</span>
+                            <svg class="w-4 h-4 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             <span>Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong></span>
                         </a>
                     </div>
@@ -130,17 +130,23 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8 md:mt-12">
             <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-center shadow-sm border border-pink-50">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-2xl">🍰</div>
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg class="w-7 h-7 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                </div>
                 <h4 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Bahan Premium</h4>
                 <p class="text-gray-500 text-xs sm:text-sm">Hanya menggunakan bahan baku pilihan terbaik untuk menjamin rasa yang konsisten dan lezat.</p>
             </div>
             <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-center shadow-sm border border-pink-50">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-2xl">🎨</div>
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg class="w-7 h-7 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 5 5 0 015-5c1.1 0 2.1.4 2.8 1.1L17.4 6.5a2 2 0 012.8 2.8L13.6 15.9c.7.7 1.1 1.7 1.1 2.8a5 5 0 01-5 5 4 4 0 01-2.7-.9z"/></svg>
+                </div>
                 <h4 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Desain Kustom</h4>
                 <p class="text-gray-500 text-xs sm:text-sm">Setiap kue dibuat dengan ketelitian dan nilai estetika tinggi sesuai dengan request desain pelanggan.</p>
             </div>
             <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-center shadow-sm border border-pink-50">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-2xl">💖</div>
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg class="w-7 h-7 text-pink-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
                 <h4 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Dibuat dengan Cinta</h4>
                 <p class="text-gray-500 text-xs sm:text-sm">Fresh from the oven. Setiap pesanan dibuat khusus di hari yang sama agar tetap fresh dan higienis.</p>
             </div>

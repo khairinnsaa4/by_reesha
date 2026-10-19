@@ -76,12 +76,16 @@
                                         <span class="font-normal text-gray-400 ml-1" id="display-phone">{{ Auth::user()->phone ? '(' . Auth::user()->phone . ')' : '' }}</span>
                                     </p>
                                     <p class="text-gray-600 text-sm mt-0.5" id="display-address">{{ $userAddress }}</p>
-                                    <span class="inline-block mt-1.5 text-xs bg-green-50 text-green-700 border border-green-200 rounded-full px-2 py-0.5 font-medium">✓ Alamat tersimpan</span>
+                                    <span class="inline-flex items-center gap-1.5 mt-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-2.5 py-0.5 font-medium">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        Alamat tersimpan
+                                    </span>
                                 </div>
                             </div>
                             <button type="button" onclick="openAddressModal()"
-                                class="flex-shrink-0 text-xs font-semibold text-pink-600 border border-pink-300 hover:bg-pink-50 px-3 py-1.5 rounded-lg transition">
-                                ✏️ Ubah
+                                class="flex-shrink-0 text-xs font-semibold text-pink-600 border border-pink-300 hover:bg-pink-50 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                <span>Ubah</span>
                             </button>
                         </div>
                     @else
@@ -139,7 +143,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
-                                <span id="btn-lokasi-text">📍 Gunakan Lokasi Terkini (GPS)</span>
+                                <span id="btn-lokasi-text">Gunakan Lokasi Terkini (GPS)</span>
                             </button>
 
                             {{-- Status lokasi --}}
@@ -169,7 +173,7 @@
                                 <textarea id="input-address" rows="3"
                                     class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none transition resize-none"
                                     placeholder="Jl. nama jalan, No., Kecamatan, Kota, Provinsi, Kode Pos"></textarea>
-                                <p class="text-xs text-gray-400 mt-1">💡 Kamu bisa edit alamat hasil GPS jika ada yang kurang tepat.</p>
+                                <p class="text-xs text-gray-400 mt-1">Alamat dapat disesuaikan atau diedit jika terdapat rincian yang kurang tepat.</p>
                             </div>
                         </div>
 
@@ -349,11 +353,11 @@
             const address = document.getElementById('input-address').value.trim();
 
             if (!address) {
-                showStatus('⚠️ Alamat tidak boleh kosong.', 'warn');
+                showStatus('Alamat tidak boleh kosong.', 'warn');
                 return;
             }
 
-            showStatus('💾 Menyimpan alamat...', 'info');
+            showStatus('Menyimpan alamat...', 'info');
 
             // Simpan ke database via fetch
             fetch('/profil/update-alamat', {
@@ -367,7 +371,7 @@
             .then(r => r.json())
             .then(data => {
                 if (data.status === 'ok') {
-                    // ✅ Replace SELURUH wrapper dengan tampilan "sudah ada alamat"
+                    // Replace SELURUH wrapper dengan tampilan "sudah ada alamat"
                     // Ini mengatasi masalah: setelah simpan alamat masih tampil "belum diatur"
                     const wrapper = document.getElementById('address-section-wrapper');
                     const displayName  = name  || '{{ Auth::user()->name }}';
@@ -387,12 +391,16 @@
                                         <span class="font-normal text-gray-400 ml-1" id="display-phone">${displayPhone}</span>
                                     </p>
                                     <p class="text-gray-600 text-sm mt-0.5" id="display-address">${address}</p>
-                                    <span class="inline-block mt-1.5 text-xs bg-green-50 text-green-700 border border-green-200 rounded-full px-2 py-0.5 font-medium">✓ Alamat tersimpan</span>
+                                    <span class="inline-flex items-center gap-1.5 mt-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-2.5 py-0.5 font-medium">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        Alamat tersimpan
+                                    </span>
                                 </div>
                             </div>
                             <button type="button" onclick="openAddressModal()"
-                                class="flex-shrink-0 text-xs font-semibold text-pink-600 border border-pink-300 hover:bg-pink-50 px-3 py-1.5 rounded-lg transition">
-                                ✏️ Ubah
+                                class="flex-shrink-0 text-xs font-semibold text-pink-600 border border-pink-300 hover:bg-pink-50 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                <span>Ubah</span>
                             </button>
                         </div>
                     `;
@@ -406,7 +414,7 @@
                     closeAddressModal();
                 }
             })
-            .catch(() => showStatus('❌ Gagal menyimpan. Coba lagi.', 'error'));
+            .catch(() => showStatus('Gagal menyimpan alamat. Coba lagi.', 'error'));
         }
 
         // Blokir submit jika belum ada alamat
@@ -424,7 +432,7 @@
         // ── GPS / Lokasi Terkini ───────────────────────────────
         function gunakanLokasiSaya() {
             if (!navigator.geolocation) {
-                showStatus('❌ Browser Anda tidak mendukung GPS.', 'error');
+                showStatus('Browser Anda tidak mendukung layanan lokasi GPS.', 'error');
                 return;
             }
 
@@ -433,13 +441,13 @@
 
             btn.disabled = true;
             btnText.innerHTML = `<svg class="animate-spin h-4 w-4 mr-1 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Mendeteksi lokasi...`;
-            showStatus('🔍 Sedang mendeteksi lokasi GPS Anda...', 'info');
+            showStatus('Sedang mendeteksi lokasi GPS Anda...', 'info');
 
             navigator.geolocation.getCurrentPosition(
                 function(pos) {
                     const lat = pos.coords.latitude;
                     const lon = pos.coords.longitude;
-                    showStatus('📡 Lokasi ditemukan. Mengambil detail alamat...', 'info');
+                    showStatus('Lokasi ditemukan. Mengambil detail alamat...', 'info');
 
                     // Reverse geocoding via OpenStreetMap Nominatim (gratis)
                     fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`, {
@@ -461,23 +469,23 @@
                         const alamatLengkap = parts.join(', ');
                         document.getElementById('input-address').value = alamatLengkap;
 
-                        showStatus('✅ Alamat berhasil terdeteksi! Silakan periksa dan edit jika perlu.', 'success');
+                        showStatus('Alamat berhasil terdeteksi! Silakan periksa dan edit jika perlu.', 'success');
                     })
                     .catch(() => {
-                        showStatus('⚠️ Gagal mengambil detail alamat. Silakan isi manual.', 'warn');
+                        showStatus('Gagal mengambil detail alamat. Silakan isi manual.', 'warn');
                     })
                     .finally(() => {
                         btn.disabled = false;
-                        btnText.innerHTML = '📍 Gunakan Lokasi Terkini (GPS)';
+                        btnText.innerHTML = 'Gunakan Lokasi Terkini (GPS)';
                     });
                 },
                 function(err) {
                     btn.disabled = false;
-                    btnText.innerHTML = '📍 Gunakan Lokasi Terkini (GPS)';
+                    btnText.innerHTML = 'Gunakan Lokasi Terkini (GPS)';
                     if (err.code === 1) {
-                        showStatus('❌ Izin lokasi ditolak. Aktifkan izin lokasi di browser Anda.', 'error');
+                        showStatus('Izin lokasi ditolak. Aktifkan izin lokasi di browser Anda.', 'error');
                     } else {
-                        showStatus('❌ Gagal mendeteksi lokasi. Coba lagi atau isi manual.', 'error');
+                        showStatus('Gagal mendeteksi lokasi. Coba lagi atau isi manual.', 'error');
                     }
                 },
                 { timeout: 10000, enableHighAccuracy: true }

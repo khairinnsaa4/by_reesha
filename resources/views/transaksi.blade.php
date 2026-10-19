@@ -192,23 +192,23 @@
                 <div class="flex flex-wrap items-center gap-2">
                     <button type="button" onclick="selectFilterModeTrx('semua')" id="pill-trx-semua"
                         class="filter-pill-trx px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'semua' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        🌐 Semua Waktu
+                        Semua Waktu
                     </button>
                     <button type="button" onclick="selectFilterModeTrx('harian')" id="pill-trx-harian"
                         class="filter-pill-trx px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'harian' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        📅 Harian (Pilih Tanggal)
+                        Harian (Pilih Tanggal)
                     </button>
                     <button type="button" onclick="selectFilterModeTrx('mingguan')" id="pill-trx-mingguan"
                         class="filter-pill-trx px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'mingguan' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        📆 Mingguan (Pilih Minggu)
+                        Mingguan (Pilih Minggu)
                     </button>
                     <button type="button" onclick="selectFilterModeTrx('bulanan')" id="pill-trx-bulanan"
                         class="filter-pill-trx px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'bulanan' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        🗓️ Bulanan (Pilih Bulan)
+                        Bulanan (Pilih Bulan)
                     </button>
                     <button type="button" onclick="selectFilterModeTrx('tahunan')" id="pill-trx-tahunan"
                         class="filter-pill-trx px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'tahunan' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        📊 Tahunan (Pilih Tahun)
+                        Tahunan (Pilih Tahun)
                     </button>
                 </div>
 
@@ -246,7 +246,7 @@
                                 class="bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300 shadow-sm">
                             @if($tanggal_awal && $tanggal_akhir)
                             <span class="text-xs font-semibold bg-pink-100 text-pink-700 px-3 py-1.5 rounded-lg">
-                                📅 Rentang: {{ $tanggal_awal }} s/d {{ $tanggal_akhir }}
+                                Rentang: {{ $tanggal_awal }} s/d {{ $tanggal_akhir }}
                             </span>
                             @endif
                         </div>
@@ -262,7 +262,7 @@
                                 class="bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300 shadow-sm">
                             @if($nama_bulan && $tahun_bulan)
                             <span class="text-xs font-semibold bg-pink-100 text-pink-700 px-3 py-1.5 rounded-lg">
-                                🗓️ Bulan Terpilih: {{ $nama_bulan }} {{ $tahun_bulan }}
+                                Bulan Terpilih: {{ $nama_bulan }} {{ $tahun_bulan }}
                             </span>
                             @endif
                         </div>
@@ -312,7 +312,7 @@
             {{-- Status Banner --}}
             <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-pink-50/60 rounded-xl border border-pink-100 text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="text-base">📌</span>
+                    <svg class="w-4 h-4 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <span class="text-gray-600">Periode Transaksi:</span>
                     <strong class="text-pink-700 text-sm font-bold">{{ $label_periode }}</strong>
                 </div>

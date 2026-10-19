@@ -150,13 +150,15 @@
 
         {{-- Alert sukses / error --}}
         @if(session('sukses'))
-        <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">
-            ✅ {{ session('sukses') }}
+        <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg flex items-center gap-2">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>{{ session('sukses') }}</span>
         </div>
         @endif
         @if(session('error'))
-        <div class="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">
-            ⚠️ {{ session('error') }}
+        <div class="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span>{{ session('error') }}</span>
         </div>
         @endif
         
@@ -290,23 +292,23 @@
                     <select name="divisi" required
                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
                         <option value="">-- Pilih Divisi --</option>
-                        <optgroup label="🍰 Dapur & Produksi">
+                        <optgroup label="Dapur & Produksi">
                             <option value="Baker (Pembuat Kue)">Baker (Pembuat Kue)</option>
                             <option value="Dekorasi Kue">Dekorasi Kue</option>
                             <option value="Pembuat Adonan">Pembuat Adonan</option>
                             <option value="Pastry Chef">Pastry Chef</option>
                         </optgroup>
-                        <optgroup label="📦 Operasional">
+                        <optgroup label="Operasional">
                             <option value="Packaging">Packaging</option>
                             <option value="Quality Control">Quality Control</option>
                             <option value="Gudang & Logistik">Gudang & Logistik</option>
                         </optgroup>
-                        <optgroup label="🏪 Pelayanan">
+                        <optgroup label="Pelayanan">
                             <option value="Kasir">Kasir</option>
                             <option value="Customer Service">Customer Service</option>
                             <option value="Kurir / Pengiriman">Kurir / Pengiriman</option>
                         </optgroup>
-                        <optgroup label="📋 Administrasi">
+                        <optgroup label="Administrasi">
                             <option value="Admin">Admin</option>
                         </optgroup>
                     </select>
@@ -356,23 +358,23 @@
                     <select id="edit-divisi" name="divisi" required
                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
                         <option value="">-- Pilih Divisi --</option>
-                        <optgroup label="🍰 Dapur & Produksi">
+                        <optgroup label="Dapur & Produksi">
                             <option value="Baker (Pembuat Kue)">Baker (Pembuat Kue)</option>
                             <option value="Dekorasi Kue">Dekorasi Kue</option>
                             <option value="Pembuat Adonan">Pembuat Adonan</option>
                             <option value="Pastry Chef">Pastry Chef</option>
                         </optgroup>
-                        <optgroup label="📦 Operasional">
+                        <optgroup label="Operasional">
                             <option value="Packaging">Packaging</option>
                             <option value="Quality Control">Quality Control</option>
                             <option value="Gudang & Logistik">Gudang & Logistik</option>
                         </optgroup>
-                        <optgroup label="🏪 Pelayanan">
+                        <optgroup label="Pelayanan">
                             <option value="Kasir">Kasir</option>
                             <option value="Customer Service">Customer Service</option>
                             <option value="Kurir / Pengiriman">Kurir / Pengiriman</option>
                         </optgroup>
-                        <optgroup label="📋 Administrasi">
+                        <optgroup label="Administrasi">
                             <option value="Admin">Admin</option>
                         </optgroup>
                     </select>

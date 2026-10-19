@@ -26,7 +26,8 @@
         
         @if(session('sukses'))
         <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
-            <span>✓</span> <span>{{ session('sukses') }}</span>
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>{{ session('sukses') }}</span>
         </div>
         @endif
 
@@ -50,11 +51,11 @@
                         <span class="text-gray-400 text-[11px] sm:text-xs ml-1 sm:ml-2">#TRX-{{ str_pad($trx->id, 3, '0', STR_PAD_LEFT) }} • {{ $trx->created_at->format('d M Y, H:i') }}</span>
                     </div>
                     <span class="{{ $badgeStyle }} text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full">
-                        @if(in_array($trx->status, ['Diproses', 'Sedang Diproses'])) 🍳 Sedang Dibuat
-                        @elseif($trx->status === 'Dikemas') 📦 Sedang Dikemas
-                        @elseif(in_array($trx->status, ['Dikirim', 'Dalam Pengiriman'])) 🚚 Dalam Pengiriman
-                        @elseif(in_array($trx->status, ['Selesai', 'Diterima'])) ✓ Selesai
-                        @elseif(in_array($trx->status, ['Dibatalkan', 'Batal'])) ❌ Dibatalkan
+                        @if(in_array($trx->status, ['Diproses', 'Sedang Diproses'])) Sedang Diproses
+                        @elseif($trx->status === 'Dikemas') Sedang Dikemas
+                        @elseif(in_array($trx->status, ['Dikirim', 'Dalam Pengiriman'])) Dalam Pengiriman
+                        @elseif(in_array($trx->status, ['Selesai', 'Diterima'])) Selesai
+                        @elseif(in_array($trx->status, ['Dibatalkan', 'Batal'])) Dibatalkan
                         @else {{ $trx->status }}
                         @endif
                     </span>
@@ -84,21 +85,21 @@
                         @if(in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']))
                         <form action="/riwayat-transaksi/{{ $trx->id }}/terima" method="POST" onsubmit="return confirm('Konfirmasi bahwa kue telah Anda terima dengan baik?')" class="inline">
                             @csrf
-                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold py-1.5 sm:py-2 px-4 rounded-xl shadow transition flex items-center gap-1.5">
-                                <span>✓</span> <span>Konfirmasi Pesanan Diterima</span>
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold py-1.5 sm:py-2 px-4 rounded-xl shadow transition">
+                                Konfirmasi Pesanan Diterima
                             </button>
                         </form>
                         @elseif(in_array($trx->status, ['Diproses', 'Sedang Diproses']))
-                        <span class="text-xs text-amber-700 font-medium flex items-center gap-1">
-                            <span>⏳</span> <span>Kue sedang dipersiapkan oleh tim dapur</span>
+                        <span class="text-xs text-amber-700 font-medium">
+                            Pesanan sedang dipersiapkan oleh tim dapur
                         </span>
                         @elseif($trx->status === 'Dikemas')
-                        <span class="text-xs text-purple-700 font-medium flex items-center gap-1">
-                            <span>📦</span> <span>Kue telah selesai & sedang dikemas rapi</span>
+                        <span class="text-xs text-purple-700 font-medium">
+                            Pesanan siap dan sedang dikemas rapi
                         </span>
                         @elseif(in_array($trx->status, ['Selesai', 'Diterima']))
-                        <span class="text-xs text-emerald-600 font-semibold flex items-center gap-1">
-                            <span>✓</span> <span>Pesanan telah selesai diterima</span>
+                        <span class="text-xs text-emerald-600 font-semibold">
+                            Pesanan telah selesai diterima
                         </span>
                         @endif
                     </div>

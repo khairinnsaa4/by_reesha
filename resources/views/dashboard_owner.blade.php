@@ -182,7 +182,7 @@
             <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h3 class="text-base font-bold text-gray-800">📈 Tren Omzet Penjualan (7 Hari Terakhir)</h3>
+                        <h3 class="text-base font-bold text-gray-800">Tren Omzet Penjualan (7 Hari Terakhir)</h3>
                         <p class="text-xs text-gray-400 mt-0.5">Perkembangan pendapatan harian toko kue By.Reesha</p>
                     </div>
                     <span class="text-xs font-semibold px-2.5 py-1 bg-pink-50 text-pink-700 rounded-lg">Real-Time</span>
@@ -197,7 +197,7 @@
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h3 class="text-base font-bold text-gray-800">🍰 Produk Terlaris</h3>
+                            <h3 class="text-base font-bold text-gray-800">Produk Terlaris</h3>
                             <p class="text-xs text-gray-400 mt-0.5">Distribusi kontribusi omzet produk</p>
                         </div>
                     </div>

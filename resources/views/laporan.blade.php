@@ -196,23 +196,23 @@
                 <div class="flex flex-wrap items-center gap-2">
                     <button type="button" onclick="selectFilterMode('semua')" id="pill-semua"
                         class="filter-pill px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'semua' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        🌐 Semua Waktu
+                        Semua Waktu
                     </button>
                     <button type="button" onclick="selectFilterMode('harian')" id="pill-harian"
                         class="filter-pill px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'harian' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        📅 Harian (Pilih Tanggal)
+                        Harian (Pilih Tanggal)
                     </button>
                     <button type="button" onclick="selectFilterMode('mingguan')" id="pill-mingguan"
                         class="filter-pill px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'mingguan' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        📆 Mingguan (Pilih Minggu)
+                        Mingguan (Pilih Minggu)
                     </button>
                     <button type="button" onclick="selectFilterMode('bulanan')" id="pill-bulanan"
                         class="filter-pill px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'bulanan' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        🗓️ Bulanan (Pilih Bulan)
+                        Bulanan (Pilih Bulan)
                     </button>
                     <button type="button" onclick="selectFilterMode('tahunan')" id="pill-tahunan"
                         class="filter-pill px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'tahunan' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
-                        📊 Tahunan (Pilih Tahun)
+                        Tahunan (Pilih Tahun)
                     </button>
                 </div>
 
@@ -250,7 +250,7 @@
                                 class="bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300 shadow-sm">
                             @if($tanggal_awal && $tanggal_akhir)
                             <span class="text-xs font-semibold bg-pink-100 text-pink-700 px-3 py-1.5 rounded-lg">
-                                📅 Rentang: {{ $tanggal_awal }} s/d {{ $tanggal_akhir }}
+                                Rentang: {{ $tanggal_awal }} s/d {{ $tanggal_akhir }}
                             </span>
                             @endif
                         </div>
@@ -266,7 +266,7 @@
                                 class="bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-300 shadow-sm">
                             @if($nama_bulan && $tahun_bulan)
                             <span class="text-xs font-semibold bg-pink-100 text-pink-700 px-3 py-1.5 rounded-lg">
-                                🗓️ Bulan Terpilih: {{ $nama_bulan }} {{ $tahun_bulan }}
+                                Bulan Terpilih: {{ $nama_bulan }} {{ $tahun_bulan }}
                             </span>
                             @endif
                         </div>
@@ -317,7 +317,7 @@
             {{-- Active Period Status Banner --}}
             <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-pink-50/60 rounded-xl border border-pink-100 text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="text-base">📌</span>
+                    <svg class="w-4 h-4 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <span class="text-gray-600">Periode Aktif:</span>
                     <strong class="text-pink-700 text-sm font-bold">{{ $label_periode }}</strong>
                 </div>
@@ -338,7 +338,7 @@
                     <h3 class="text-lg sm:text-2xl font-extrabold truncate">Rp {{ number_format($total_pendapatan, 0, ',', '.') }}</h3>
                 </div>
                 <div class="text-[11px] opacity-75 mt-2 flex items-center gap-1">
-                    <span>💰 Pendapatan kotor</span>
+                    <span>Akumulasi omzet penjualan</span>
                 </div>
             </div>
 
@@ -349,7 +349,7 @@
                     <h3 class="text-lg sm:text-2xl font-extrabold">{{ $total_pesanan }} Transaksi</h3>
                 </div>
                 <div class="text-[11px] opacity-75 mt-2 flex items-center gap-1">
-                    <span>🧾 Total pesanan terdata</span>
+                    <span>Total transaksi terdata</span>
                 </div>
             </div>
 
@@ -360,7 +360,7 @@
                     <h3 class="text-lg sm:text-2xl font-extrabold">{{ $total_produk }} Item</h3>
                 </div>
                 <div class="text-[11px] opacity-75 mt-2 flex items-center gap-1">
-                    <span>🍰 Volume kue keluar</span>
+                    <span>Total volume produk terjual</span>
                 </div>
             </div>
 
@@ -371,7 +371,7 @@
                     <h3 class="text-lg sm:text-2xl font-extrabold truncate">Rp {{ number_format($rata_rata_pesanan, 0, ',', '.') }}</h3>
                 </div>
                 <div class="text-[11px] opacity-75 mt-2 flex items-center gap-1">
-                    <span>📈 Average Order Value</span>
+                    <span>Nilai transaksi rata-rata (AOV)</span>
                 </div>
             </div>
         </div>
@@ -380,19 +380,23 @@
         <div class="no-print flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto pb-0.5">
             <button onclick="showTab('penjualan')" id="tab-penjualan"
                 class="tab-btn whitespace-nowrap px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-pink-600 text-pink-700 bg-white -mb-px transition flex items-center gap-2">
-                <span>📊</span> <span>Laporan Penjualan</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <span>Laporan Penjualan</span>
             </button>
             <button onclick="showTab('keuangan')" id="tab-keuangan"
                 class="tab-btn whitespace-nowrap px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2">
-                <span>💰</span> <span>Laporan Keuangan</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Laporan Keuangan</span>
             </button>
             <button onclick="showTab('tahunan')" id="tab-tahunan"
                 class="tab-btn whitespace-nowrap px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2">
-                <span>📅</span> <span>Rekap Tahunan & Bulanan</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <span>Rekap Tahunan & Bulanan</span>
             </button>
             <button onclick="showTab('logistik')" id="tab-logistik"
                 class="tab-btn whitespace-nowrap px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2">
-                <span>📦</span> <span>Logistik & Stok Bahan</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                <span>Logistik & Stok Bahan</span>
             </button>
         </div>
 
@@ -410,7 +414,8 @@
                     </div>
                     <button onclick="cetakLaporan('penjualan')"
                         class="no-print flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition">
-                        🖨️ Cetak Tab Ini
+                        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        <span>Cetak Tab Ini</span>
                     </button>
                 </div>
 
@@ -440,7 +445,8 @@
                     {{-- 1. Rekap Per Produk --}}
                     <div>
                         <h4 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                            <span>🎂</span> <span>Rekapitulasi Penjualan Per Produk</span>
+                            <span class="w-1.5 h-4 bg-pink-600 rounded-full inline-block"></span>
+                            <span>Rekapitulasi Penjualan Per Produk</span>
                         </h4>
                         <div class="overflow-x-auto border border-gray-200 rounded-xl">
                             <table class="w-full text-left border-collapse text-xs sm:text-sm">
@@ -476,7 +482,7 @@
                                     @endforelse
                                 </tbody>
                                 @if($per_produk->count() > 0)
-                                <tfoot>
+                                <tfoot class="no-print">
                                     <tr class="bg-pink-50/70 font-bold border-t border-pink-200 text-gray-900">
                                         <td class="px-4 py-3 text-gray-800">TOTAL KESELURUHAN</td>
                                         <td class="px-4 py-3 text-center text-gray-800">{{ $total_produk }} item</td>
@@ -494,7 +500,8 @@
                     {{-- 2. Detail Seluruh Transaksi --}}
                     <div class="pt-2">
                         <h4 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                            <span>🧾</span> <span>Daftar Detail Transaksi Lengkap</span>
+                            <span class="w-1.5 h-4 bg-pink-600 rounded-full inline-block"></span>
+                            <span>Daftar Detail Transaksi Lengkap</span>
                         </h4>
                         <div class="overflow-x-auto border border-gray-200 rounded-xl">
                             <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
@@ -595,7 +602,8 @@
                     </div>
                     <button onclick="cetakLaporan('keuangan')"
                         class="no-print flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition">
-                        🖨️ Cetak Tab Ini
+                        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        <span>Cetak Tab Ini</span>
                     </button>
                 </div>
 
@@ -646,7 +654,8 @@
                     @endphp
                     <div>
                         <h4 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                            <span>💳</span> <span>Penerimaan Berdasarkan Metode Pembayaran</span>
+                            <span class="w-1.5 h-4 bg-pink-600 rounded-full inline-block"></span>
+                            <span>Penerimaan Berdasarkan Metode Pembayaran</span>
                         </h4>
                         <div class="overflow-x-auto border border-gray-200 rounded-xl">
                             <table class="w-full text-left border-collapse text-xs sm:text-sm">
@@ -717,7 +726,8 @@
                     </div>
                     <button onclick="cetakLaporan('tahunan')"
                         class="no-print flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition">
-                        🖨️ Cetak Tab Ini
+                        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        <span>Cetak Tab Ini</span>
                     </button>
                 </div>
 
@@ -789,7 +799,7 @@
                                     <td class="px-4 py-3 font-semibold text-gray-800">
                                         {{ $bln['label'] }}
                                         @if($isTerbaik)
-                                        <span class="ml-1 text-[11px] bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full font-bold">🏆 Tertinggi</span>
+                                        <span class="ml-1 text-[10px] uppercase tracking-wide bg-pink-100 text-pink-700 px-2 py-0.5 rounded font-bold">Tertinggi</span>
                                         @endif
                                     </td>
                                     <td class="px-4 py-3 text-center text-gray-600">{{ $bln['transaksi'] }} transaksi</td>
@@ -856,7 +866,8 @@
                     </div>
                     <button onclick="cetakLaporan('logistik')"
                         class="no-print flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition">
-                        🖨️ Cetak Tab Ini
+                        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        <span>Cetak Tab Ini</span>
                     </button>
                 </div>
 
@@ -922,11 +933,20 @@
                                     <td class="px-4 py-3 text-center text-gray-500">{{ $item['satuan'] }}</td>
                                     <td class="px-4 py-3 text-center">
                                         @if($item['status'] === 'Aman')
-                                            <span class="px-2.5 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded-full">✓ Aman</span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                Aman
+                                            </span>
                                         @elseif($item['status'] === 'Menipis')
-                                            <span class="px-2.5 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">⚡ Menipis</span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold rounded-full">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                                Menipis
+                                            </span>
                                         @else
-                                            <span class="px-2.5 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">🔴 Kritis</span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold rounded-full">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                                Kritis
+                                            </span>
                                         @endif
                                     </td>
                                 </tr>

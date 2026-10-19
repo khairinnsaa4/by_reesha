@@ -157,8 +157,9 @@
         </div>
 
         @if(session('sukses'))
-        <div class="mb-6 p-4 bg-green-100 border border-green-200 text-green-700 rounded-xl text-sm font-medium">
-            ✓ {{ session('sukses') }}
+        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>{{ session('sukses') }}</span>
         </div>
         @endif
 
@@ -179,23 +180,23 @@
             </button>
             <button type="button" onclick="filterStatusPemesanan('diproses')" id="btn-filter-diproses"
                 class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
-                🍳 Diproses ({{ $countDiproses }})
+                Diproses ({{ $countDiproses }})
             </button>
             <button type="button" onclick="filterStatusPemesanan('dikemas')" id="btn-filter-dikemas"
                 class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
-                📦 Dikemas ({{ $countDikemas }})
+                Dikemas ({{ $countDikemas }})
             </button>
             <button type="button" onclick="filterStatusPemesanan('dikirim')" id="btn-filter-dikirim"
                 class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
-                🚚 Dikirim ({{ $countDikirim }})
+                Dikirim ({{ $countDikirim }})
             </button>
             <button type="button" onclick="filterStatusPemesanan('selesai')" id="btn-filter-selesai"
                 class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
-                ✓ Selesai ({{ $countSelesai }})
+                Selesai ({{ $countSelesai }})
             </button>
             <button type="button" onclick="filterStatusPemesanan('dibatalkan')" id="btn-filter-dibatalkan"
                 class="status-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 transition">
-                ❌ Dibatalkan ({{ $countBatal }})
+                Dibatalkan ({{ $countBatal }})
             </button>
         </div>
 
@@ -248,11 +249,11 @@
                                             {{ in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']) ? 'bg-blue-100 text-blue-800 border-blue-300' : '' }}
                                             {{ in_array($trx->status, ['Selesai', 'Diterima']) ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : '' }}
                                             {{ in_array($trx->status, ['Dibatalkan', 'Batal']) ? 'bg-rose-100 text-rose-800 border-rose-300' : '' }}">
-                                            <option value="Diproses" {{ in_array($trx->status, ['Diproses', 'Sedang Diproses']) ? 'selected' : '' }}>🍳 Diproses</option>
-                                            <option value="Dikemas" {{ $trx->status === 'Dikemas' ? 'selected' : '' }}>📦 Dikemas</option>
-                                            <option value="Dikirim" {{ in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']) ? 'selected' : '' }}>🚚 Dikirim</option>
-                                            <option value="Selesai" {{ in_array($trx->status, ['Selesai', 'Diterima']) ? 'selected' : '' }}>✓ Selesai</option>
-                                            <option value="Dibatalkan" {{ in_array($trx->status, ['Dibatalkan', 'Batal']) ? 'selected' : '' }}>❌ Dibatalkan</option>
+                                            <option value="Diproses" {{ in_array($trx->status, ['Diproses', 'Sedang Diproses']) ? 'selected' : '' }}>Diproses</option>
+                                            <option value="Dikemas" {{ $trx->status === 'Dikemas' ? 'selected' : '' }}>Dikemas</option>
+                                            <option value="Dikirim" {{ in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']) ? 'selected' : '' }}>Dikirim</option>
+                                            <option value="Selesai" {{ in_array($trx->status, ['Selesai', 'Diterima']) ? 'selected' : '' }}>Selesai</option>
+                                            <option value="Dibatalkan" {{ in_array($trx->status, ['Dibatalkan', 'Batal']) ? 'selected' : '' }}>Dibatalkan</option>
                                         </select>
                                     </form>
 
@@ -261,7 +262,7 @@
                                         <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline">
                                             @csrf
                                             <input type="hidden" name="status" value="Dikemas">
-                                            <button type="submit" class="text-[10px] font-bold bg-purple-50 hover:bg-purple-100 text-purple-700 px-2 py-0.5 rounded border border-purple-200 transition" title="Lanjut ke tahap Packing">
+                                            <button type="submit" class="text-[10px] font-bold bg-purple-50 hover:bg-purple-100 text-purple-700 px-2.5 py-0.5 rounded-md border border-purple-200 transition" title="Lanjut ke tahap Packing">
                                                 Siap Dikemas →
                                             </button>
                                         </form>
@@ -269,7 +270,7 @@
                                         <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline">
                                             @csrf
                                             <input type="hidden" name="status" value="Dikirim">
-                                            <button type="submit" class="text-[10px] font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200 transition" title="Kirim ke Kurir">
+                                            <button type="submit" class="text-[10px] font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-0.5 rounded-md border border-blue-200 transition" title="Kirim ke Kurir">
                                                 Kirim Kurir →
                                             </button>
                                         </form>
@@ -277,8 +278,8 @@
                                         <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline">
                                             @csrf
                                             <input type="hidden" name="status" value="Selesai">
-                                            <button type="submit" class="text-[10px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 transition" title="Tandai Selesai">
-                                                Selesaikan ✓
+                                            <button type="submit" class="text-[10px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-md border border-emerald-200 transition" title="Tandai Selesai">
+                                                Tandai Selesai
                                             </button>
                                         </form>
                                     @endif

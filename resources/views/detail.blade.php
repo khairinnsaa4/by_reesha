@@ -73,7 +73,7 @@
                 @auth
                     <div class="flex items-center justify-between mb-2">
                         <a href="/profil" class="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                            <span>👤</span>
+                            <svg class="w-4 h-4 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             <span>Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong></span>
                         </a>
                     </div>
@@ -222,7 +222,8 @@
                     <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">Dikirim Dari</div>
                     <div class="flex-1">
                         <a href="https://maps.app.goo.gl/zhTvGPQhEThNEfEi9" target="_blank" class="text-pink-600 hover:underline font-semibold flex items-center gap-1">
-                            📍 Lhokseumawe, Aceh
+                            <svg class="w-3.5 h-3.5 inline flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            Lhokseumawe, Aceh
                         </a>
                     </div>
                 </div>
@@ -233,7 +234,7 @@
                 Deskripsi Produk
             </h2>
             <div class="text-xs sm:text-sm text-gray-600 leading-relaxed whitespace-pre-line px-2">
-                {{ $cake->deskripsi ?? '✨ Cake istimewa dari By.Reesha yang dibuat khusus dengan bahan-bahan premium dan sentuhan cinta. Cocok untuk merayakan momen berharga Anda.
+                {{ $cake->deskripsi ?? 'Cake istimewa dari By.Reesha yang dibuat khusus dengan bahan-bahan premium dan sentuhan cinta. Cocok untuk merayakan momen berharga Anda.
 
                 Mengapa memilih cake dari By.Reesha?
                 - Dibuat dari 100% bahan premium, butter asli, dan coklat impor berkualitas
@@ -241,12 +242,12 @@
                 - Desain elegan dan bisa dicustom sesuai keinginan Anda
                 - Tekstur lembut, manisnya pas, dan lumer di mulut
                 
-                📌 CARA PEMESANAN:
+                CARA PEMESANAN:
                 1. Pilih ukuran dan varian rasa yang diinginkan.
                 2. Untuk custom desain / tulisan, mohon cantumkan di kolom catatan saat checkout atau hubungi kami via WhatsApp setelah pembayaran.
                 3. Harap order H-2 atau H-3 sebelum kue digunakan.
                 
-                ⚠️ PENGIRIMAN:
+                CATATAN PENGIRIMAN:
                 Disarankan menggunakan pengiriman instant (Gojek/Grab) atau diambil sendiri ke toko untuk menghindari kerusakan kue di perjalanan.' }}
             </div>
         </div>
