@@ -21,14 +21,23 @@
         
         <!-- HEADER IDENTITAS PENGGUNA BY.REESHA -->
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 flex items-center gap-4 mb-4">
-            <div class="h-16 w-16 rounded-full bg-gradient-to-tr from-pink-500 to-rose-400 text-white shadow-md flex items-center justify-center border-2 border-pink-100 overflow-hidden flex-shrink-0">
-                @if(Auth::user()->avatar)
-                    <img src="{{ url('/') . '/' . Auth::user()->avatar }}" class="h-full w-full object-cover">
-                @else
-                    <span class="text-2xl font-bold uppercase tracking-wider">
-                        {{ substr(Auth::user()->name, 0, 1) }}
-                    </span>
-                @endif
+            <div class="relative flex-shrink-0">
+                <div id="header-avatar-container" class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-tr from-pink-500 to-rose-400 text-white shadow-md flex items-center justify-center border-2 border-pink-100 overflow-hidden">
+                    @if(Auth::user()->avatar)
+                        <img id="header-avatar-img" src="{{ asset(Auth::user()->avatar) }}" class="h-full w-full object-cover">
+                    @else
+                        <span id="header-avatar-initial" class="text-2xl font-bold uppercase tracking-wider">
+                            {{ substr(Auth::user()->name, 0, 1) }}
+                        </span>
+                    @endif
+                </div>
+                <!-- Tombol Kamera Cepat untuk Ganti Foto -->
+                <button type="button" onclick="openProfileEdit()" class="absolute -bottom-1 -right-1 w-7 h-7 bg-pink-600 hover:bg-pink-700 text-white rounded-full flex items-center justify-center shadow-md border-2 border-white transition transform hover:scale-110 active:scale-95" title="Ganti Foto Profil">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
             </div>
 
             <div class="flex-grow min-w-0">
@@ -46,6 +55,10 @@
                 @if(Auth::user()->phone)
                     <p class="text-gray-500 text-xs truncate mt-0.5">{{ Auth::user()->phone }}</p>
                 @endif
+                <button type="button" onclick="openProfileEdit()" class="inline-flex items-center gap-1 text-[11px] font-semibold text-pink-600 hover:text-pink-700 mt-1">
+                    <span>Ubah Profil & Foto</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
             </div>
         </div>
 
@@ -201,8 +214,44 @@
                 </button>
 
                 <div id="drawer-profil" class="menu-drawer hidden px-5 pb-5 pt-3 bg-pink-50/20 border-t border-gray-100">
-                    <form action="/profil/update" method="POST" class="space-y-3 pt-1">
+                    <form action="/profil/update" method="POST" enctype="multipart/form-data" class="space-y-4 pt-1">
                         @csrf
+
+                        <!-- UPLOAD & KELOLA FOTO PROFIL -->
+                        <div class="bg-white p-3.5 rounded-2xl border border-pink-100">
+                            <label class="block text-xs font-bold text-gray-700 mb-2">Foto Profil Pengguna</label>
+                            <div class="flex items-center gap-3.5">
+                                <!-- Lingkaran Avatar Preview -->
+                                <div class="relative w-14 h-14 rounded-full overflow-hidden bg-pink-100 flex-shrink-0 border-2 border-pink-200 flex items-center justify-center">
+                                    <img id="avatar-preview-img" 
+                                         src="{{ Auth::user()->avatar ? asset(Auth::user()->avatar) : '' }}" 
+                                         class="w-full h-full object-cover {{ Auth::user()->avatar ? '' : 'hidden' }}"
+                                         alt="Avatar Preview">
+                                    <span id="avatar-preview-fallback" class="text-lg font-bold text-pink-600 uppercase {{ Auth::user()->avatar ? 'hidden' : '' }}">
+                                        {{ substr(Auth::user()->name, 0, 1) }}
+                                    </span>
+                                </div>
+
+                                <div class="flex-1 min-w-0">
+                                    <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/jpg,image/webp" class="hidden" onchange="previewAvatar(event)">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <button type="button" onclick="document.getElementById('avatar-input').click()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-pink-50 hover:bg-pink-100 text-pink-600 border border-pink-200 text-xs font-semibold rounded-xl transition cursor-pointer">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            <span>Pilih Foto Baru</span>
+                                        </button>
+
+                                        @if(Auth::user()->avatar)
+                                            <label class="inline-flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 cursor-pointer select-none">
+                                                <input type="checkbox" name="hapus_avatar" value="1" id="hapus-avatar-cb" onchange="toggleHapusAvatar(this)" class="rounded text-red-600 focus:ring-red-400">
+                                                <span>Hapus Foto</span>
+                                            </label>
+                                        @endif
+                                    </div>
+                                    <p id="avatar-filename-label" class="text-[10px] text-gray-400 mt-1 truncate">Format: JPG, PNG, WEBP (Maks. 2MB)</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap <span class="text-pink-600">*</span></label>
                             <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}" required class="w-full text-xs sm:text-sm bg-white border border-gray-200 rounded-xl px-3.5 py-2 focus:border-pink-500 focus:outline-none transition">
@@ -215,8 +264,9 @@
                             <label class="block text-xs font-semibold text-gray-700 mb-1">Email Terdaftar</label>
                             <input type="email" value="{{ Auth::user()->email }}" disabled class="w-full text-xs sm:text-sm bg-gray-100 text-gray-500 border border-gray-200 rounded-xl px-3.5 py-2 cursor-not-allowed">
                         </div>
-                        <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs transition">
-                            Simpan Perubahan
+                        <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Simpan Perubahan</span>
                         </button>
                     </form>
                 </div>
@@ -350,6 +400,7 @@
         function toggleMenu(menuKey) {
             const targetDrawer = document.getElementById('drawer-' + menuKey);
             const targetChevron = document.getElementById('chevron-' + menuKey);
+            if (!targetDrawer) return;
             const isCurrentlyHidden = targetDrawer.classList.contains('hidden');
 
             // Tutup semua drawer terlebih dahulu agar tetap rapi dan tidak semak
@@ -364,6 +415,103 @@
             if (isCurrentlyHidden) {
                 targetDrawer.classList.remove('hidden');
                 if (targetChevron) targetChevron.classList.add('rotate-90');
+            }
+        }
+
+        // Buka langsung menu Informasi Akun (Data Diri & Foto)
+        function openProfileEdit() {
+            const targetDrawer = document.getElementById('drawer-profil');
+            const targetChevron = document.getElementById('chevron-profil');
+            if (targetDrawer && targetDrawer.classList.contains('hidden')) {
+                toggleMenu('profil');
+            }
+            setTimeout(() => {
+                if (targetDrawer) {
+                    targetDrawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
+        }
+
+        // Preview langsung foto profil saat dipilih
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validasi ukuran maks 2MB (2 * 1024 * 1024 byte)
+                if (file.size > 2097152) {
+                    alert('Ukuran foto terlalu besar! Maksimal 2MB.');
+                    event.target.value = '';
+                    return;
+                }
+
+                // Update text label nama file
+                const label = document.getElementById('avatar-filename-label');
+                if (label) {
+                    label.textContent = 'Dipilih: ' + file.name;
+                    label.classList.add('text-pink-600', 'font-medium');
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Update preview thumbnail di drawer
+                    const drawerImg = document.getElementById('avatar-preview-img');
+                    const drawerFallback = document.getElementById('avatar-preview-fallback');
+                    if (drawerImg) {
+                        drawerImg.src = e.target.result;
+                        drawerImg.classList.remove('hidden');
+                    }
+                    if (drawerFallback) {
+                        drawerFallback.classList.add('hidden');
+                    }
+
+                    // Update preview di kartu profil atas
+                    const headerContainer = document.getElementById('header-avatar-container');
+                    if (headerContainer) {
+                        headerContainer.innerHTML = `<img src="${e.target.result}" class="h-full w-full object-cover">`;
+                    }
+
+                    // Uncheck checkbox hapus foto jika sebelumnya dicentang
+                    const hapusCb = document.getElementById('hapus-avatar-cb');
+                    if (hapusCb) hapusCb.checked = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Toggle opsi hapus foto profil
+        function toggleHapusAvatar(checkbox) {
+            const drawerImg = document.getElementById('avatar-preview-img');
+            const drawerFallback = document.getElementById('avatar-preview-fallback');
+            const headerContainer = document.getElementById('header-avatar-container');
+            const avatarInput = document.getElementById('avatar-input');
+            const label = document.getElementById('avatar-filename-label');
+
+            if (checkbox.checked) {
+                if (avatarInput) avatarInput.value = '';
+                if (label) {
+                    label.textContent = 'Foto akan dihapus saat Anda menekan tombol simpan';
+                    label.classList.remove('text-pink-600');
+                    label.classList.add('text-red-500');
+                }
+                if (drawerImg) drawerImg.classList.add('hidden');
+                if (drawerFallback) drawerFallback.classList.remove('hidden');
+                if (headerContainer) {
+                    headerContainer.innerHTML = `<span class="text-2xl font-bold uppercase tracking-wider">{{ substr(Auth::user()->name, 0, 1) }}</span>`;
+                }
+            } else {
+                if (label) {
+                    label.textContent = 'Format: JPG, PNG, WEBP (Maks. 2MB)';
+                    label.classList.remove('text-red-500', 'text-pink-600');
+                }
+                @if(Auth::user()->avatar)
+                    if (drawerImg) {
+                        drawerImg.src = "{{ asset(Auth::user()->avatar) }}";
+                        drawerImg.classList.remove('hidden');
+                    }
+                    if (drawerFallback) drawerFallback.classList.add('hidden');
+                    if (headerContainer) {
+                        headerContainer.innerHTML = `<img src="{{ asset(Auth::user()->avatar) }}" class="h-full w-full object-cover">`;
+                    }
+                @endif
             }
         }
 

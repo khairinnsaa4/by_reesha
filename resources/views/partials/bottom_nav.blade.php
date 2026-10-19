@@ -42,9 +42,15 @@
         @php $isAkun = in_array(($active ?? ''), ['profil', 'akun', 'login', 'register']); @endphp
         <a href="{{ Auth::check() ? '/profil' : '/login' }}" class="flex flex-col items-center justify-center py-1 rounded-xl transition {{ $isAkun ? 'text-pink-600 font-bold' : 'text-gray-400 hover:text-pink-600 font-medium' }}">
             <div class="relative {{ $isAkun ? 'scale-110' : '' }} transition-transform">
-                <svg class="w-6 h-6" fill="{{ $isAkun ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="{{ $isAkun ? '2.2' : '1.8' }}" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                </svg>
+                @if(Auth::check() && Auth::user()->avatar)
+                    <div class="w-6 h-6 rounded-full overflow-hidden border {{ $isAkun ? 'border-pink-600 ring-2 ring-pink-300' : 'border-gray-300' }} shadow-xs">
+                        <img src="{{ asset(Auth::user()->avatar) }}" class="w-full h-full object-cover">
+                    </div>
+                @else
+                    <svg class="w-6 h-6" fill="{{ $isAkun ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="{{ $isAkun ? '2.2' : '1.8' }}" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                @endif
             </div>
             <span class="text-[10px] mt-1 tracking-tight">{{ Auth::check() ? 'Akun' : 'Masuk' }}</span>
         </a>

@@ -48,8 +48,14 @@
         <!-- Desktop Auth Section -->
         <div class="hidden md:flex items-center gap-3">
            @auth
-                <a href="/profil" class="text-sm font-semibold text-gray-700 bg-pink-50 px-3.5 py-1.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition flex items-center gap-2">
-                    <svg class="w-4 h-4 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <a href="/profil" class="text-sm font-semibold text-gray-700 bg-pink-50 px-3 py-1.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white text-[11px] font-bold flex-shrink-0 shadow-xs">
+                        @if(Auth::user()->avatar)
+                            <img src="{{ asset(Auth::user()->avatar) }}" class="w-full h-full object-cover">
+                        @else
+                            <span>{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                        @endif
+                    </div>
                     <span>Halo, <strong class="text-pink-600">{{ Auth::user()->name }}</strong></span>
                 </a>
                 

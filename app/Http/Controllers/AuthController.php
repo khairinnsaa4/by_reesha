@@ -68,17 +68,49 @@ class AuthController extends Controller
         $user = User::find(Auth::id());
         
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'phone' => 'nullable|string|max:25',
+            'name'   => 'required|string|max:255',
+            'phone'  => 'nullable|string|max:25',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
+            'avatar.image'  => 'File foto profil harus berupa gambar.',
+            'avatar.mimes'  => 'Format foto profil harus JPG, PNG, atau WEBP.',
+            'avatar.max'    => 'Ukuran foto profil maksimal 2MB.',
         ]);
 
         $user->name = $request->name;
         $user->phone = $request->phone;
+
+        // Opsi hapus foto profil jika diminta
+        if ($request->has('hapus_avatar') && $request->hapus_avatar == '1') {
+            if ($user->avatar && file_exists(public_path($user->avatar))) {
+                @unlink(public_path($user->avatar));
+            }
+            $user->avatar = null;
+        }
+
+        // Upload foto profil baru
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $filename = 'avatar_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            
+            $targetDir = public_path('avatars');
+            if (!file_exists($targetDir)) {
+                @mkdir($targetDir, 0755, true);
+            }
+
+            // Hapus avatar lama jika ada
+            if ($user->avatar && file_exists(public_path($user->avatar))) {
+                @unlink(public_path($user->avatar));
+            }
+
+            $file->move($targetDir, $filename);
+            $user->avatar = 'avatars/' . $filename;
+        }
+
         $user->save();
 
-        return back()->with('sukses', 'Data diri berhasil diperbarui!')->with('active_tab', 'data-diri');
+        return back()->with('sukses', 'Profil dan foto akun berhasil diperbarui!')->with('active_tab', 'data-diri');
     }
 
     public function updatePassword(Request $request)
