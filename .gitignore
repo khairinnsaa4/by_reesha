@@ -13,3 +13,7 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+*.sql
+*.py
+update_dapur.php
+
