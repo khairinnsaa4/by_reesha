@@ -156,7 +156,7 @@
             <div class="min-w-0 flex-1">
                 <h4 class="font-semibold text-slate-800 text-xs truncate group-hover:text-pink-600 transition">{{ $user->name ?? 'Pengguna' }}</h4>
                 <span class="inline-flex items-center px-1.5 py-0.2 text-[10px] font-semibold rounded bg-pink-100 text-pink-700 capitalize mt-0.5">
-                    {{ $user->divisi ? $user->divisi : ($user->role ?? 'User') }}
+                    {{ ($user && $user->divisi) ? $user->divisi : ($user->role ?? 'User') }}
                 </span>
             </div>
             <svg class="w-4 h-4 text-slate-400 group-hover:text-pink-600 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
