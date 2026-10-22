@@ -85,6 +85,31 @@ Route::get('/dashboard-karyawan', function () {
 Route::get('/profil', function () {
     return view('profil');
 })->middleware('auth');
+
+Route::get('/profil/alamat', function () {
+    return view('profil_alamat');
+})->middleware('auth');
+
+Route::get('/profil/edit', function () {
+    return view('profil_edit');
+})->middleware('auth');
+
+Route::get('/profil/informasi', function () {
+    return redirect('/profil/edit');
+})->middleware('auth');
+
+Route::get('/profil/keamanan', function () {
+    return view('profil_keamanan');
+})->middleware('auth');
+
+Route::get('/profil/bantuan', function () {
+    return view('profil_bantuan');
+})->middleware('auth');
+
+Route::get('/bantuan', function () {
+    return redirect('/profil/bantuan');
+});
+
 Route::post('/profil/update', [AuthController::class, 'updateProfil'])->middleware('auth');
 Route::post('/profil/update-password', [AuthController::class, 'updatePassword'])->middleware('auth');
 

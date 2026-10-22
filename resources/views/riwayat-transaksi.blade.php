@@ -7,22 +7,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-[#FFF8F9] font-[Poppins] min-h-screen pb-20 md:pb-0">
+<body class="bg-[#FFF8F9] font-[Poppins] min-h-screen flex flex-col justify-between pb-20 md:pb-8">
 
-    <!-- Header -->
-    <header class="bg-white border-b border-pink-100 shadow-sm sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center gap-4">
-            <a href="/profil" class="text-pink-600 hover:bg-pink-50 p-2 rounded-full transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-            </a>
-            <h1 class="text-xl font-bold text-gray-800">Riwayat Transaksi</h1>
-        </div>
-    </header>
+    <!-- NAVIGATION BAR -->
+    @include('partials.navbar', ['active' => 'profil'])
 
     <!-- Content -->
-    <main class="max-w-4xl mx-auto px-4 py-8">
+    <main class="max-w-4xl mx-auto px-4 py-6 sm:py-8 w-full flex-grow">
+        
+        <!-- HEADER NAVIGASI KEMBALI KE PROFIL -->
+        <div class="flex items-center gap-3.5 mb-6">
+            <a href="/profil" class="w-10 h-10 rounded-2xl bg-white border border-pink-100 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-300 transition shadow-xs flex-shrink-0" title="Kembali ke Profil">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-base sm:text-lg font-bold text-gray-800">Riwayat Transaksi</h1>
+                <p class="text-xs text-gray-400">Daftar transaksi dan status kue yang Anda pesan</p>
+            </div>
+        </div>
         
         @if(session('sukses'))
         <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
