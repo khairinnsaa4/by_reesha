@@ -3,257 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>By.Reesha - Karyawan</title>
+    <title>By.Reesha - Manajemen Karyawan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #FFF8F9; }
+        body {
+            font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
-<body class="flex flex-col md:flex-row min-h-screen text-gray-800 bg-[#FFF8F9]">
+<body class="flex flex-col md:flex-row min-h-screen text-slate-800 bg-[#f8fafc]">
 
-    <!-- Mobile Topbar for Karyawan -->
-    <header class="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-        <a href="/profil" class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-sm">
-                {{ substr(Auth::user()->name, 0, 1) }}
-            </div>
-            <div>
-                <h4 class="font-semibold text-gray-800 text-xs leading-tight">{{ Auth::user()->name }}</h4>
-                <p class="text-[10px] text-gray-400 capitalize">{{ Auth::user()->role }}</p>
-            </div>
-        </a>
-        <button id="mobile-dash-btn" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none" aria-label="Buka Menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </header>
+    @include('partials.owner_sidebar', ['active' => 'karyawan'])
 
-    <!-- Mobile Dropdown Navigation -->
-    <div id="mobile-dash-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 py-3 shadow-md space-y-1">
-        <nav class="space-y-1">
-            <a href="/dashboard-owner" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Dashboard
-            </a>
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/karyawan" class="block w-full text-left px-3 py-2 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm">
-                Karyawan
-            </a>
-            <a href="/pelanggan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Pelanggan
-            </a>
-            @endif
-            <a href="/pemesanan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Pemesanan
-            </a>
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/transaksi" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Transaksi
-            </a>
-            @endif
-            <a href="/logistik" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Logistik
-            </a>
-            <a href="/supplier" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Supplier
-            </a>
-            @if(Auth::check() && Auth::user()->isPembuatKue())
-            <a href="/resep" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm flex items-center justify-between">
-                <span>Resep Produk</span>
-                <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded font-semibold">Baker</span>
-            </a>
-            @endif
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/laporan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Laporan
-            </a>
-            @endif
-        </nav>
-        <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
-            <a href="/" class="text-xs text-gray-500 font-medium hover:text-gray-800">Lihat Website</a>
-            <form action="/logout" method="POST" class="inline">
-                @csrf
-                <button type="submit" class="text-xs text-red-500 font-medium hover:underline">Keluar</button>
-            </form>
-        </div>
-    </div>
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT AREA                          -->
+    <!-- ========================================== -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar">
 
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between h-screen sticky top-0 p-5 hidden md:flex shrink-0">
-        <div>
-            <a href="/profil" class="flex items-center gap-3 mb-8 p-2 -ml-2 rounded-xl hover:bg-gray-50 transition cursor-pointer group">
-                <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-lg">
-                    {{ substr(Auth::user()->name, 0, 1) }}
-                </div>
-                <div>
-                    <h4 class="font-medium text-gray-800 text-sm group-hover:text-pink-600 transition">{{ Auth::user()->name }}</h4>
-                    <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
-                </div>
-            </a>
-
-            <nav class="space-y-1">
-                <a href="/dashboard-owner" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Dashboard
-                </a>
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/karyawan" class="block w-full text-left px-4 py-2.5 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm">
-                    Karyawan
-                </a>
-                @endif
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/pelanggan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Pelanggan
-                </a>
-                @endif
-                <a href="/pemesanan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Pemesanan
-                </a>
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/transaksi" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Transaksi
-                </a>
-                @endif
-                <a href="/logistik" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Logistik
-                </a>
-                <a href="/supplier" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Supplier
-                </a>
-                @if(Auth::check() && Auth::user()->isPembuatKue())
-                <a href="/resep" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm flex items-center justify-between">
-                    <span>Resep Produk</span>
-                    <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded font-semibold">Baker</span>
-                </a>
-                @endif
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/laporan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm mb-4">
-                    Laporan
-                </a>
-                @endif
-            </nav>
-        </div>
-
-        <div class="mt-8 border-t border-gray-100 pt-4">
-            <a href="/" class="block w-full text-left px-4 py-2 text-gray-500 font-medium hover:text-gray-800 transition text-sm mb-2">
-                Lihat Website
-            </a>
-            <form action="/logout" method="POST">
-                @csrf
-                <button type="submit" class="w-full text-left px-4 py-2 text-red-500 font-medium hover:bg-red-50 rounded-lg transition text-sm">
-                    Keluar
-                </button>
-            </form>
-        </div>
-    </aside>
-    
-    <main class="flex-1 p-4 sm:p-6 md:p-8 min-w-0">
-
-        {{-- Alert sukses / error --}}
+        {{-- Alert Notifikasi --}}
         @if(session('sukses'))
-        <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg flex items-center gap-2">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            <span>{{ session('sukses') }}</span>
+        <div class="mb-6 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-xl flex items-center gap-2.5 shadow-2xs">
+            <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span class="font-medium">{{ session('sukses') }}</span>
         </div>
         @endif
         @if(session('error'))
-        <div class="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-            <span>{{ session('error') }}</span>
+        <div class="mb-6 px-4 py-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm rounded-xl flex items-center gap-2.5 shadow-2xs">
+            <svg class="w-4 h-4 text-rose-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <span class="font-medium">{{ session('error') }}</span>
         </div>
         @endif
-        
-        {{-- ===== HEADER ===== --}}
-        <div class="flex justify-between items-center mb-8">
+
+        <!-- Executive Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
-                <h1 class="text-2xl font-semibold text-gray-800">Manajemen Karyawan</h1>
-                <p class="text-sm text-gray-500 mt-1">Kelola akun karyawan dan divisi mereka</p>
+                <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
+                    <span>Portal Manajemen</span>
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span class="text-pink-600 font-semibold">Data Karyawan</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Manajemen Karyawan</h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Daftar akun staf, penugasan divisi operasional, dan hak akses sistem.</p>
             </div>
-            <div class="flex gap-2">
+
+            <div class="flex items-center gap-3">
                 <button onclick="document.getElementById('modal-tambah').classList.remove('hidden')"
-                    class="bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition hover:shadow">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Tambah Karyawan
+                    <span>Tambah Karyawan</span>
                 </button>
             </div>
         </div>
 
-        {{-- ===== TABEL KARYAWAN ===== --}}
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-            <div class="p-4 border-b border-gray-200 flex items-center gap-2">
-                <div class="relative flex-1 max-w-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <!-- Table Card Container -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <!-- Table Header Toolbar -->
+            <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div class="relative flex-1 max-w-md">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <input type="text" id="search-karyawan" placeholder="Cari nama atau email karyawan..." oninput="cariKaryawan()"
-                        class="text-sm border border-gray-300 rounded-lg pl-9 pr-3 py-2 focus:outline-none focus:border-pink-500 w-full transition">
+                    <input type="text" id="search-karyawan" placeholder="Cari berdasarkan nama, email, atau divisi..." oninput="cariKaryawan()"
+                        class="w-full text-xs sm:text-sm border border-slate-200 rounded-xl pl-9 pr-3 py-2 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition">
                 </div>
-                <button onclick="cariKaryawan()" class="bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Cari
-                </button>
-                <span id="result-count-kar" class="text-xs text-gray-400 ml-1"></span>
-                <span class="ml-auto text-sm text-gray-500">Total karyawan: <span id="kar-count" class="font-semibold text-gray-800">{{ $karyawan->count() }}</span> orang</span>
+
+                <div class="flex items-center justify-between sm:justify-end gap-3 text-xs text-slate-500">
+                    <span id="result-count-kar" class="text-slate-400"></span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 font-medium text-slate-700">
+                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span>Total: <strong id="kar-count" class="text-slate-900">{{ $karyawan->count() }}</strong> Karyawan</span>
+                    </span>
+                </div>
             </div>
 
+            <!-- Table Body -->
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
+                <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
                     <thead>
-                        <tr class="bg-gray-50 text-gray-500 border-b border-gray-200">
-                            <th class="px-5 py-3 font-medium">Nama</th>
-                            <th class="px-5 py-3 font-medium">Email</th>
-                            <th class="px-5 py-3 font-medium text-center">Divisi</th>
-                            <th class="px-5 py-3 font-medium">Terdaftar</th>
-                            <th class="px-5 py-3 font-medium text-right">Aksi</th>
+                        <tr class="bg-slate-50/80 text-slate-500 border-b border-slate-200 text-[11px] font-semibold uppercase tracking-wider">
+                            <th class="px-5 py-3.5">Nama & Profil</th>
+                            <th class="px-5 py-3.5">Email</th>
+                            <th class="px-5 py-3.5 text-center">Divisi / Penugasan</th>
+                            <th class="px-5 py-3.5">Tanggal Terdaftar</th>
+                            <th class="px-5 py-3.5 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100" id="tabel-karyawan">
+                    <tbody class="divide-y divide-slate-100" id="tabel-karyawan">
                         @forelse($karyawan as $i => $k)
-                        {{-- ===== Row Karyawan ===== --}}
-                        <tr class="hover:bg-gray-50 kar-row cursor-default">
+                        <tr class="hover:bg-slate-50/60 transition-colors kar-row">
+                            <!-- Name & Avatar -->
                             <td class="px-5 py-4">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-sm flex-shrink-0">
-                                        {{ substr($k->name, 0, 1) }}
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white font-bold text-xs shrink-0 ring-1 ring-slate-200">
+                                        @if($k->avatar)
+                                            <img src="{{ $k->avatar_url }}" class="w-full h-full object-cover" alt="{{ $k->name }}">
+                                        @else
+                                            <span>{{ strtoupper(substr($k->name, 0, 1)) }}</span>
+                                        @endif
                                     </div>
-                                    <span class="font-medium text-gray-800">{{ $k->name }}</span>
+                                    <div class="min-w-0">
+                                        <p class="font-semibold text-slate-800 text-xs sm:text-sm truncate">{{ $k->name }}</p>
+                                    </div>
                                 </div>
                             </td>
-                            <td class="px-5 py-4 text-gray-500">{{ $k->email }}</td>
+
+                            <!-- Email -->
+                            <td class="px-5 py-4 text-xs text-slate-600 font-mono">
+                                {{ $k->email }}
+                            </td>
+
+                            <!-- Divisi -->
                             <td class="px-5 py-4 text-center">
                                 @if($k->divisi)
-                                    <span class="px-2.5 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-md">{{ $k->divisi }}</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-violet-50 text-violet-700 border border-violet-200">
+                                        {{ $k->divisi }}
+                                    </span>
                                 @else
-                                    <span class="text-gray-400 text-xs italic">-</span>
+                                    <span class="text-slate-400 text-xs italic">-</span>
                                 @endif
                             </td>
-                            <td class="px-5 py-4 text-gray-400 text-xs">{{ $k->created_at->format('d M Y') }}</td>
+
+                            <!-- Registered Date -->
+                            <td class="px-5 py-4 text-xs text-slate-500">
+                                {{ $k->created_at ? $k->created_at->locale('id')->isoFormat('D MMMM Y') : '-' }}
+                            </td>
+
+                            <!-- Action Buttons -->
                             <td class="px-5 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <button onclick="openModalEdit({{ $k->id }}, '{{ addslashes($k->name) }}', '{{ addslashes($k->email) }}', '{{ $k->divisi }}')"
-                                        class="text-xs text-blue-500 hover:text-blue-700 font-medium hover:underline transition">Edit</button>
-                                    <span class="text-gray-200">|</span>
+                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-300 text-xs font-semibold transition" title="Ubah Data">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        <span>Edit</span>
+                                    </button>
+
                                     <form action="/karyawan/{{ $k->id }}/hapus" method="POST"
-                                        onsubmit="return confirm('Yakin ingin menghapus akun karyawan {{ $k->name }}?')">
+                                        onsubmit="return confirm('Konfirmasi: Hapus akun karyawan {{ $k->name }}?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-xs text-red-500 hover:text-red-700 font-medium hover:underline transition">Hapus</button>
+                                        <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 text-slate-700 hover:text-red-600 hover:border-red-300 text-xs font-semibold transition" title="Hapus Akun">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                            <span>Hapus</span>
+                                        </button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-
                         @empty
                         <tr id="row-empty-kar">
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-400">
-                                <div class="flex flex-col items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
+                            <td colspan="5" class="px-6 py-12 text-center">
+                                <div class="max-w-xs mx-auto text-slate-400">
+                                    <svg class="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
-                                    <p class="text-sm">Belum ada karyawan terdaftar.</p>
+                                    <p class="text-sm font-semibold text-slate-600">Belum ada karyawan terdaftar</p>
+                                    <p class="text-xs text-slate-400 mt-1">Gunakan tombol di kanan atas untuk mendaftarkan akun staf baru.</p>
                                 </div>
                             </td>
                         </tr>
@@ -262,48 +199,58 @@
                 </table>
             </div>
         </div>
+
     </main>
 
-    {{-- ===== MODAL TAMBAH KARYAWAN ===== --}}
-    <div id="modal-tambah" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-semibold text-gray-800">Tambah Akun Karyawan</h2>
-                <button onclick="document.getElementById('modal-tambah').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <!-- ========================================== -->
+    <!-- MODAL TAMBAH KARYAWAN                      -->
+    <!-- ========================================== -->
+    <div id="modal-tambah" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-base font-bold text-slate-900">Tambah Akun Karyawan</h2>
+                </div>
+                <button onclick="document.getElementById('modal-tambah').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <form action="/karyawan/tambah" method="POST" class="space-y-4">
+            <form action="/karyawan/tambah" method="POST" class="space-y-4 text-xs sm:text-sm">
                 @csrf
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                    <input type="text" name="name" required placeholder="Contoh: Siti Rahmah"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <label class="block font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                    <input type="text" name="name" required placeholder="Nama lengkap karyawan"
+                        class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" name="email" required placeholder="Contoh: siti@gmail.com"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <label class="block font-semibold text-slate-700 mb-1">Alamat Email</label>
+                    <input type="email" name="email" required placeholder="staf@byreesha.com"
+                        class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Divisi / Jabatan</label>
+                    <label class="block font-semibold text-slate-700 mb-1">Divisi / Penugasan</label>
                     <select name="divisi" required
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
-                        <option value="">-- Pilih Divisi --</option>
-                        <optgroup label="Dapur & Produksi">
+                        class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 bg-white">
+                        <option value="">-- Pilih Penugasan Divisi --</option>
+                        <optgroup label="Produksi & Dapur">
                             <option value="Baker (Pembuat Kue)">Baker (Pembuat Kue)</option>
                             <option value="Dekorasi Kue">Dekorasi Kue</option>
                             <option value="Pembuat Adonan">Pembuat Adonan</option>
                             <option value="Pastry Chef">Pastry Chef</option>
                         </optgroup>
-                        <optgroup label="Operasional">
+                        <optgroup label="Operasional & Gudang">
                             <option value="Packaging">Packaging</option>
                             <option value="Quality Control">Quality Control</option>
                             <option value="Gudang & Logistik">Gudang & Logistik</option>
                         </optgroup>
-                        <optgroup label="Pelayanan">
+                        <optgroup label="Pelayanan Pelanggan">
                             <option value="Kasir">Kasir</option>
                             <option value="Customer Service">Customer Service</option>
                             <option value="Kurir / Pengiriman">Kurir / Pengiriman</option>
@@ -314,62 +261,71 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Password Awal</label>
+                    <label class="block font-semibold text-slate-700 mb-1">Password Sementara</label>
                     <input type="password" name="password" required placeholder="Minimal 6 karakter"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
-                    <p class="text-xs text-gray-400 mt-1">Karyawan bisa mengganti password lewat profil.</p>
+                        class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                    <p class="text-[11px] text-slate-400 mt-1">Karyawan dapat memperbarui password secara mandiri melalui menu profil.</p>
                 </div>
-                <div class="pt-2 flex gap-3">
+                <div class="pt-3 flex gap-3">
                     <button type="button" onclick="document.getElementById('modal-tambah').classList.add('hidden')"
-                        class="flex-1 border border-gray-300 text-gray-600 text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition">Batal</button>
+                        class="flex-1 border border-slate-200 text-slate-600 font-semibold py-2.5 rounded-xl hover:bg-slate-50 transition">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium py-2.5 rounded-lg transition">Simpan Karyawan</button>
+                        class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2.5 rounded-xl transition shadow-xs">Simpan Akun</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- ===== MODAL EDIT KARYAWAN ===== --}}
-    <div id="modal-edit" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-semibold text-gray-800">Edit Akun Karyawan</h2>
-                <button onclick="document.getElementById('modal-edit').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <!-- ========================================== -->
+    <!-- MODAL EDIT KARYAWAN                        -->
+    <!-- ========================================== -->
+    <div id="modal-edit" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-base font-bold text-slate-900">Perbarui Data Karyawan</h2>
+                </div>
+                <button onclick="document.getElementById('modal-edit').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <form id="form-edit" method="POST" class="space-y-4">
+            <form id="form-edit" method="POST" class="space-y-4 text-xs sm:text-sm">
                 @csrf
                 @method('PUT')
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                    <label class="block font-semibold text-slate-700 mb-1">Nama Lengkap</label>
                     <input type="text" id="edit-name" name="name" required
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <label class="block font-semibold text-slate-700 mb-1">Alamat Email</label>
                     <input type="email" id="edit-email" name="email" required
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Divisi / Jabatan</label>
+                    <label class="block font-semibold text-slate-700 mb-1">Divisi / Penugasan</label>
                     <select id="edit-divisi" name="divisi" required
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
-                        <option value="">-- Pilih Divisi --</option>
-                        <optgroup label="Dapur & Produksi">
+                        class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 bg-white">
+                        <option value="">-- Pilih Penugasan Divisi --</option>
+                        <optgroup label="Produksi & Dapur">
                             <option value="Baker (Pembuat Kue)">Baker (Pembuat Kue)</option>
                             <option value="Dekorasi Kue">Dekorasi Kue</option>
                             <option value="Pembuat Adonan">Pembuat Adonan</option>
                             <option value="Pastry Chef">Pastry Chef</option>
                         </optgroup>
-                        <optgroup label="Operasional">
+                        <optgroup label="Operasional & Gudang">
                             <option value="Packaging">Packaging</option>
                             <option value="Quality Control">Quality Control</option>
                             <option value="Gudang & Logistik">Gudang & Logistik</option>
                         </optgroup>
-                        <optgroup label="Pelayanan">
+                        <optgroup label="Pelayanan Pelanggan">
                             <option value="Kasir">Kasir</option>
                             <option value="Customer Service">Customer Service</option>
                             <option value="Kurir / Pengiriman">Kurir / Pengiriman</option>
@@ -380,67 +336,54 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru <span class="text-gray-400 font-normal">(opsional)</span></label>
-                    <input type="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah password"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <label class="block font-semibold text-slate-700 mb-1">Password Baru <span class="text-slate-400 font-normal">(opsional)</span></label>
+                    <input type="password" name="password" placeholder="Kosongkan bila tidak diubah"
+                        class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
                 </div>
-                <div class="pt-2 flex gap-3">
+                <div class="pt-3 flex gap-3">
                     <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
-                        class="flex-1 border border-gray-300 text-gray-600 text-sm font-medium py-2.5 rounded-lg hover:bg-gray-50 transition">Batal</button>
+                        class="flex-1 border border-slate-200 text-slate-600 font-semibold py-2.5 rounded-xl hover:bg-slate-50 transition">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium py-2.5 rounded-lg transition">Simpan Perubahan</button>
+                        class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2.5 rounded-xl transition shadow-xs">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
 
-</body>
-</html>
+    <!-- Scripts -->
+    <script>
+        function openModalEdit(id, name, email, divisi) {
+            document.getElementById('modal-edit').classList.remove('hidden');
+            document.getElementById('form-edit').action = '/karyawan/' + id + '/edit';
+            document.getElementById('edit-name').value = name;
+            document.getElementById('edit-email').value = email;
+            document.getElementById('edit-divisi').value = divisi;
+        }
 
-<script>
-    // Buka modal edit dan isi datanya
-    function openModalEdit(id, name, email, divisi) {
-        document.getElementById('modal-edit').classList.remove('hidden');
-        document.getElementById('form-edit').action = '/karyawan/' + id + '/edit';
-        document.getElementById('edit-name').value = name;
-        document.getElementById('edit-email').value = email;
-        document.getElementById('edit-divisi').value = divisi;
-    }
+        function cariKaryawan() {
+            const keyword = document.getElementById('search-karyawan').value.toLowerCase();
+            const rows    = document.querySelectorAll('#tabel-karyawan .kar-row');
+            let visible   = 0;
 
-    // Search karyawan
-    function cariKaryawan() {
-        const keyword = document.getElementById('search-karyawan').value.toLowerCase();
-        const rows    = document.querySelectorAll('#tabel-karyawan .kar-row');
-        let visible   = 0;
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if (text.includes(keyword)) {
+                    row.style.display = '';
+                    visible++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
 
-        rows.forEach(row => {
-            const text = row.innerText.toLowerCase();
-            if (text.includes(keyword)) {
-                row.style.display = '';
-                visible++;
-            } else {
-                row.style.display = 'none';
-            }
+            document.getElementById('result-count-kar').innerText =
+                keyword ? `${visible} hasil` : '';
+            document.getElementById('kar-count').innerText =
+                keyword ? visible : {{ $karyawan->count() }};
+        }
+
+        document.getElementById('search-karyawan').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') cariKaryawan();
         });
-
-        document.getElementById('result-count-kar').innerText =
-            keyword ? `${visible} hasil ditemukan` : '';
-        document.getElementById('kar-count').innerText =
-            keyword ? visible : {{ $karyawan->count() }};
-    }
-
-    document.getElementById('search-karyawan').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') cariKaryawan();
-    });
-
-    const dashBtn = document.getElementById('mobile-dash-btn');
-    const dashMenu = document.getElementById('mobile-dash-menu');
-    if (dashBtn && dashMenu) {
-        dashBtn.addEventListener('click', () => {
-            dashMenu.classList.toggle('hidden');
-        });
-    }
-</script>
-
+    </script>
 </body>
 </html>

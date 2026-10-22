@@ -23,155 +23,33 @@
         }
     </style>
 </head>
-<body class="flex flex-col md:flex-row min-h-screen text-gray-800 bg-[#f9fafb]">
+<body class="flex flex-col md:flex-row min-h-screen text-slate-800 bg-[#f8fafc]">
 
-    <!-- Mobile Topbar for Laporan -->
-    <header class="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm no-print">
-        <a href="/profil" class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-sm">
-                {{ substr(Auth::user()->name, 0, 1) }}
-            </div>
+    @include('partials.owner_sidebar', ['active' => 'laporan'])
+
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT AREA                          -->
+    <!-- ========================================== -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar">
+
+        <!-- Executive Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200 no-print">
             <div>
-                <h4 class="font-semibold text-gray-800 text-xs leading-tight">{{ Auth::user()->name }}</h4>
-                <p class="text-[10px] text-gray-400 capitalize">{{ Auth::user()->role }}</p>
-            </div>
-        </a>
-        <button id="mobile-dash-btn" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none" aria-label="Buka Menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </header>
-
-    <!-- Mobile Dropdown Navigation -->
-    <div id="mobile-dash-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 py-3 shadow-md space-y-1 no-print">
-        <nav class="space-y-1">
-            <a href="/dashboard-owner" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Dashboard
-            </a>
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/karyawan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Karyawan
-            </a>
-            <a href="/pelanggan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Pelanggan
-            </a>
-            @endif
-            <a href="/pemesanan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Pemesanan
-            </a>
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/transaksi" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Transaksi
-            </a>
-            @endif
-            <a href="/logistik" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Logistik
-            </a>
-            <a href="/supplier" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Supplier
-            </a>
-            @if(Auth::check() && Auth::user()->isPembuatKue())
-            <a href="/resep" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm flex items-center justify-between">
-                <span>Resep Produk</span>
-                <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded font-semibold">Baker</span>
-            </a>
-            @endif
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/laporan" class="block w-full text-left px-3 py-2 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm">
-                Laporan
-            </a>
-            @endif
-        </nav>
-        <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
-            <a href="/" class="text-xs text-gray-500 font-medium hover:text-gray-800">Lihat Website</a>
-            <form action="/logout" method="POST" class="inline">
-                @csrf
-                <button type="submit" class="text-xs text-red-500 font-medium hover:underline">Keluar</button>
-            </form>
-        </div>
-    </div>
-
-    {{-- ===== SIDEBAR DESKTOP ===== --}}
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between h-screen sticky top-0 p-5 hidden md:flex no-print shrink-0">
-        <div>
-            <a href="/profil" class="flex items-center gap-3 mb-8 p-2 -ml-2 rounded-xl hover:bg-gray-50 transition cursor-pointer group">
-                <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-lg">
-                    {{ substr(Auth::user()->name, 0, 1) }}
+                <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
+                    <span>Portal Manajemen</span>
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span class="text-pink-600 font-semibold">Laporan</span>
                 </div>
-                <div>
-                    <h4 class="font-medium text-gray-800 text-sm group-hover:text-pink-600 transition">{{ Auth::user()->name }}</h4>
-                    <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
-                </div>
-            </a>
-
-            <nav class="space-y-1">
-                <a href="/dashboard-owner" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Dashboard
-                </a>
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/karyawan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Karyawan
-                </a>
-                <a href="/pelanggan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Pelanggan
-                </a>
-                @endif
-                <a href="/pemesanan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Pemesanan
-                </a>
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/transaksi" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Transaksi
-                </a>
-                @endif
-                <a href="/logistik" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Logistik
-                </a>
-                <a href="/supplier" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Supplier
-                </a>
-                @if(Auth::check() && Auth::user()->isPembuatKue())
-                <a href="/resep" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm flex items-center justify-between">
-                    <span>Resep Produk</span>
-                    <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded font-semibold">Baker</span>
-                </a>
-                @endif
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/laporan" class="block w-full text-left px-4 py-2.5 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm mb-4">
-                    Laporan
-                </a>
-                @endif
-            </nav>
-        </div>
-
-        <div class="mt-8 border-t border-gray-100 pt-4">
-            <a href="/" class="block w-full text-left px-4 py-2 text-gray-500 font-medium hover:text-gray-800 transition text-sm mb-2">
-                Lihat Website
-            </a>
-            <form action="/logout" method="POST">
-                @csrf
-                <button type="submit" class="w-full text-left px-4 py-2 text-red-500 font-medium hover:bg-red-50 rounded-lg transition text-sm">
-                    Keluar
-                </button>
-            </form>
-        </div>
-    </aside>
-
-    {{-- ===== MAIN CONTENT ===== --}}
-    <main class="flex-1 p-4 sm:p-6 md:p-8 min-w-0 max-w-7xl">
-
-        {{-- Page Header --}}
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 no-print">
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Laporan Bisnis & Penjualan</h1>
-                <p class="text-xs sm:text-sm text-gray-500 mt-1">Pantau omzet, performa pesanan, dan keuangan toko kue By.Reesha</p>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Laporan Bisnis & Penjualan</h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Audit performa omzet keuangan, analisis tren transaksi produk, dan cetak lembar pertanggungjawaban.</p>
             </div>
             
             <div class="flex items-center gap-2">
                 <button onclick="cetakLaporan('penjualan')"
-                    class="bg-pink-600 hover:bg-pink-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-md shadow-pink-100 transition flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition hover:shadow">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                     </svg>
                     <span>Cetak Lembar Laporan</span>
@@ -330,48 +208,52 @@
         </div>
 
         {{-- ===== 4 KEY STATISTIC METRICS ===== --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-8 no-print">
-            {{-- Omzet --}}
-            <div class="bg-gradient-to-br from-pink-500 to-rose-600 p-4 sm:p-5 rounded-2xl shadow-sm text-white flex flex-col justify-between">
-                <div>
-                    <span class="text-xs font-medium opacity-85 block uppercase tracking-wider mb-1">Total Omzet</span>
-                    <h3 class="text-lg sm:text-2xl font-extrabold truncate">Rp {{ number_format($total_pendapatan, 0, ',', '.') }}</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 no-print">
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-pink-50 border border-pink-100 text-pink-600 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </div>
-                <div class="text-[11px] opacity-75 mt-2 flex items-center gap-1">
-                    <span>Akumulasi omzet penjualan</span>
+                <div>
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Total Omzet</span>
+                    <h3 class="text-base sm:text-xl font-bold text-slate-900 truncate">Rp {{ number_format($total_pendapatan, 0, ',', '.') }}</h3>
                 </div>
             </div>
 
-            {{-- Pesanan Masuk --}}
-            <div class="bg-gradient-to-br from-purple-500 to-indigo-600 p-4 sm:p-5 rounded-2xl shadow-sm text-white flex flex-col justify-between">
-                <div>
-                    <span class="text-xs font-medium opacity-85 block uppercase tracking-wider mb-1">Pesanan Masuk</span>
-                    <h3 class="text-lg sm:text-2xl font-extrabold">{{ $total_pesanan }} Transaksi</h3>
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
                 </div>
-                <div class="text-[11px] opacity-75 mt-2 flex items-center gap-1">
-                    <span>Total transaksi terdata</span>
+                <div>
+                    <span class="text-[11px] font-semibold text-amber-600 uppercase tracking-wider block">Pesanan Masuk</span>
+                    <h3 class="text-base sm:text-xl font-bold text-slate-900">{{ $total_pesanan }} <span class="text-xs font-normal text-slate-500">Pesanan</span></h3>
                 </div>
             </div>
 
-            {{-- Produk Terjual --}}
-            <div class="bg-gradient-to-br from-amber-500 to-orange-500 p-4 sm:p-5 rounded-2xl shadow-sm text-white flex flex-col justify-between">
-                <div>
-                    <span class="text-xs font-medium opacity-85 block uppercase tracking-wider mb-1">Produk Terjual</span>
-                    <h3 class="text-lg sm:text-2xl font-extrabold">{{ $total_produk }} Item</h3>
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
                 </div>
-                <div class="text-[11px] opacity-75 mt-2 flex items-center gap-1">
-                    <span>Total volume produk terjual</span>
+                <div>
+                    <span class="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider block">Produk Terjual</span>
+                    <h3 class="text-base sm:text-xl font-bold text-slate-900">{{ $total_produk }} <span class="text-xs font-normal text-slate-500">Item</span></h3>
                 </div>
             </div>
 
-            {{-- Rata-rata Pesanan (AOV) --}}
-            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 p-4 sm:p-5 rounded-2xl shadow-sm text-white flex flex-col justify-between">
-                <div>
-                    <span class="text-xs font-medium opacity-85 block uppercase tracking-wider mb-1">Rata-Rata Order</span>
-                    <h3 class="text-lg sm:text-2xl font-extrabold truncate">Rp {{ number_format($rata_rata_pesanan, 0, ',', '.') }}</h3>
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
                 </div>
-                <div class="text-[11px] opacity-75 mt-2 flex items-center gap-1">
-                    <span>Nilai transaksi rata-rata (AOV)</span>
+                <div>
+                    <span class="text-[11px] font-semibold text-indigo-600 uppercase tracking-wider block">Rata-Rata Order</span>
+                    <h3 class="text-base sm:text-xl font-bold text-slate-900 truncate">Rp {{ number_format($rata_rata_pesanan, 0, ',', '.') }}</h3>
                 </div>
             </div>
         </div>
@@ -1071,14 +953,7 @@
         window.addEventListener('DOMContentLoaded', () => showTab('tahunan'));
         @endif
 
-        // Mobile sidebar menu toggle
-        const dashBtn = document.getElementById('mobile-dash-btn');
-        const dashMenu = document.getElementById('mobile-dash-menu');
-        if (dashBtn && dashMenu) {
-            dashBtn.addEventListener('click', () => {
-                dashMenu.classList.toggle('hidden');
-            });
-        }
+
     </script>
 </body>
 </html>

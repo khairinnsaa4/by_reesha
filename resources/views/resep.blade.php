@@ -7,189 +7,57 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #FFF8F9; color: #1e293b; }
+        body { font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif; background-color: #f8fafc; color: #0f172a; }
     </style>
 </head>
-<body class="flex flex-col md:flex-row min-h-screen bg-[#FFF8F9]">
+<body class="flex flex-col md:flex-row min-h-screen text-slate-800 bg-[#f8fafc]">
 
-    <!-- Mobile Topbar for Resep -->
-    <header class="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-        <a href="/profil" class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-sm">
-                {{ substr(Auth::user()->name, 0, 1) }}
-            </div>
-            <div>
-                <h4 class="font-semibold text-gray-800 text-xs leading-tight">{{ Auth::user()->name }}</h4>
-                <p class="text-[10px] text-gray-400 capitalize">{{ Auth::user()->divisi ? Auth::user()->divisi : Auth::user()->role }}</p>
-            </div>
-        </a>
-        <button id="mobile-dash-btn" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none" aria-label="Buka Menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </header>
+    @include('partials.owner_sidebar', ['active' => 'resep'])
 
-    <!-- Mobile Dropdown Navigation -->
-    <div id="mobile-dash-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 py-3 shadow-md space-y-1">
-        <nav class="space-y-1">
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/dashboard-owner" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Dashboard
-            </a>
-            <a href="/karyawan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Karyawan
-            </a>
-            <a href="/pelanggan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Pelanggan
-            </a>
-            @endif
-            <a href="/pemesanan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Pemesanan
-            </a>
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/transaksi" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Transaksi
-            </a>
-            @endif
-            <a href="/logistik" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Logistik
-            </a>
-            <a href="/supplier" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Supplier
-            </a>
-            <a href="/resep" class="block w-full text-left px-3 py-2 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm flex items-center justify-between">
-                <span>Resep Produk</span>
-                <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded font-semibold">Baker</span>
-            </a>
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/laporan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Laporan
-            </a>
-            @endif
-        </nav>
-        <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
-            <a href="/" class="text-xs text-gray-500 font-medium hover:text-gray-800">Lihat Website</a>
-            <form action="/logout" method="POST" class="inline">
-                @csrf
-                <button type="submit" class="text-xs text-red-500 font-medium hover:underline">Keluar</button>
-            </form>
-        </div>
-    </div>
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT AREA                          -->
+    <!-- ========================================== -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar">
 
-    {{-- ===== SIDEBAR ===== --}}
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between h-screen sticky top-0 p-5 hidden md:flex flex-shrink-0">
-        <div>
-            <a href="/profil" class="flex items-center gap-3 mb-8 p-2 -ml-2 rounded-xl hover:bg-gray-50 transition cursor-pointer group">
-                <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-lg">
-                    {{ substr(Auth::user()->name, 0, 1) }}
-                </div>
-                <div>
-                    <h4 class="font-medium text-gray-800 text-sm group-hover:text-pink-600 transition">{{ Auth::user()->name }}</h4>
-                    <p class="text-xs text-gray-500 capitalize">
-                        {{ Auth::user()->divisi ? Auth::user()->divisi : Auth::user()->role }}
-                    </p>
-                </div>
-            </a>
-
-            <nav class="space-y-1">
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/dashboard-owner" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Dashboard
-                </a>
-                @endif
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/karyawan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Karyawan
-                </a>
-                @endif
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/pelanggan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Pelanggan
-                </a>
-                @endif
-                <a href="/pemesanan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Pemesanan
-                </a>
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/transaksi" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Transaksi
-                </a>
-                @endif
-                <a href="/logistik" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Logistik
-                </a>
-                <a href="/supplier" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Supplier
-                </a>
-                {{-- Menu Resep Produk (Aktif) --}}
-                <a href="/resep" class="block w-full text-left px-4 py-2.5 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm flex items-center justify-between">
-                    <span>Resep Produk</span>
-                    <span class="text-xs bg-pink-200 text-pink-800 px-1.5 py-0.5 rounded-md font-semibold">Baker</span>
-                </a>
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/laporan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm mb-4">
-                    Laporan
-                </a>
-                @endif
-            </nav>
-        </div>
-
-        <div class="mt-8 border-t border-gray-100 pt-4">
-            <a href="/" class="block w-full text-left px-4 py-2 text-gray-500 font-medium hover:text-gray-800 transition text-sm mb-2">
-                Lihat Website
-            </a>
-            <form action="/logout" method="POST">
-                @csrf
-                <button type="submit" class="w-full text-left px-4 py-2 text-red-500 font-medium hover:bg-red-50 rounded-lg transition text-sm">
-                    Keluar
-                </button>
-            </form>
-        </div>
-    </aside>
-
-    {{-- ===== MAIN CONTENT ===== --}}
-    <main class="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full min-w-0">
-        
         {{-- Flash Alerts --}}
         @if(session('sukses'))
-        <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl flex items-center justify-between">
+        <div class="mb-6 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-xl flex items-center justify-between shadow-2xs">
             <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
-                <span>{{ session('sukses') }}</span>
+                <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="font-medium">{{ session('sukses') }}</span>
             </div>
-            <button onclick="this.parentElement.remove()" class="text-green-500 hover:text-green-800 font-bold">&times;</button>
+            <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-800 font-bold">&times;</button>
         </div>
         @endif
 
         @if(session('error'))
-        <div class="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl flex items-center justify-between">
+        <div class="mb-6 px-4 py-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm rounded-xl flex items-center justify-between shadow-2xs">
             <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
-                <span>{{ session('error') }}</span>
+                <svg class="w-4 h-4 text-rose-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span class="font-medium">{{ session('error') }}</span>
             </div>
-            <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-800 font-bold">&times;</button>
+            <button onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-800 font-bold">&times;</button>
         </div>
         @endif
 
-        {{-- ===== HEADER ===== --}}
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <!-- Executive Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
-                <div class="flex items-center gap-2 mb-1">
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-pink-100 text-pink-700">Divisi Pembuat Kue</span>
-                    <span class="text-xs text-gray-400">• Standar Baku Produksi</span>
+                <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
+                    <span>Portal Manajemen</span>
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span class="text-pink-600 font-semibold">Resep & Produksi</span>
                 </div>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Koleksi Resep & Bahan Kue</h1>
-                <p class="text-sm text-gray-500 mt-1">Panduan takaran bahan dan langkah pembuatan standar untuk seluruh produk By.Reesha</p>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Koleksi Formula & Resep</h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Standarisasi takaran bahan, panduan produksi dapur, dan formula resmi By.Reesha.</p>
             </div>
+
             <div class="flex items-center gap-3">
                 <button onclick="openModalTambah()"
-                    class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md shadow-pink-100 transition flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition hover:shadow">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     <span>Tambah Resep Baru</span>
@@ -471,13 +339,7 @@
             filterResep();
         }
 
-        const dashBtn = document.getElementById('mobile-dash-btn');
-        const dashMenu = document.getElementById('mobile-dash-menu');
-        if (dashBtn && dashMenu) {
-            dashBtn.addEventListener('click', () => {
-                dashMenu.classList.toggle('hidden');
-            });
-        }
+
     </script>
 
 </body>

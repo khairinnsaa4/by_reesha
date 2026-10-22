@@ -3,218 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>By.Reesha - Pelanggan</title>
+    <title>By.Reesha - Data Pelanggan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f9fafb; }
+        body {
+            font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
-<body class="flex flex-col md:flex-row min-h-screen text-gray-800 bg-[#f9fafb]">
+<body class="flex flex-col md:flex-row min-h-screen text-slate-800 bg-[#f8fafc]">
 
-    <!-- Mobile Topbar for Pelanggan -->
-    <header class="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-        <a href="/profil" class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-sm">
-                {{ substr(Auth::user()->name, 0, 1) }}
-            </div>
+    @include('partials.owner_sidebar', ['active' => 'pelanggan'])
+
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT AREA                          -->
+    <!-- ========================================== -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar">
+
+        <!-- Executive Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
-                <h4 class="font-semibold text-gray-800 text-xs leading-tight">{{ Auth::user()->name }}</h4>
-                <p class="text-[10px] text-gray-400 capitalize">{{ Auth::user()->role }}</p>
+                <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
+                    <span>Portal Manajemen</span>
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span class="text-pink-600 font-semibold">Data Pelanggan</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Database Pelanggan</h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Daftar akun pembeli terdaftar, frekuensi transaksi, dan akumulasi belanja.</p>
             </div>
-        </a>
-        <button id="mobile-dash-btn" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none" aria-label="Buka Menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </header>
 
-    <!-- Mobile Dropdown Navigation -->
-    <div id="mobile-dash-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 py-3 shadow-md space-y-1">
-        <nav class="space-y-1">
-            <a href="/dashboard-owner" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Dashboard
-            </a>
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/karyawan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Karyawan
-            </a>
-            <a href="/pelanggan" class="block w-full text-left px-3 py-2 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm">
-                Pelanggan
-            </a>
-            @endif
-            <a href="/pemesanan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Pemesanan
-            </a>
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/transaksi" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Transaksi
-            </a>
-            @endif
-            <a href="/logistik" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Logistik
-            </a>
-            <a href="/supplier" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Supplier
-            </a>
-            @if(Auth::check() && Auth::user()->isPembuatKue())
-            <a href="/resep" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm flex items-center justify-between">
-                <span>Resep Produk</span>
-                <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded font-semibold">Baker</span>
-            </a>
-            @endif
-            @if(Auth::check() && Auth::user()->role === 'owner')
-            <a href="/laporan" class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                Laporan
-            </a>
-            @endif
-        </nav>
-        <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
-            <a href="/" class="text-xs text-gray-500 font-medium hover:text-gray-800">Lihat Website</a>
-            <form action="/logout" method="POST" class="inline">
-                @csrf
-                <button type="submit" class="text-xs text-red-500 font-medium hover:underline">Keluar</button>
-            </form>
-        </div>
-    </div>
-
-    {{-- ===== SIDEBAR ===== --}}
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between h-screen sticky top-0 p-5 hidden md:flex shrink-0">
-        <div>
-            <a href="/profil" class="flex items-center gap-3 mb-8 p-2 -ml-2 rounded-xl hover:bg-gray-50 transition cursor-pointer group">
-                <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-lg">
-                    {{ substr(Auth::user()->name, 0, 1) }}
-                </div>
-                <div>
-                    <h4 class="font-medium text-gray-800 text-sm group-hover:text-pink-600 transition">{{ Auth::user()->name }}</h4>
-                    <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
-                </div>
-            </a>
-
-            <nav class="space-y-1">
-                <a href="/dashboard-owner" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Dashboard
-                </a>
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/karyawan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Karyawan
-                </a>
-                @endif
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/pelanggan" class="block w-full text-left px-4 py-2.5 rounded-lg bg-pink-50 text-pink-700 font-medium text-sm">
-                    Pelanggan
-                </a>
-                @endif
-                <a href="/pemesanan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Pemesanan
-                </a>
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/transaksi" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Transaksi
-                </a>
-                @endif
-                <a href="/logistik" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Logistik
-                </a>
-                <a href="/supplier" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm">
-                    Supplier
-                </a>
-                @if(Auth::check() && Auth::user()->isPembuatKue())
-                <a href="/resep" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm flex items-center justify-between">
-                    <span>Resep Produk</span>
-                    <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded font-semibold">Baker</span>
-                </a>
-                @endif
-                @if(Auth::check() && Auth::user()->role === 'owner')
-                <a href="/laporan" class="block w-full text-left px-4 py-2.5 rounded-lg text-gray-600 font-medium hover:bg-gray-50 transition text-sm mb-4">
-                    Laporan
-                </a>
-                @endif
-            </nav>
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-700 shadow-2xs font-semibold">
+                    <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span>Total: <strong id="header-plg-count" class="text-slate-900">{{ count($pelanggan) }}</strong> Pelanggan</span>
+                </span>
+            </div>
         </div>
 
-        <div class="mt-8 border-t border-gray-100 pt-4">
-            <a href="/" class="block w-full text-left px-4 py-2 text-gray-500 font-medium hover:text-gray-800 transition text-sm mb-2">
-                Lihat Website
-            </a>
-            <form action="/logout" method="POST">
-                @csrf
-                <button type="submit" class="w-full text-left px-4 py-2 text-red-500 font-medium hover:bg-red-50 rounded-lg transition text-sm">
-                    Keluar
-                </button>
-            </form>
-        </div>
-    </aside>
-
-    {{-- ===== MAIN CONTENT ===== --}}
-    <main class="flex-1 p-4 sm:p-6 md:p-8 min-w-0">
-        
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-xl sm:text-2xl font-semibold">Pelanggan</h1>
-        </div>
-
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-            <div class="p-3.5 sm:p-4 border-b border-gray-200 flex flex-wrap sm:flex-nowrap items-center gap-2">
-                <div class="relative flex-1 min-w-[200px]">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <!-- Table Card Container -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <!-- Table Header Toolbar -->
+            <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div class="relative flex-1 max-w-md">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <input type="text" id="search-pelanggan" placeholder="Cari nama atau email pelanggan..." oninput="cariPelanggan()"
-                        class="text-sm border border-gray-300 rounded-lg pl-9 pr-3 py-2 focus:outline-none focus:border-pink-500 w-full transition">
+                    <input type="text" id="search-pelanggan" placeholder="Cari berdasarkan nama atau email pelanggan..." oninput="cariPelanggan()"
+                        class="w-full text-xs sm:text-sm border border-slate-200 rounded-xl pl-9 pr-3 py-2 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition">
                 </div>
-                <button onclick="cariPelanggan()" class="bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Cari
-                </button>
-                <span id="result-count-plg" class="text-xs text-gray-400 ml-2"></span>
+
+                <div class="text-xs text-slate-500">
+                    <span id="result-count-plg" class="text-slate-400"></span>
+                </div>
             </div>
-            
+
+            <!-- Table Body -->
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
+                <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
                     <thead>
-                        <tr class="bg-gray-50 text-gray-500 border-b border-gray-200">
-                            <th class="px-6 py-3 font-medium">Nama</th>
-                            <th class="px-6 py-3 font-medium">Email</th>
-                            <th class="px-6 py-3 font-medium">Total Pesanan</th>
-                            <th class="px-6 py-3 font-medium">Total Belanja</th>
-                            <th class="px-6 py-3 font-medium">Tipe</th>
+                        <tr class="bg-slate-50/80 text-slate-500 border-b border-slate-200 text-[11px] font-semibold uppercase tracking-wider">
+                            <th class="px-5 py-3.5">Pelanggan</th>
+                            <th class="px-5 py-3.5">Alamat Email</th>
+                            <th class="px-5 py-3.5 text-center">Frekuensi Pesanan</th>
+                            <th class="px-5 py-3.5">Total Nilai Belanja</th>
+                            <th class="px-5 py-3.5 text-center">Status Loyalitas</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100" id="tabel-pelanggan">
+                    <tbody class="divide-y divide-slate-100" id="tabel-pelanggan">
                         @forelse($pelanggan as $p)
-                        <tr class="hover:bg-gray-50 plg-row">
-                            <td class="px-6 py-4 font-medium text-gray-800">{{ $p->name }}</td>
-                            <td class="px-6 py-4 text-gray-500">{{ $p->email }}</td>
-                            <td class="px-6 py-4 text-gray-500">{{ $p->transaksis_count ?? 0 }} Pesanan</td>
-                            <td class="px-6 py-4 font-semibold text-pink-600">Rp {{ number_format($p->transaksis_sum_total_harga ?? 0, 0, ',', '.') }}</td>
-                            <td class="px-6 py-4">
+                        <tr class="hover:bg-slate-50/60 transition-colors plg-row">
+                            <!-- Name & Avatar -->
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white font-bold text-xs shrink-0 ring-1 ring-slate-200">
+                                        @if($p->avatar)
+                                            <img src="{{ $p->avatar_url }}" class="w-full h-full object-cover" alt="{{ $p->name }}">
+                                        @else
+                                            <span>{{ strtoupper(substr($p->name, 0, 1)) }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="font-semibold text-slate-800 text-xs sm:text-sm truncate">{{ $p->name }}</span>
+                                </div>
+                            </td>
+
+                            <!-- Email -->
+                            <td class="px-5 py-4 text-xs text-slate-600 font-mono">
+                                {{ $p->email }}
+                            </td>
+
+                            <!-- Order Frequency -->
+                            <td class="px-5 py-4 text-center">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700">
+                                    {{ $p->transaksis_count ?? 0 }} pesanan
+                                </span>
+                            </td>
+
+                            <!-- Total Spend -->
+                            <td class="px-5 py-4 font-bold text-slate-900 text-xs">
+                                Rp {{ number_format($p->transaksis_sum_total_harga ?? 0, 0, ',', '.') }}
+                            </td>
+
+                            <!-- Loyalty Badge -->
+                            <td class="px-5 py-4 text-center">
                                 @if(($p->transaksis_count ?? 0) > 3)
-                                    <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-md">Loyal</span>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200 text-[11px] font-semibold rounded-md">
+                                        <svg class="w-3 h-3 text-violet-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        Loyal Customer
+                                    </span>
                                 @elseif(($p->transaksis_count ?? 0) > 0)
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-md">Reguler</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 bg-sky-50 text-sky-700 border border-sky-200 text-[11px] font-semibold rounded-md">
+                                        Reguler
+                                    </span>
                                 @else
-                                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-md">Baru</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 bg-slate-100 text-slate-600 border border-slate-200 text-[11px] font-semibold rounded-md">
+                                        Pelanggan Baru
+                                    </span>
                                 @endif
                             </td>
                         </tr>
                         @empty
                         <tr id="row-empty-plg">
-                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">Belum ada pelanggan terdaftar.</td>
+                            <td colspan="5" class="px-6 py-12 text-center">
+                                <div class="max-w-xs mx-auto text-slate-400">
+                                    <svg class="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
+                                    </svg>
+                                    <p class="text-sm font-semibold text-slate-600">Belum ada pelanggan terdaftar</p>
+                                    <p class="text-xs text-slate-400 mt-1">Akun pembeli yang mendaftar akan tersimpan secara otomatis di sini.</p>
+                                </div>
+                            </td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="p-4 border-t border-gray-100 flex items-center justify-between">
-                <p class="text-xs text-gray-500">Menampilkan <span id="plg-count">{{ count($pelanggan) }}</span> pelanggan terdaftar</p>
-                <p id="no-result-plg" class="hidden text-xs text-red-400">Tidak ada pelanggan yang cocok dengan pencarian.</p>
+
+            <!-- Table Footer -->
+            <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 bg-slate-50/40">
+                <span>Menampilkan <strong id="plg-count" class="text-slate-800">{{ count($pelanggan) }}</strong> data pelanggan</span>
+                <span id="no-result-plg" class="hidden text-rose-500 font-medium">Tidak ada pelanggan yang cocok dengan kata kunci pencarian.</span>
             </div>
         </div>
+
     </main>
 
+    <!-- Scripts -->
     <script>
         function cariPelanggan() {
             const keyword = document.getElementById('search-pelanggan').value.toLowerCase();
@@ -232,7 +190,7 @@
             });
 
             document.getElementById('result-count-plg').innerText =
-                keyword ? `${visible} hasil ditemukan` : '';
+                keyword ? `${visible} hasil` : '';
             document.getElementById('plg-count').innerText = visible || {{ count($pelanggan) }};
 
             const noResult = document.getElementById('no-result-plg');
@@ -242,15 +200,6 @@
         document.getElementById('search-pelanggan').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') cariPelanggan();
         });
-
-        const dashBtn = document.getElementById('mobile-dash-btn');
-        const dashMenu = document.getElementById('mobile-dash-menu');
-        if (dashBtn && dashMenu) {
-            dashBtn.addEventListener('click', () => {
-                dashMenu.classList.toggle('hidden');
-            });
-        }
     </script>
-
 </body>
 </html>
