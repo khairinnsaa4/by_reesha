@@ -85,11 +85,17 @@
                     </div>
 
                     <div class="flex-grow min-w-0">
-                        <h3 class="text-xs sm:text-sm font-bold text-gray-800">Foto Profil Akun</h3>
-                        <p class="text-[11px] text-gray-500 mt-0.5">Ketuk ikon pensil untuk mengganti atau menghapus foto profil.</p>
-                        <div id="avatar-status-badge" class="mt-1.5 inline-block text-[10px] font-semibold text-pink-600 bg-pink-100/60 px-2.5 py-0.5 rounded-full">
-                            {{ Auth::user()->avatar ? 'Foto Profil Terpasang' : 'Belum Ada Foto' }}
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-sm sm:text-base font-bold text-gray-800 truncate capitalize">{{ Auth::user()->name }}</h3>
+                            @if(Auth::user()->role === 'owner')
+                                <span class="bg-gray-900 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Owner</span>
+                            @elseif(Auth::user()->role === 'karyawan')
+                                <span class="bg-pink-100 text-pink-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Staf</span>
+                            @else
+                                <span class="bg-pink-50 text-pink-600 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase border border-pink-100">Member</span>
+                            @endif
                         </div>
+                        <p class="text-xs text-gray-400 truncate mt-0.5">{{ Auth::user()->email }}</p>
                     </div>
                 </div>
 
@@ -274,13 +280,6 @@
                     const btnHapus = document.getElementById('modal-btn-hapus');
                     if (btnHapus) btnHapus.classList.remove('hidden');
 
-                    // Update badge status di halaman utama
-                    const badge = document.getElementById('avatar-status-badge');
-                    if (badge) {
-                        badge.textContent = 'Foto Baru Dipilih (Simpan Perubahan)';
-                        badge.className = 'mt-1.5 inline-block text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full';
-                    }
-
                     // Tutup modal secara halus
                     setTimeout(closeAvatarModal, 300);
                 };
@@ -315,13 +314,6 @@
             // Sembunyikan tombol hapus di modal
             const btnHapus = document.getElementById('modal-btn-hapus');
             if (btnHapus) btnHapus.classList.add('hidden');
-
-            // Update badge status di halaman utama
-            const badge = document.getElementById('avatar-status-badge');
-            if (badge) {
-                badge.textContent = 'Foto akan dihapus saat disimpan';
-                badge.className = 'mt-1.5 inline-block text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2.5 py-0.5 rounded-full';
-            }
 
             // Tutup modal
             closeAvatarModal();
