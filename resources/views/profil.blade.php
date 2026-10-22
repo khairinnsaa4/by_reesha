@@ -128,14 +128,9 @@
                         <span class="text-[11px] text-gray-400 block">Riwayat transaksi & status kue yang dipesan</span>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-[11px] font-semibold text-pink-600 bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-100">
-                        {{ Auth::user()->transaksis()->count() }} Pesanan
-                    </span>
-                    <svg class="w-4 h-4 text-gray-400 group-hover:text-pink-600 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </div>
+                <svg class="w-4 h-4 text-gray-400 group-hover:text-pink-600 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
             </a>
 
             {{-- 2. ALAMAT PENGIRIMAN (Masuk ke halaman Alamat) --}}
@@ -152,16 +147,9 @@
                         <span class="text-[11px] text-gray-400 block">Tujuan pengantaran kue & patokan rumah</span>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    @if(Auth::user()->address)
-                        <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                            Tersimpan
-                        </span>
-                    @endif
-                    <svg class="w-4 h-4 text-gray-400 group-hover:text-pink-600 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </div>
+                <svg class="w-4 h-4 text-gray-400 group-hover:text-pink-600 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
             </a>
 
             {{-- 3. INFORMASI AKUN (Masuk ke halaman Ubah Profil) --}}
