@@ -57,10 +57,6 @@
                         @endif
                     </div>
                 </a>
-                
-                <a href="/logout" class="text-xs font-bold text-gray-400 hover:text-red-500 transition px-2 py-1">
-                    Keluar
-                </a>
             @else
                 <a href="/login" class="text-sm font-bold text-pink-600 hover:text-pink-700 px-4 py-2 border border-pink-200 rounded-xl hover:bg-pink-50 transition">
                     Masuk
