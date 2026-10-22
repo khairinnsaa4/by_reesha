@@ -58,12 +58,16 @@
             <form action="/profil/update" method="POST" enctype="multipart/form-data" class="space-y-5">
                 @csrf
 
-                <!-- SEKSI FOTO PROFIL -->
-                <div class="bg-pink-50/30 p-4 rounded-2xl border border-pink-100/70">
-                    <label class="block text-xs font-bold text-gray-700 mb-3">Foto Profil Akun</label>
-                    <div class="flex items-center gap-4">
-                        <!-- Lingkaran Avatar Preview -->
-                        <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-tr from-pink-500 to-rose-400 text-white flex-shrink-0 border-2 border-white shadow-md flex items-center justify-center">
+                <!-- INPUT FILE & DATA HIDDEN -->
+                <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/jpg,image/webp" class="hidden" onchange="previewAvatar(event)">
+                <input type="hidden" name="avatar_base64" id="avatar-base64-input">
+                <input type="hidden" name="hapus_avatar" id="hapus-avatar-input" value="0">
+
+                <!-- SEKSI FOTO PROFIL DENGAN IKON PENSIL (BERSIH & MINIMALIS) -->
+                <div class="bg-pink-50/30 p-4 rounded-2xl border border-pink-100/70 flex items-center gap-4">
+                    <!-- Lingkaran Avatar Preview dengan Ikon Pensil Edit -->
+                    <div class="relative flex-shrink-0 cursor-pointer group" onclick="openAvatarModal()" title="Klik untuk kelola foto profil">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-tr from-pink-500 to-rose-400 text-white flex-shrink-0 border-2 border-white shadow-md flex items-center justify-center transition group-hover:opacity-95">
                             <img id="avatar-preview-img" 
                                  src="{{ Auth::user()->avatar ? Auth::user()->avatar_url : '' }}" 
                                  class="w-full h-full object-cover {{ Auth::user()->avatar ? '' : 'hidden' }}"
@@ -72,26 +76,19 @@
                                 {{ substr(Auth::user()->name, 0, 1) }}
                             </span>
                         </div>
+                        <!-- Tombol Ikon Pensil Edit -->
+                        <button type="button" onclick="openAvatarModal(); event.stopPropagation();" class="absolute -bottom-1 -right-1 w-7 h-7 sm:w-8 sm:h-8 bg-pink-600 hover:bg-pink-700 text-white rounded-full flex items-center justify-center shadow-md border-2 border-white transition transform hover:scale-110 active:scale-95" title="Ubah Foto Profil">
+                            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                        </button>
+                    </div>
 
-                        <div class="flex-1 min-w-0">
-                            <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/jpg,image/webp" class="hidden" onchange="previewAvatar(event)">
-                            <input type="hidden" name="avatar_base64" id="avatar-base64-input">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <button type="button" onclick="document.getElementById('avatar-input').click()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-pink-50 text-pink-600 border border-pink-200 text-xs font-semibold rounded-xl transition shadow-2xs cursor-pointer">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    <span>Pilih Foto Baru</span>
-                                </button>
-
-                                @if(Auth::user()->avatar)
-                                    <label class="inline-flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 cursor-pointer select-none">
-                                        <input type="checkbox" name="hapus_avatar" value="1" id="hapus-avatar-cb" onchange="toggleHapusAvatar(this)" class="rounded text-red-600 focus:ring-red-400">
-                                        <span>Hapus Foto</span>
-                                    </label>
-                                @endif
-                            </div>
-                            <p id="avatar-filename-label" class="text-[10px] text-gray-400 mt-1.5">Format JPG, PNG, atau WEBP (Maksimal 5MB)</p>
+                    <div class="flex-grow min-w-0">
+                        <h3 class="text-xs sm:text-sm font-bold text-gray-800">Foto Profil Akun</h3>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Ketuk ikon pensil untuk mengganti atau menghapus foto profil.</p>
+                        <div id="avatar-status-badge" class="mt-1.5 inline-block text-[10px] font-semibold text-pink-600 bg-pink-100/60 px-2.5 py-0.5 rounded-full">
+                            {{ Auth::user()->avatar ? 'Foto Profil Terpasang' : 'Belum Ada Foto' }}
                         </div>
                     </div>
                 </div>
@@ -132,8 +129,79 @@
 
     </main>
 
-    <!-- SCRIPT PREVIEW AVATAR DENGAN RESIZE CANVAS (AMAN SERVERLESS VERCEL) -->
+    <!-- POP-UP MODAL KELOLA FOTO PROFIL (GANTI & HAPUS FOTO) -->
+    <div id="avatar-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-xl border border-pink-100 text-center relative transform transition-all">
+            
+            <!-- Tombol Tutup X -->
+            <button type="button" onclick="closeAvatarModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition" title="Tutup">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-1">Foto Profil</h3>
+            <p class="text-xs text-gray-400 mb-5">Pilih foto baru atau hapus foto profil akun Anda</p>
+
+            <!-- Preview Lingkaran Besar di Modal -->
+            <div class="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-5 rounded-full overflow-hidden bg-gradient-to-tr from-pink-500 to-rose-400 text-white border-4 border-pink-100 shadow-md flex items-center justify-center">
+                <img id="modal-avatar-preview-img" 
+                     src="{{ Auth::user()->avatar ? Auth::user()->avatar_url : '' }}" 
+                     class="w-full h-full object-cover {{ Auth::user()->avatar ? '' : 'hidden' }}"
+                     alt="Preview Foto">
+                <span id="modal-avatar-preview-fallback" class="text-3xl sm:text-4xl font-bold uppercase tracking-wider {{ Auth::user()->avatar ? 'hidden' : '' }}">
+                    {{ substr(Auth::user()->name, 0, 1) }}
+                </span>
+            </div>
+
+            <!-- Tombol Aksi di Modal -->
+            <div class="space-y-2.5">
+                <!-- Tombol Pilih Foto Baru -->
+                <button type="button" onclick="triggerPilihFoto()" class="w-full py-2.5 sm:py-3 px-4 bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>Pilih Foto Baru</span>
+                </button>
+
+                <!-- Tombol Hapus Foto Profil -->
+                <button type="button" id="modal-btn-hapus" onclick="handleHapusFoto()" class="w-full py-2.5 px-4 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 font-semibold text-xs sm:text-sm rounded-xl transition flex items-center justify-center gap-2 {{ Auth::user()->avatar ? '' : 'hidden' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    <span>Hapus Foto Profil</span>
+                </button>
+
+                <!-- Tombol Batal/Tutup -->
+                <button type="button" onclick="closeAvatarModal()" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-xs sm:text-sm rounded-xl transition">
+                    Tutup
+                </button>
+            </div>
+
+            <p class="text-[10px] text-gray-400 mt-4">Format: JPG, PNG, atau WEBP (Maksimal 5MB)</p>
+        </div>
+    </div>
+
+    <!-- SCRIPT POP-UP MODAL & PREVIEW AVATAR DENGAN RESIZE CANVAS -->
     <script>
+        function openAvatarModal() {
+            const modal = document.getElementById('avatar-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeAvatarModal() {
+            const modal = document.getElementById('avatar-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // Tutup jika klik backdrop
+        document.getElementById('avatar-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) closeAvatarModal();
+        });
+
+        function triggerPilihFoto() {
+            const input = document.getElementById('avatar-input');
+            if (input) input.click();
+        }
+
         function previewAvatar(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -142,12 +210,6 @@
                 alert('Ukuran foto terlalu besar! Maksimal 5MB.');
                 event.target.value = '';
                 return;
-            }
-
-            const label = document.getElementById('avatar-filename-label');
-            if (label) {
-                label.textContent = 'Dipilih: ' + file.name;
-                label.classList.add('text-pink-600', 'font-medium');
             }
 
             const reader = new FileReader();
@@ -177,7 +239,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Konversi ke format JPEG 85% kualitas (ukuran file hanya ~30-50KB)
+                    // Konversi ke format JPEG 85% kualitas (hanya ~30-50KB)
                     const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
 
                     // Masukkan ke input tersembunyi
@@ -186,53 +248,83 @@
                         base64Input.value = optimizedDataUrl;
                     }
 
-                    // Tampilkan preview foto profil
-                    const previewImg = document.getElementById('avatar-preview-img');
-                    const fallback = document.getElementById('avatar-preview-fallback');
-                    if (previewImg) {
-                        previewImg.src = optimizedDataUrl;
-                        previewImg.classList.remove('hidden');
-                    }
-                    if (fallback) fallback.classList.add('hidden');
+                    // Reset penanda hapus foto
+                    const hapusInput = document.getElementById('hapus-avatar-input');
+                    if (hapusInput) hapusInput.value = '0';
 
-                    const hapusCb = document.getElementById('hapus-avatar-cb');
-                    if (hapusCb) hapusCb.checked = false;
+                    // Update preview foto di halaman utama
+                    const mainImg = document.getElementById('avatar-preview-img');
+                    const mainFallback = document.getElementById('avatar-preview-fallback');
+                    if (mainImg) {
+                        mainImg.src = optimizedDataUrl;
+                        mainImg.classList.remove('hidden');
+                    }
+                    if (mainFallback) mainFallback.classList.add('hidden');
+
+                    // Update preview foto di dalam modal
+                    const modalImg = document.getElementById('modal-avatar-preview-img');
+                    const modalFallback = document.getElementById('modal-avatar-preview-fallback');
+                    if (modalImg) {
+                        modalImg.src = optimizedDataUrl;
+                        modalImg.classList.remove('hidden');
+                    }
+                    if (modalFallback) modalFallback.classList.add('hidden');
+
+                    // Munculkan tombol hapus di modal
+                    const btnHapus = document.getElementById('modal-btn-hapus');
+                    if (btnHapus) btnHapus.classList.remove('hidden');
+
+                    // Update badge status di halaman utama
+                    const badge = document.getElementById('avatar-status-badge');
+                    if (badge) {
+                        badge.textContent = 'Foto Baru Dipilih (Simpan Perubahan)';
+                        badge.className = 'mt-1.5 inline-block text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full';
+                    }
+
+                    // Tutup modal secara halus
+                    setTimeout(closeAvatarModal, 300);
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
 
-        function toggleHapusAvatar(checkbox) {
-            const previewImg = document.getElementById('avatar-preview-img');
-            const fallback = document.getElementById('avatar-preview-fallback');
-            const avatarInput = document.getElementById('avatar-input');
-            const base64Input = document.getElementById('avatar-base64-input');
-            const label = document.getElementById('avatar-filename-label');
+        function handleHapusFoto() {
+            // Tandai untuk hapus foto pada submit form
+            const hapusInput = document.getElementById('hapus-avatar-input');
+            if (hapusInput) hapusInput.value = '1';
 
-            if (checkbox.checked) {
-                if (avatarInput) avatarInput.value = '';
-                if (base64Input) base64Input.value = '';
-                if (label) {
-                    label.textContent = 'Foto akan dihapus setelah Anda menekan tombol simpan.';
-                    label.classList.remove('text-pink-600');
-                    label.classList.add('text-red-500');
-                }
-                if (previewImg) previewImg.classList.add('hidden');
-                if (fallback) fallback.classList.remove('hidden');
-            } else {
-                if (label) {
-                    label.textContent = 'Format JPG, PNG, atau WEBP (Maksimal 5MB)';
-                    label.classList.remove('text-red-500', 'text-pink-600');
-                }
-                @if(Auth::user()->avatar)
-                    if (previewImg) {
-                        previewImg.src = "{{ Auth::user()->avatar_url }}";
-                        previewImg.classList.remove('hidden');
-                    }
-                    if (fallback) fallback.classList.add('hidden');
-                @endif
+            const avatarInput = document.getElementById('avatar-input');
+            if (avatarInput) avatarInput.value = '';
+
+            const base64Input = document.getElementById('avatar-base64-input');
+            if (base64Input) base64Input.value = '';
+
+            // Sembunyikan gambar dan tampilkan inisial nama di halaman utama
+            const mainImg = document.getElementById('avatar-preview-img');
+            const mainFallback = document.getElementById('avatar-preview-fallback');
+            if (mainImg) mainImg.classList.add('hidden');
+            if (mainFallback) mainFallback.classList.remove('hidden');
+
+            // Sembunyikan gambar dan tampilkan inisial nama di dalam modal
+            const modalImg = document.getElementById('modal-avatar-preview-img');
+            const modalFallback = document.getElementById('modal-avatar-preview-fallback');
+            if (modalImg) modalImg.classList.add('hidden');
+            if (modalFallback) modalFallback.classList.remove('hidden');
+
+            // Sembunyikan tombol hapus di modal
+            const btnHapus = document.getElementById('modal-btn-hapus');
+            if (btnHapus) btnHapus.classList.add('hidden');
+
+            // Update badge status di halaman utama
+            const badge = document.getElementById('avatar-status-badge');
+            if (badge) {
+                badge.textContent = 'Foto akan dihapus saat disimpan';
+                badge.className = 'mt-1.5 inline-block text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2.5 py-0.5 rounded-full';
             }
+
+            // Tutup modal
+            closeAvatarModal();
         }
     </script>
 
