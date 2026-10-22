@@ -51,7 +51,7 @@
                 <a href="/profil" class="text-sm font-semibold text-gray-700 bg-pink-50 px-3 py-1.5 rounded-xl border border-pink-100 hover:bg-pink-100 transition flex items-center gap-2">
                     <div class="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white text-[11px] font-bold flex-shrink-0 shadow-xs">
                         @if(Auth::user()->avatar)
-                            <img src="{{ asset(Auth::user()->avatar) }}" class="w-full h-full object-cover">
+                            <img src="{{ Auth::user()->avatar_url }}" class="w-full h-full object-cover">
                         @else
                             <span>{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                         @endif

@@ -52,6 +52,19 @@ class User extends Authenticatable
         return $this->hasMany(Transaksi::class);
     }
 
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (!$this->avatar) {
+            return null;
+        }
+
+        if (str_starts_with($this->avatar, 'data:') || str_starts_with($this->avatar, 'http://') || str_starts_with($this->avatar, 'https://')) {
+            return $this->avatar;
+        }
+
+        return asset($this->avatar);
+    }
+
     public function isPembuatKue(): bool
     {
         if ($this->role === 'owner') {

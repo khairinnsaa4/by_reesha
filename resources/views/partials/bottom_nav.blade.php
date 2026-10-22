@@ -44,7 +44,7 @@
             <div class="relative {{ $isAkun ? 'scale-110' : '' }} transition-transform">
                 @if(Auth::check() && Auth::user()->avatar)
                     <div class="w-6 h-6 rounded-full overflow-hidden border {{ $isAkun ? 'border-pink-600 ring-2 ring-pink-300' : 'border-gray-300' }} shadow-xs">
-                        <img src="{{ asset(Auth::user()->avatar) }}" class="w-full h-full object-cover">
+                        <img src="{{ Auth::user()->avatar_url }}" class="w-full h-full object-cover">
                     </div>
                 @else
                     <svg class="w-6 h-6" fill="{{ $isAkun ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="{{ $isAkun ? '2.2' : '1.8' }}" viewBox="0 0 24 24">

@@ -65,7 +65,7 @@
                         <!-- Lingkaran Avatar Preview -->
                         <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-tr from-pink-500 to-rose-400 text-white flex-shrink-0 border-2 border-white shadow-md flex items-center justify-center">
                             <img id="avatar-preview-img" 
-                                 src="{{ Auth::user()->avatar ? asset(Auth::user()->avatar) : '' }}" 
+                                 src="{{ Auth::user()->avatar ? Auth::user()->avatar_url : '' }}" 
                                  class="w-full h-full object-cover {{ Auth::user()->avatar ? '' : 'hidden' }}"
                                  alt="Avatar Preview">
                             <span id="avatar-preview-fallback" class="text-xl sm:text-2xl font-bold uppercase {{ Auth::user()->avatar ? 'hidden' : '' }}">
@@ -75,6 +75,7 @@
 
                         <div class="flex-1 min-w-0">
                             <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/jpg,image/webp" class="hidden" onchange="previewAvatar(event)">
+                            <input type="hidden" name="avatar_base64" id="avatar-base64-input">
                             <div class="flex items-center gap-2 flex-wrap">
                                 <button type="button" onclick="document.getElementById('avatar-input').click()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-pink-50 text-pink-600 border border-pink-200 text-xs font-semibold rounded-xl transition shadow-2xs cursor-pointer">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -90,7 +91,7 @@
                                     </label>
                                 @endif
                             </div>
-                            <p id="avatar-filename-label" class="text-[10px] text-gray-400 mt-1.5">Format JPG, PNG, atau WEBP (Maksimal 2MB)</p>
+                            <p id="avatar-filename-label" class="text-[10px] text-gray-400 mt-1.5">Format JPG, PNG, atau WEBP (Maksimal 5MB)</p>
                         </div>
                     </div>
                 </div>
@@ -131,29 +132,65 @@
 
     </main>
 
-    <!-- SCRIPT PREVIEW AVATAR -->
+    <!-- SCRIPT PREVIEW AVATAR DENGAN RESIZE CANVAS (AMAN SERVERLESS VERCEL) -->
     <script>
         function previewAvatar(event) {
             const file = event.target.files[0];
-            if (file) {
-                if (file.size > 2097152) {
-                    alert('Ukuran foto terlalu besar! Maksimal 2MB.');
-                    event.target.value = '';
-                    return;
-                }
+            if (!file) return;
 
-                const label = document.getElementById('avatar-filename-label');
-                if (label) {
-                    label.textContent = 'Dipilih: ' + file.name;
-                    label.classList.add('text-pink-600', 'font-medium');
-                }
+            if (file.size > 5242880) { // Maks 5MB
+                alert('Ukuran foto terlalu besar! Maksimal 5MB.');
+                event.target.value = '';
+                return;
+            }
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
+            const label = document.getElementById('avatar-filename-label');
+            if (label) {
+                label.textContent = 'Dipilih: ' + file.name;
+                label.classList.add('text-pink-600', 'font-medium');
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Kompresi dan resize gambar menjadi resolusi ideal avatar (maks 400x400)
+                    const maxDim = 400;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Konversi ke format JPEG 85% kualitas (ukuran file hanya ~30-50KB)
+                    const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+                    // Masukkan ke input tersembunyi
+                    const base64Input = document.getElementById('avatar-base64-input');
+                    if (base64Input) {
+                        base64Input.value = optimizedDataUrl;
+                    }
+
+                    // Tampilkan preview foto profil
                     const previewImg = document.getElementById('avatar-preview-img');
                     const fallback = document.getElementById('avatar-preview-fallback');
                     if (previewImg) {
-                        previewImg.src = e.target.result;
+                        previewImg.src = optimizedDataUrl;
                         previewImg.classList.remove('hidden');
                     }
                     if (fallback) fallback.classList.add('hidden');
@@ -161,18 +198,21 @@
                     const hapusCb = document.getElementById('hapus-avatar-cb');
                     if (hapusCb) hapusCb.checked = false;
                 };
-                reader.readAsDataURL(file);
-            }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function toggleHapusAvatar(checkbox) {
             const previewImg = document.getElementById('avatar-preview-img');
             const fallback = document.getElementById('avatar-preview-fallback');
             const avatarInput = document.getElementById('avatar-input');
+            const base64Input = document.getElementById('avatar-base64-input');
             const label = document.getElementById('avatar-filename-label');
 
             if (checkbox.checked) {
                 if (avatarInput) avatarInput.value = '';
+                if (base64Input) base64Input.value = '';
                 if (label) {
                     label.textContent = 'Foto akan dihapus setelah Anda menekan tombol simpan.';
                     label.classList.remove('text-pink-600');
@@ -182,12 +222,12 @@
                 if (fallback) fallback.classList.remove('hidden');
             } else {
                 if (label) {
-                    label.textContent = 'Format JPG, PNG, atau WEBP (Maksimal 2MB)';
+                    label.textContent = 'Format JPG, PNG, atau WEBP (Maksimal 5MB)';
                     label.classList.remove('text-red-500', 'text-pink-600');
                 }
                 @if(Auth::user()->avatar)
                     if (previewImg) {
-                        previewImg.src = "{{ asset(Auth::user()->avatar) }}";
+                        previewImg.src = "{{ Auth::user()->avatar_url }}";
                         previewImg.classList.remove('hidden');
                     }
                     if (fallback) fallback.classList.add('hidden');

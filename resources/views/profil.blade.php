@@ -24,7 +24,7 @@
             <div class="relative flex-shrink-0">
                 <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-tr from-pink-500 to-rose-400 text-white shadow-md flex items-center justify-center border-2 border-pink-100 overflow-hidden">
                     @if(Auth::user()->avatar)
-                        <img src="{{ asset(Auth::user()->avatar) }}" class="h-full w-full object-cover" alt="Foto Profil">
+                        <img src="{{ Auth::user()->avatar_url }}" class="h-full w-full object-cover" alt="Foto Profil">
                     @else
                         <span class="text-2xl font-bold uppercase tracking-wider">
                             {{ substr(Auth::user()->name, 0, 1) }}
