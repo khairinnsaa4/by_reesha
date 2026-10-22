@@ -37,5 +37,14 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        // Tangani sesi kedaluwarsa (419 TokenMismatchException) secara anggun
+        $this->renderable(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            if ($request->is('logout') || $request->is('*/logout')) {
+                \Illuminate\Support\Facades\Auth::logout();
+                return redirect('/');
+            }
+            return redirect()->back()->with('error', 'Sesi Anda telah kedaluwarsa. Silakan coba kembali.');
+        });
     }
 }

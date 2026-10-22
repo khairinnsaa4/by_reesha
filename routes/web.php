@@ -30,7 +30,7 @@ Route::get('/register', function () { return view('register'); });
 
 Route::post('/register', [AuthController::class, 'registerProses']);
 Route::post('/login', [AuthController::class, 'loginProses']);
-Route::post('/logout', [AuthController::class, 'logout']);
+Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
 use App\Models\Transaksi;
 use App\Models\User;

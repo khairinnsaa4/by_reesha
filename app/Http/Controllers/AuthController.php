@@ -58,8 +58,12 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        try {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        } catch (\Throwable $e) {
+            // Abaikan jika sesi telah kedaluwarsa sebelumnya
+        }
         return redirect('/');
     }
 

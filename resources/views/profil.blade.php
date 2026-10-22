@@ -268,12 +268,9 @@
                 <button type="button" onclick="closeLogoutModal()" class="flex-1 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs sm:text-sm rounded-xl transition">
                     Batal
                 </button>
-                <form action="/logout" method="POST" class="flex-1">
-                    @csrf
-                    <button type="submit" class="w-full py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-sm transition">
-                        Ya, Keluar
-                    </button>
-                </form>
+                <a href="/logout" class="flex-1 py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-sm transition inline-flex items-center justify-center">
+                    Ya, Keluar
+                </a>
             </div>
         </div>
     </div>
