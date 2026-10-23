@@ -5,6 +5,17 @@
 
     RewriteEngine On
 
+    # Security: Mitigate PHP2Shell (Disable Session Upload Progress)
+    <IfModule mod_php.c>
+        php_flag session.upload_progress.enabled off
+    </IfModule>
+    <IfModule mod_php7.c>
+        php_flag session.upload_progress.enabled off
+    </IfModule>
+    <IfModule mod_php8.c>
+        php_flag session.upload_progress.enabled off
+    </IfModule>
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
