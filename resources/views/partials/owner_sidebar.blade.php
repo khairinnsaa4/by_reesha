@@ -136,33 +136,13 @@
 <aside class="w-64 bg-white border-r border-slate-200/90 flex flex-col justify-between h-screen sticky top-0 p-5 hidden md:flex shrink-0 shadow-2xs no-print">
     <div class="overflow-y-auto pr-1">
         <!-- Brand Identity -->
-        <div class="flex items-center gap-3 px-2 py-2 mb-6 border-b border-slate-100 pb-4">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="w-10 h-10 object-contain rounded-full bg-pink-50 ring-2 ring-pink-100 p-0.5" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'12\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
-            <div>
-                <h2 class="text-base font-extrabold text-pink-600 tracking-wider leading-none">BY.REESHA</h2>
-                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mt-1">Portal Manajemen</span>
+        <div class="flex items-center gap-3 px-2 py-3 mb-4 border-b border-slate-100">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="w-9 h-9 object-contain rounded-full bg-pink-50 ring-2 ring-pink-100 p-0.5 shadow-2xs" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'12\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
+            <div class="min-w-0">
+                <h2 class="text-sm font-extrabold text-slate-900 tracking-wider leading-none">BY.REESHA</h2>
+                <span class="text-[10px] font-semibold text-pink-600 uppercase tracking-wider block mt-1">Portal Manajemen</span>
             </div>
         </div>
-
-        <!-- Profile Info Card -->
-        <a href="/profil" class="flex items-center gap-3 mb-6 p-2.5 rounded-xl bg-slate-50/70 hover:bg-pink-50/50 border border-slate-200/60 transition group" title="Pengaturan Akun & Profil">
-            <div class="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white font-bold text-xs ring-2 ring-white shadow-xs shrink-0">
-                @if($user && $user->avatar)
-                    <img src="{{ $user->avatar_url }}" class="w-full h-full object-cover" alt="{{ $user->name }}">
-                @else
-                    <span>{{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}</span>
-                @endif
-            </div>
-            <div class="min-w-0 flex-1">
-                <h4 class="font-semibold text-slate-800 text-xs truncate group-hover:text-pink-600 transition">{{ $user->name ?? 'Pengguna' }}</h4>
-                <span class="inline-flex items-center px-1.5 py-0.2 text-[10px] font-semibold rounded bg-pink-100 text-pink-700 capitalize mt-0.5">
-                    {{ ($user && $user->divisi) ? $user->divisi : ($user->role ?? 'User') }}
-                </span>
-            </div>
-            <svg class="w-4 h-4 text-slate-400 group-hover:text-pink-600 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-        </a>
 
         <!-- Navigation Links with Crisp Formal SVG Icons -->
         <nav class="space-y-1">
@@ -252,17 +232,35 @@
     </div>
 
     <!-- Sidebar Footer Action -->
-    <div class="border-t border-slate-100 pt-4 space-y-1">
-        <a href="/" class="flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-slate-500 font-medium hover:text-slate-900 hover:bg-slate-50 transition text-sm">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="border-t border-slate-100 pt-3 space-y-1">
+        <!-- Compact Account Link -->
+        <a href="/profil" class="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition group" title="Pengaturan Akun & Profil">
+            <div class="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-500 text-white font-bold text-[11px] shrink-0 ring-1 ring-slate-200">
+                @if($user && $user->avatar)
+                    <img src="{{ $user->avatar_url }}" class="w-full h-full object-cover" alt="{{ $user->name }}">
+                @else
+                    <span>{{ strtoupper(substr($user->name ?? 'O', 0, 1)) }}</span>
+                @endif
+            </div>
+            <div class="min-w-0 flex-1 text-left">
+                <p class="font-semibold text-xs text-slate-800 truncate group-hover:text-pink-600 transition">{{ $user->name ?? 'Owner By.Reesha' }}</p>
+                <p class="text-[10px] text-slate-400 capitalize truncate">{{ ($user && $user->divisi) ? $user->divisi : ($user->role ?? 'Owner') }}</p>
+            </div>
+            <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-pink-600 transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </a>
+
+        <a href="/" class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-slate-500 font-medium hover:text-slate-900 hover:bg-slate-50 transition text-xs">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
             <span>Lihat Website</span>
         </a>
         <form action="/logout" method="POST">
             @csrf
-            <button type="submit" class="w-full flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-red-600 font-medium hover:bg-red-50/80 transition text-sm">
-                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-rose-600 font-medium hover:bg-rose-50 transition text-xs">
+                <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
                 <span>Keluar</span>
