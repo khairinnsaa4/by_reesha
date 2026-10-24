@@ -73,25 +73,32 @@
                     <div class="text-gray-500"><span class="font-bold text-gray-800">358</span> Terjual</div>
                 </div>
 
-                <div class="bg-pink-50/60 p-4 sm:p-5 rounded-2xl border border-pink-100 flex items-baseline justify-between gap-2 mb-5">
-                    <div class="flex items-baseline gap-2">
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600">Rp {{ number_format($cake->harga, 0, ',', '.') }}</div>
-                        <span class="text-xs text-gray-400 font-medium">/ porsi</span>
+                <div class="bg-pink-50/60 p-4 sm:p-5 rounded-2xl border border-pink-100 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 mb-5">
+                    <div>
+                        <div class="flex items-baseline gap-2">
+                            <div class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600">Rp {{ number_format($cake->harga, 0, ',', '.') }}</div>
+                            <span class="text-xs text-gray-400 font-medium">/ porsi</span>
+                        </div>
+                        <div class="text-xs text-gray-500 flex items-center gap-3 mt-1.5 font-medium">
+                            <span>Stok Tersedia: <strong class="{{ $cake->stock <= 0 ? 'text-rose-600 font-bold' : 'text-gray-800' }}">{{ $cake->stock }}</strong></span>
+                            <span>•</span>
+                            <span>Terjual: <strong class="text-gray-800">{{ $cake->sold_count ?? 0 }}</strong></span>
+                        </div>
                     </div>
 
                     <!-- Quota Batch Indicator -->
                     <div>
-                        @if($cake->stok <= 0)
+                        @if($cake->stock <= 0)
                             <span class="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-100 px-3 py-1 rounded-full">
-                                ● Slot Batch Penuh
+                                ● Stok Habis
                             </span>
                         @elseif($cake->isLowStock())
                             <span class="inline-flex items-center gap-1 text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full animate-pulse">
-                                ● Sisa {{ $cake->stok }} Slot PO
+                                ● Sisa {{ $cake->stock }} Stok Tersedia
                             </span>
                         @else
                             <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
-                                ● Kuota {{ $cake->stok }} Slot Tersedia
+                                ● {{ $cake->stock }} Stok Tersedia
                             </span>
                         @endif
                     </div>
@@ -125,14 +132,14 @@
                                 <input type="text" id="qty-input" value="1" class="w-12 h-8 text-center text-gray-800 font-semibold text-sm focus:outline-none" readonly>
                                 <button type="button" onclick="increaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-l border-gray-200 font-bold">+</button>
                             </div>
-                            <span class="text-gray-400 text-xs">Pre-Order 2 Hari (Maks: {{ $cake->stok }} slot)</span>
+                            <span class="text-gray-400 text-xs">Pre-Order 2 Hari (Maks: {{ $cake->stock }} slot)</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- CTA Order Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 pt-4 sm:pt-6 mt-auto w-full">
-                    @if($cake->stok > 0)
+                    @if($cake->stock > 0)
                         <a href="javascript:void(0)" onclick="addToCart()" class="flex-1 flex items-center justify-center gap-2 bg-pink-50 border-2 border-pink-500 text-pink-600 hover:bg-pink-100 font-bold py-3.5 px-4 rounded-xl transition text-sm shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
@@ -143,9 +150,10 @@
                             <span>Beli Sekarang</span>
                         </a>
                     @else
-                        <div class="w-full bg-slate-100 border border-slate-200 rounded-xl p-3.5 text-center text-xs font-semibold text-slate-500">
-                            Slot kuota baking untuk kue ini telah habis pada batch saat ini. Mohon periksa kembali pada batch berikutnya atau pilih varian lain.
-                        </div>
+                        <button type="button" disabled class="w-full bg-gray-200 text-gray-400 cursor-not-allowed font-bold py-3.5 px-4 rounded-xl text-sm shadow-none select-none flex items-center justify-center gap-2" title="Stok Produk Habis">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                            <span>Stok Habis</span>
+                        </button>
                     @endif
                 </div>
             </div>
@@ -207,7 +215,7 @@
     </footer>
 
     <script>
-        const maxStock = {{ (int) $cake->stok }};
+        const maxStock = {{ (int) $cake->stock }};
         let selectedUkuran = 'Standard';
         let selectedVarian = 'Vanilla Milky';
 

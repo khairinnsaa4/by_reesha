@@ -204,9 +204,15 @@
                             <div class="flex-grow">
                                 <h4 class="font-medium text-gray-800 text-sm">{{ $nama }}</h4>
                                 <p class="text-xs text-gray-500 mt-0.5">Varian: {{ $varian }} • Ukuran: {{ $ukuran }}</p>
-                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-pink-700 bg-pink-50 border border-pink-100 px-2 py-0.5 rounded-md mt-1.5">
-                                    Pre-Order 2 Hari • Kuota Tersedia: {{ $stok ?? 10 }} Slot
-                                </span>
+                                @if(($stok ?? 0) <= 0)
+                                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md mt-1.5">
+                                        Stok Habis (0 Unit)
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-pink-700 bg-pink-50 border border-pink-100 px-2 py-0.5 rounded-md mt-1.5">
+                                        Stok Tersedia: {{ $stok }} Unit
+                                    </span>
+                                @endif
                             </div>
                             <div class="text-sm text-gray-800 font-medium text-right">
                                 Rp {{ number_format($harga, 0, ',', '.') }} <br>
@@ -324,9 +330,15 @@
                         <span class="font-bold text-2xl text-pink-600" id="total-tagihan">Rp {{ number_format(($harga * $qty) + 15000 + 1000, 0, ',', '.') }}</span>
                     </div>
 
-                    <button type="submit" id="btn-buat-pesanan" class="w-full block text-center bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 px-4 rounded-lg shadow-md transition text-lg">
-                        Buat Pesanan
-                    </button>
+                    @if(($stok ?? 0) < $qty)
+                        <button type="button" disabled class="w-full block text-center bg-gray-300 text-gray-500 cursor-not-allowed font-semibold py-4 px-4 rounded-lg shadow-none text-lg select-none" title="Stok produk tidak mencukupi untuk jumlah ini">
+                            Stok Tidak Mencukupi (Tersisa {{ $stok }} Unit)
+                        </button>
+                    @else
+                        <button type="submit" id="btn-buat-pesanan" class="w-full block text-center bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 px-4 rounded-lg shadow-md transition text-lg">
+                            Buat Pesanan
+                        </button>
+                    @endif
                 </div>
             </div>
             

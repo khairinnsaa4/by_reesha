@@ -51,17 +51,41 @@
                     <div class="absolute top-2 left-2">
                         <span class="bg-pink-600 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Best Seller</span>
                     </div>
+                    @if($produk->stock <= 0)
+                    <div class="absolute top-2 right-2">
+                        <span class="bg-rose-600/90 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                            Stok Habis
+                        </span>
+                    </div>
+                    @endif
                 </div>
                 <div class="p-3 sm:p-4 space-y-2 flex-grow flex flex-col justify-between">
                     <div>
                         <h4 class="text-xs sm:text-sm md:text-base font-bold text-gray-800 line-clamp-1 group-hover:text-pink-600 transition-colors">{{ $produk->nama_kue }}</h4>
                         <p class="text-gray-500 text-[11px] sm:text-xs mt-0.5 line-clamp-2 leading-relaxed hidden sm:block">{{ $produk->deskripsi }}</p>
                     </div>
-                    <div class="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-2">
-                        <span class="text-pink-600 font-extrabold text-xs sm:text-sm md:text-base">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
-                        <a href="/produk/{{ $produk->id }}" class="bg-pink-600 hover:bg-pink-700 text-white text-[11px] sm:text-xs font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl transition shadow-sm shadow-pink-100 text-center">
-                            Pesan
-                        </a>
+
+                    <div class="pt-2 border-t border-pink-50 space-y-2">
+                        <div class="flex items-baseline justify-between">
+                            <span class="text-pink-600 font-extrabold text-xs sm:text-sm md:text-base">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                            <span class="text-[10px] sm:text-[11px] text-gray-500 font-medium">Terjual: {{ $produk->sold_count ?? 0 }}</span>
+                        </div>
+
+                        <div class="text-[11px] text-gray-500">
+                            Stok Tersedia: <strong class="{{ $produk->stock <= 0 ? 'text-rose-600' : 'text-gray-700' }}">{{ $produk->stock }}</strong>
+                        </div>
+
+                        <div class="pt-1">
+                            @if($produk->stock > 0)
+                                <a href="/produk/{{ $produk->id }}" class="block w-full bg-pink-600 hover:bg-pink-700 text-white text-[11px] sm:text-xs font-bold py-2 rounded-xl transition shadow-xs text-center">
+                                    Pesan
+                                </a>
+                            @else
+                                <button type="button" disabled class="block w-full bg-gray-200 text-gray-400 cursor-not-allowed text-[11px] sm:text-xs font-bold py-2 rounded-xl shadow-none text-center select-none" title="Stok Produk Habis">
+                                    Stok Habis
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

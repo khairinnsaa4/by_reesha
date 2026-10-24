@@ -257,21 +257,28 @@
         </div>
 
         <!-- ======================================================= -->
-        <!-- KUOTA BATCH BAKING & RESTOCK PRODUK (FINISHED GOODS)    -->
+        <!-- MANAJEMEN STOK PRODUK & RESTOCK (FINISHED GOODS)        -->
         <!-- ======================================================= -->
         <div class="mt-8 bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
             <!-- Header -->
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50">
                 <div>
                     <h2 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        <span>Kuota Slot Baking & Batch Produk Kue</span>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-100 text-pink-700">Pre-Order PO 2 Hari</span>
+                        <span>Manajemen Stok Produk & Katalog Kue</span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-100 text-pink-700">Shopee Style Inventory</span>
                     </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Pemantauan ketersediaan slot batch kue untuk dipesan pelanggan dan pencatatan penambahan slot batch (Restocking).</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Pemantauan persediaan stok produk, kuantitas terjual, dan pembaruan stok real-time.</p>
                 </div>
-                <span class="text-xs font-semibold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs">
-                    Total: {{ isset($produks) ? $produks->count() : 0 }} Varian Kue
-                </span>
+                <div class="flex items-center gap-2.5">
+                    <span class="text-xs font-semibold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs">
+                        Total: {{ isset($produks) ? $produks->count() : 0 }} Varian Kue
+                    </span>
+                    <button type="button" onclick="toggleModal('modal-tambah-produk')"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs font-semibold shadow-xs transition hover:shadow">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>Tambah Produk</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Table -->
@@ -284,8 +291,9 @@
                             <th class="px-5 py-3.5 text-right">HPP (Modal)</th>
                             <th class="px-5 py-3.5 text-right">Harga Jual</th>
                             <th class="px-5 py-3.5 text-center">Batas Min.</th>
-                            <th class="px-5 py-3.5 text-center">Sisa Slot PO</th>
-                            <th class="px-5 py-3.5 text-right">Tambah Kuota Batch</th>
+                            <th class="px-5 py-3.5 text-center">Stok Tersedia</th>
+                            <th class="px-5 py-3.5 text-center">Terjual</th>
+                            <th class="px-5 py-3.5 text-right">Aksi & Restock</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -312,37 +320,49 @@
                                 Rp {{ number_format($p->harga, 0, ',', '.') }}
                             </td>
                             <td class="px-5 py-3.5 text-center font-mono text-slate-500">
-                                {{ $p->stok_minimum }} slot
+                                {{ $p->stok_minimum ?? 3 }} unit
                             </td>
                             <td class="px-5 py-3.5 text-center">
-                                @if($p->stok <= 0)
+                                @if($p->stock <= 0)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700">
-                                        Penuh (0)
+                                        Habis (0)
                                     </span>
                                 @elseif($p->isLowStock())
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 animate-pulse">
-                                        Kritis ({{ $p->stok }})
+                                        Kritis ({{ $p->stock }})
                                     </span>
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        Aman ({{ $p->stok }})
+                                        {{ $p->stock }} Tersedia
                                     </span>
                                 @endif
                             </td>
+                            <td class="px-5 py-3.5 text-center font-bold text-slate-700">
+                                {{ $p->sold_count ?? 0 }}
+                            </td>
                             <td class="px-5 py-3.5 text-right">
-                                <form action="/produk/{{ $p->id }}/restock-kuota" method="POST" class="inline-flex items-center gap-1.5 justify-end">
-                                    @csrf
-                                    <input type="number" name="tambah_slot" value="5" min="1" max="50" class="w-14 text-center text-xs border border-slate-200 rounded-lg py-1 px-1.5 font-semibold focus:outline-none focus:ring-1 focus:ring-pink-500">
-                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs font-semibold rounded-lg transition shadow-2xs">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                        <span>+Slot</span>
+                                <div class="inline-flex items-center gap-1.5 justify-end">
+                                    <!-- Edit Button (Mengubah Stok & Data Produk) -->
+                                    <button type="button" onclick="openEditProdukModal({{ json_encode($p) }})"
+                                        class="inline-flex items-center gap-1 px-2.5 py-1 text-slate-600 hover:text-blue-600 bg-slate-100 hover:bg-blue-50 border border-slate-200 rounded-lg text-xs font-semibold transition" title="Ubah Data & Stok Produk">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        <span>Edit</span>
                                     </button>
-                                </form>
+
+                                    <!-- Quick Restock Button -->
+                                    <form action="/produk/{{ $p->id }}/restock-kuota" method="POST" class="inline-flex items-center gap-1">
+                                        @csrf
+                                        <input type="number" name="tambah_slot" value="5" min="1" max="100" class="w-12 text-center text-xs border border-slate-200 rounded-lg py-1 px-1 font-semibold focus:outline-none focus:ring-1 focus:ring-pink-500" title="Jumlah restock">
+                                        <button type="submit" class="inline-flex items-center gap-0.5 px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition shadow-2xs" title="Tambah Stok Cepat">
+                                            <span>+Stok</span>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-slate-400">Belum ada data produk kue.</td>
+                            <td colspan="8" class="px-6 py-8 text-center text-slate-400">Belum ada data produk kue.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -477,10 +497,166 @@
         </div>
     </div>
 
+    <!-- Modal Tambah Produk Kue -->
+    <div id="modal-tambah-produk" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                <div>
+                    <h3 class="text-base font-bold text-slate-900">Tambah Produk Kue Baru</h3>
+                    <p class="text-xs text-slate-400">Tambahkan varian kue baru ke katalog dan atur stok awal.</p>
+                </div>
+                <button type="button" onclick="toggleModal('modal-tambah-produk')" class="text-slate-400 hover:text-slate-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form action="/produk/tambah" method="POST" enctype="multipart/form-data" class="space-y-3.5 text-xs sm:text-sm">
+                @csrf
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Nama Kue *</label>
+                    <input type="text" name="nama_kue" required placeholder="Contoh: Strawberry Cheese Tart" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">SKU (Kode Produk)</label>
+                        <input type="text" name="sku" placeholder="Contoh: BR-STRW-09" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Kategori</label>
+                        <select name="category_id" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 bg-white">
+                            @foreach($categories ?? [] as $c)
+                                <option value="{{ $c->id }}">{{ $c->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Harga Jual (Rp) *</label>
+                        <input type="number" name="harga" required placeholder="45000" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">HPP / Modal (Rp)</label>
+                        <input type="number" name="harga_modal" placeholder="25000" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 p-3 bg-pink-50/50 rounded-xl border border-pink-100">
+                    <div>
+                        <label class="block font-bold text-pink-700 mb-1">Stok Awal (Stock) *</label>
+                        <input type="number" name="stock" value="10" min="0" required class="w-full border border-pink-200 rounded-xl px-3.5 py-2 font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500">
+                        <span class="text-[10px] text-pink-500">Sinkron dengan tombol katalog</span>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Batas Min. Stok Alert</label>
+                        <input type="number" name="stok_minimum" value="3" min="0" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                        <span class="text-[10px] text-slate-400">Peringatan stok kritis</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">File Gambar Kue</label>
+                    <input type="file" name="gambar" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Deskripsi Singkat</label>
+                    <textarea name="deskripsi" rows="2" placeholder="Deskripsi rasa, bahan premium, atau informasi ukuran..." class="w-full border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 text-xs"></textarea>
+                </div>
+                <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="toggleModal('modal-tambah-produk')" class="px-4 py-2 border border-slate-200 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 transition">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-semibold transition shadow-xs">Simpan Produk</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Produk Kue (Restock & Update Stok) -->
+    <div id="modal-edit-produk" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                <div>
+                    <h3 class="text-base font-bold text-slate-900">Edit Data Produk & Kelola Stok</h3>
+                    <p class="text-xs text-slate-400">Ubah kuantitas stok untuk restock atau sesuaikan harga produk.</p>
+                </div>
+                <button type="button" onclick="toggleModal('modal-edit-produk')" class="text-slate-400 hover:text-slate-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form id="form-edit-produk" method="POST" enctype="multipart/form-data" class="space-y-3.5 text-xs sm:text-sm">
+                @csrf
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Nama Kue *</label>
+                    <input type="text" id="edit-prod-nama" name="nama_kue" required class="w-full border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">SKU (Kode)</label>
+                        <input type="text" id="edit-prod-sku" name="sku" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Kategori</label>
+                        <select id="edit-prod-category" name="category_id" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 bg-white">
+                            @foreach($categories ?? [] as $c)
+                                <option value="{{ $c->id }}">{{ $c->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Harga Jual (Rp) *</label>
+                        <input type="number" id="edit-prod-harga" name="harga" required class="w-full border border-slate-200 rounded-xl px-3.5 py-2 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">HPP / Modal (Rp)</label>
+                        <input type="number" id="edit-prod-modal" name="harga_modal" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                    </div>
+                </div>
+                <!-- Highlight Stok Input for Restock -->
+                <div class="p-3.5 bg-pink-50/70 rounded-xl border border-pink-200 grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-extrabold text-pink-700 mb-1">Stok Tersedia (Stock) *</label>
+                        <input type="number" id="edit-prod-stock" name="stock" min="0" required class="w-full border-2 border-pink-300 rounded-xl px-3.5 py-2 font-bold text-slate-900 bg-white text-base focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-600">
+                        <span class="text-[10px] text-pink-600 font-medium">Ubah angka ini untuk restock produk</span>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Batas Min. Alert</label>
+                        <input type="number" id="edit-prod-min" name="stok_minimum" min="0" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
+                        <span class="text-[10px] text-slate-400">Ambang peringatan kritis</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Ganti File Gambar (Opsional)</label>
+                    <input type="file" name="gambar" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Deskripsi Kue</label>
+                    <textarea id="edit-prod-deskripsi" name="deskripsi" rows="2" class="w-full border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 text-xs"></textarea>
+                </div>
+                <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="toggleModal('modal-edit-produk')" class="px-4 py-2 border border-slate-200 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 transition">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-semibold transition shadow-xs">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script>
         function toggleModal(id) {
             document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function openEditProdukModal(prod) {
+            document.getElementById('form-edit-produk').action = '/produk/' + prod.id + '/update';
+            document.getElementById('edit-prod-nama').value = prod.nama_kue || '';
+            document.getElementById('edit-prod-sku').value = prod.sku || '';
+            if (prod.category_id) {
+                document.getElementById('edit-prod-category').value = prod.category_id;
+            }
+            document.getElementById('edit-prod-harga').value = prod.harga || 0;
+            document.getElementById('edit-prod-modal').value = prod.harga_modal || 0;
+            document.getElementById('edit-prod-stock').value = prod.stock !== undefined ? prod.stock : (prod.stok || 0);
+            document.getElementById('edit-prod-min').value = prod.stok_minimum || 3;
+            document.getElementById('edit-prod-deskripsi').value = prod.deskripsi || '';
+            toggleModal('modal-edit-produk');
         }
 
         function openRestockModal(item) {

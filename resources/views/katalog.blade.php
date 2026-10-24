@@ -92,17 +92,17 @@
 
                     <!-- Stock Quota Badge (Top Right) -->
                     <div class="absolute top-2 right-2">
-                        @if($cake->stok <= 0)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-rose-500 text-white shadow-xs">
-                                Slot Penuh
+                        @if($cake->stock <= 0)
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-rose-600 text-white shadow-xs">
+                                Stok Habis
                             </span>
                         @elseif($cake->isLowStock())
                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-amber-500 text-white shadow-xs animate-pulse">
-                                Sisa {{ $cake->stok }} Slot PO
+                                Sisa {{ $cake->stock }} Stok
                             </span>
                         @else
                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold bg-white/90 backdrop-blur-xs text-emerald-700 border border-emerald-200 shadow-xs">
-                                Sisa {{ $cake->stok }} Slot
+                                Sisa {{ $cake->stock }} Stok
                             </span>
                         @endif
                     </div>
@@ -123,15 +123,32 @@
                         </p>
                     </div>
 
-                    <div class="pt-2 border-t border-pink-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-2">
-                        <div>
-                            <span class="text-[10px] text-gray-400 block -mb-1">Harga PO</span>
-                            <span class="text-pink-600 font-extrabold text-xs sm:text-sm md:text-base">Rp {{ number_format($cake->harga, 0, ',', '.') }}</span>
+                    <div class="pt-2 border-t border-pink-50 space-y-2">
+                        <div class="flex items-baseline justify-between">
+                            <div>
+                                <span class="text-[10px] text-gray-400 block -mb-1">Harga</span>
+                                <span class="text-pink-600 font-extrabold text-xs sm:text-sm md:text-base">Rp {{ number_format($cake->harga, 0, ',', '.') }}</span>
+                            </div>
+                            <span class="text-[10px] sm:text-[11px] text-gray-500 font-medium">Terjual: {{ $cake->sold_count ?? 0 }}</span>
                         </div>
-                        <a href="/produk/{{ $cake->id }}"
-                           class="bg-pink-600 hover:bg-pink-700 text-white text-[11px] sm:text-xs font-bold px-3 py-1.5 sm:px-3 sm:py-2 rounded-xl transition shadow-xs text-center {{ $cake->stok <= 0 ? 'opacity-70' : '' }}">
-                            {{ $cake->stok <= 0 ? 'Lihat Detail' : 'Pesan Kue' }}
-                        </a>
+
+                        <div class="text-[11px] text-gray-500">
+                            Stok Tersedia: <strong class="{{ $cake->stock <= 0 ? 'text-rose-600' : 'text-gray-700' }}">{{ $cake->stock }}</strong>
+                        </div>
+
+                        <div class="pt-1">
+                            @if($cake->stock > 0)
+                                <a href="/produk/{{ $cake->id }}"
+                                   class="block w-full bg-pink-600 hover:bg-pink-700 text-white text-[11px] sm:text-xs font-bold py-2 rounded-xl transition shadow-xs text-center">
+                                    Pesan
+                                </a>
+                            @else
+                                <button type="button" disabled
+                                   class="block w-full bg-gray-200 text-gray-400 cursor-not-allowed text-[11px] sm:text-xs font-bold py-2 rounded-xl shadow-none text-center select-none pointer-events-none" title="Stok Produk Habis">
+                                    Stok Habis
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

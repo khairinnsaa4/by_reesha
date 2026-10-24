@@ -11,6 +11,46 @@ class Produk extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'stock' => 'integer',
+        'stok' => 'integer',
+        'sold_count' => 'integer',
+        'harga' => 'integer',
+        'harga_modal' => 'integer',
+        'stok_minimum' => 'integer',
+    ];
+
+    /**
+     * Getter & Setter Sinkronisasi Stock & Stok
+     */
+    public function getStockAttribute($value)
+    {
+        if ($value !== null) {
+            return (int) $value;
+        }
+        return (int) ($this->attributes['stok'] ?? 0);
+    }
+
+    public function setStockAttribute($value)
+    {
+        $this->attributes['stock'] = (int) $value;
+        $this->attributes['stok'] = (int) $value;
+    }
+
+    public function getStokAttribute($value)
+    {
+        if (isset($this->attributes['stock']) && $this->attributes['stock'] !== null) {
+            return (int) $this->attributes['stock'];
+        }
+        return (int) ($value ?? 0);
+    }
+
+    public function setStokAttribute($value)
+    {
+        $this->attributes['stok'] = (int) $value;
+        $this->attributes['stock'] = (int) $value;
+    }
+
     /**
      * Relasi: Produk milik suatu Kategori (Belongs To)
      * Sesuai spesifikasi slide 10 PPT: Product belongsTo Category
@@ -47,15 +87,15 @@ class Produk extends Model
     }
 
     /**
-     * Helper status kuota slot PO
+     * Helper status kuota slot PO & Stok
      */
     public function isLowStock(): bool
     {
-        return $this->stok <= $this->stok_minimum;
+        return ($this->stock ?? 0) <= ($this->stok_minimum ?? 3);
     }
 
     public function isHabis(): bool
     {
-        return $this->stok <= 0;
+        return ($this->stock ?? 0) <= 0;
     }
 }
