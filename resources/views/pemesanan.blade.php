@@ -150,7 +150,7 @@
                             <!-- ID -->
                             <td class="px-5 py-4 font-mono font-bold text-slate-800 text-xs">
                                 <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700">
-                                    #TRX-{{ str_pad($trx->id, 4, '0', STR_PAD_LEFT) }}
+                                    #{{ $trx->kode_transaksi ?? 'TRX-' . str_pad($trx->id, 4, '0', STR_PAD_LEFT) }}
                                 </span>
                             </td>
 

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Http\Controllers\ProdukController;
 use App\Models\Produk;
 
@@ -72,9 +74,14 @@ Route::get('/dashboard-owner', function () {
     $chartProdukOmzet  = $produkStats->pluck('total_omzet')->values()->toArray();
     $chartProdukQty    = $produkStats->pluck('total_qty')->values()->toArray();
 
+    // Data Peringatan Stok & Kuota Kritis (Low-Stock Alert)
+    $low_stock_products = Produk::lowStock()->get();
+    $low_stock_count = $low_stock_products->count();
+
     return view('dashboard_owner', compact(
         'total_pendapatan', 'pesanan_aktif', 'total_pelanggan', 'produk_terjual', 'transaksis',
-        'chartLabels', 'chartOmzet', 'chartProdukLabels', 'chartProdukOmzet', 'chartProdukQty'
+        'chartLabels', 'chartOmzet', 'chartProdukLabels', 'chartProdukOmzet', 'chartProdukQty',
+        'low_stock_products', 'low_stock_count'
     ));
 })->middleware('auth');
 
@@ -235,10 +242,35 @@ Route::get('/pemesanan', function () {
 })->middleware('auth');
 
 Route::post('/pemesanan/{id}/update-status', function (Request $request, $id) {
-    $trx = Transaksi::findOrFail($id);
-    $trx->status = $request->input('status');
-    $trx->save();
-    return back()->with('sukses', 'Status pesanan #TRX-' . str_pad($id, 3, '0', STR_PAD_LEFT) . ' berhasil diperbarui ke "' . $trx->status . '"!');
+    $request->validate(['status' => 'required|string']);
+    $newStatus = $request->input('status');
+
+    DB::transaction(function () use ($id, $newStatus) {
+        $trx = Transaksi::lockForUpdate()->findOrFail($id);
+        $oldStatus = $trx->status;
+
+        // Konsistensi Stok: Jika status diubah ke 'Dibatalkan' atau 'Batal', kembalikan stok kuota slot PO
+        if (!in_array($oldStatus, ['Dibatalkan', 'Batal']) && in_array($newStatus, ['Dibatalkan', 'Batal'])) {
+            if ($trx->produk_id) {
+                Produk::where('id', $trx->produk_id)->increment('stok', $trx->qty);
+            } else {
+                Produk::where('nama_kue', $trx->nama_produk)->increment('stok', $trx->qty);
+            }
+        }
+
+        // Jika sebelumnya batal lalu diaktifkan kembali oleh admin, kurangi kembali stok jika masih mencukupi
+        if (in_array($oldStatus, ['Dibatalkan', 'Batal']) && !in_array($newStatus, ['Dibatalkan', 'Batal'])) {
+            $p = $trx->produk_id ? Produk::find($trx->produk_id) : Produk::where('nama_kue', $trx->nama_produk)->first();
+            if ($p) {
+                $p->decrement('stok', $trx->qty);
+            }
+        }
+
+        $trx->status = $newStatus;
+        $trx->save();
+    });
+
+    return back()->with('sukses', 'Status pesanan #' . str_pad($id, 3, '0', STR_PAD_LEFT) . ' berhasil diperbarui ke "' . $newStatus . '"!');
 })->middleware('auth');
 
 Route::get('/transaksi', function (Request $request) {
@@ -359,7 +391,8 @@ Route::get('/logistik', function () {
     }
 
     $logistiks = Logistik::latest()->get();
-    return view('logistik', compact('logistiks'));
+    $produks = Produk::with('category')->orderBy('id')->get();
+    return view('logistik', compact('logistiks', 'produks'));
 })->middleware('auth');
 
 Route::post('/logistik/tambah', function (Request $request) {
@@ -588,33 +621,108 @@ Route::get('/keranjang', function () {
 })->middleware('auth');
 
 Route::get('/checkout', function (Request $request) {
+    $produkId = $request->query('id');
+    $produk = $produkId ? Produk::find($produkId) : null;
+    if (!$produk && $request->filled('nama')) {
+        $produk = Produk::where('nama_kue', $request->query('nama'))->first();
+    }
+    if (!$produk) {
+        $produk = Produk::first();
+    }
+
+    $nama = $produk ? $produk->nama_kue : $request->query('nama', 'Produk By.Reesha');
+    $harga = $produk ? (int) $produk->harga : (int) $request->query('harga', 45000);
+    $gambar = $produk ? $produk->gambar : $request->query('gambar', 'logo.png');
+    $stok = $produk ? (int) $produk->stok : 10;
+
     return view('checkout', [
-        'id' => $request->query('id'),
-        'nama' => $request->query('nama', 'Produk'),
-        'gambar' => $request->query('gambar', 'logo.png'),
-        'harga' => $request->query('harga', 45000),
+        'id' => $produk ? $produk->id : $request->query('id'),
+        'produk' => $produk,
+        'nama' => $nama,
+        'gambar' => $gambar,
+        'harga' => $harga,
+        'stok' => $stok,
         'ukuran' => $request->query('ukuran', 'Standard'),
         'varian' => $request->query('varian', 'Vanilla Milky'),
-        'qty' => $request->query('qty', 1),
+        'qty' => max(1, (int) $request->query('qty', 1)),
     ]);
 })->middleware('auth');
 
 Route::post('/checkout/proses', function (Request $request) {
-    $trx = Transaksi::create([
-        'user_id' => Auth::id(),
-        'nama_produk' => $request->input('nama_produk', 'Produk'),
-        'gambar_produk' => $request->input('gambar_produk', 'logo.png'),
-        'varian' => $request->input('varian', 'Standard'),
-        'ukuran' => $request->input('ukuran', 'Standard'),
-        'qty' => $request->input('qty', 1),
-        'harga_satuan' => $request->input('harga_satuan', 0),
-        'total_harga' => $request->input('total_harga', 0),
-        'metode_pengiriman' => $request->input('metode_pengiriman', 'Kurir Instan'),
-        'metode_pembayaran' => $request->input('metode_pembayaran', 'QRIS'),
-        'status' => 'Diproses',
+    $request->validate([
+        'produk_id' => 'nullable',
+        'qty' => 'required|integer|min:1|max:50',
+        'metode_pengiriman' => 'required|string',
+        'metode_pembayaran' => 'required|string',
     ]);
 
-    return redirect('/sukses?id=' . $trx->id);
+    try {
+        $trx = DB::transaction(function () use ($request) {
+            // Locking row produk untuk mencegah race condition (Concurrency Control)
+            $produk = null;
+            if ($request->filled('produk_id')) {
+                $produk = Produk::lockForUpdate()->find($request->input('produk_id'));
+            }
+            if (!$produk && $request->filled('nama_produk')) {
+                $produk = Produk::where('nama_kue', $request->input('nama_produk'))->lockForUpdate()->first();
+            }
+            if (!$produk) {
+                $produk = Produk::lockForUpdate()->firstOrFail();
+            }
+
+            $qty = max(1, (int) $request->input('qty', 1));
+
+            // Business Logic: Validasi Konsistensi Stok (Kuota Baking PO)
+            if ($produk->stok < $qty) {
+                throw new \Exception("Mohon maaf, kuota slot PO untuk {$produk->nama_kue} tidak mencukupi (tersisa {$produk->stok} slot). Silakan kurangi kuantitas pesanan.");
+            }
+
+            // Server-side Price Calculation (Otoritatif di server, tidak mempercayai input klien)
+            $hargaSatuan = (int) $produk->harga;
+            $subtotal = $hargaSatuan * $qty;
+
+            // Kalkulasi ongkos kirim server-side
+            $metodeKirim = $request->input('metode_pengiriman', 'Kurir Instan / Grab (Rp 15.000)');
+            $ongkir = 15000;
+            if (str_contains(strtolower($metodeKirim), 'ambil') || str_contains(strtolower($metodeKirim), 'pickup')) {
+                $ongkir = 0;
+            } elseif (str_contains(strtolower($metodeKirim), 'reguler') || str_contains(strtolower($metodeKirim), '30.000')) {
+                $ongkir = 30000;
+            } elseif (str_contains(strtolower($metodeKirim), 'kargo') || str_contains(strtolower($metodeKirim), 'travel') || str_contains(strtolower($metodeKirim), '60.000')) {
+                $ongkir = 60000;
+            }
+            $biayaLayanan = 1000;
+            $totalHarga = $subtotal + $ongkir + $biayaLayanan;
+
+            // Generate Kode Transaksi Otomatis: TRX-YYYYMMDD-XXXX
+            $kodeTransaksi = 'TRX-' . date('Ymd') . '-' . strtoupper(Str::random(5));
+
+            // Pengurangan stok secara atomik
+            $produk->decrement('stok', $qty);
+
+            // Simpan record Transaksi
+            return Transaksi::create([
+                'user_id' => Auth::id(),
+                'produk_id' => $produk->id,
+                'kode_transaksi' => $kodeTransaksi,
+                'nama_produk' => $produk->nama_kue,
+                'gambar_produk' => $produk->gambar ?? 'logo.png',
+                'varian' => $request->input('varian', 'Standard'),
+                'ukuran' => $request->input('ukuran', 'Standard'),
+                'qty' => $qty,
+                'harga_satuan' => $hargaSatuan,
+                'subtotal' => $subtotal,
+                'total_harga' => $totalHarga,
+                'metode_pengiriman' => $metodeKirim,
+                'metode_pembayaran' => $request->input('metode_pembayaran', 'QRIS'),
+                'status' => 'Diproses',
+            ]);
+        });
+
+        return redirect('/sukses?id=' . $trx->id)->with('sukses', 'Pesanan kue berhasil dibuat! Kode Transaksi: ' . $trx->kode_transaksi);
+    } catch (\Exception $e) {
+        return back()->with('error', $e->getMessage());
+    }
 })->middleware('auth');
 
 Route::get('/sukses', function (Request $request) {
@@ -636,6 +744,50 @@ Route::post('/riwayat-transaksi/{id}/terima', function ($id) {
     $trx->status = 'Selesai';
     $trx->save();
     return back()->with('sukses', 'Terima kasih telah berbelanja di By.Reesha! Pesanan Anda telah selesai.');
+})->middleware('auth');
+
+// Batalkan pesanan oleh pelanggan dengan pengembalian stok (hanya jika masih status 'Diproses')
+Route::post('/riwayat-transaksi/{id}/batal', function ($id) {
+    try {
+        DB::transaction(function () use ($id) {
+            $trx = Transaksi::lockForUpdate()->where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+            if (!in_array($trx->status, ['Diproses', 'Sedang Diproses'])) {
+                throw new \Exception('Pesanan yang sudah dalam tahap pengemasan atau pengiriman tidak dapat dibatalkan.');
+            }
+
+            // Kembalikan kuota stok produk
+            if ($trx->produk_id) {
+                Produk::where('id', $trx->produk_id)->increment('stok', $trx->qty);
+            } else {
+                Produk::where('nama_kue', $trx->nama_produk)->increment('stok', $trx->qty);
+            }
+
+            $trx->status = 'Dibatalkan';
+            $trx->save();
+        });
+
+        return back()->with('sukses', 'Pesanan Anda berhasil dibatalkan dan kuota slot baking telah dikembalikan.');
+    } catch (\Exception $e) {
+        return back()->with('error', $e->getMessage());
+    }
+})->middleware('auth');
+
+// Restock kuota slot baking batch produk oleh Owner / Karyawan Baker
+Route::post('/produk/{id}/restock-kuota', function (Request $request, $id) {
+    if (!Auth::check() || !in_array(Auth::user()->role, ['owner', 'karyawan'])) {
+        abort(403);
+    }
+
+    $request->validate([
+        'tambah_slot' => 'required|integer|min:1|max:100',
+    ]);
+
+    $produk = Produk::findOrFail($id);
+    $tambah = (int) $request->input('tambah_slot');
+    $produk->increment('stok', $tambah);
+
+    return back()->with('sukses', "Kuota slot baking untuk {$produk->nama_kue} berhasil ditambah +{$tambah} slot! Total kuota sekarang: {$produk->stok} slot.");
 })->middleware('auth');
 
 Route::get('/tentang-kami', function () {

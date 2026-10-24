@@ -17,11 +17,25 @@
 
     <div class="max-w-6xl mx-auto px-4 py-6 w-full flex-grow">
   
-        <div class="text-sm text-gray-500 mb-4 flex items-center gap-2">
-            <a href="/" class="text-blue-600 hover:text-pink-600 transition">By.Reesha</a> <span class="text-gray-400">></span>
-            <a href="/produk" class="text-blue-600 hover:text-pink-600 transition">Cakes & Desserts</a> <span class="text-gray-400">></span>
-            <span class="text-gray-800 truncate">{{ $cake->nama_kue }}</span>
+        <!-- Breadcrumb -->
+        <div class="text-sm text-gray-500 mb-4 flex items-center gap-2 flex-wrap">
+            <a href="/" class="text-pink-600 hover:text-pink-700 transition">By.Reesha</a>
+            <span class="text-gray-400">></span>
+            <a href="/produk" class="text-pink-600 hover:text-pink-700 transition">Katalog Produk</a>
+            <span class="text-gray-400">></span>
+            @if($cake->category)
+                <a href="/produk?kategori={{ $cake->category->slug }}" class="text-pink-600 hover:text-pink-700 transition">{{ $cake->category->nama }}</a>
+                <span class="text-gray-400">></span>
+            @endif
+            <span class="text-gray-800 font-semibold truncate">{{ $cake->nama_kue }}</span>
         </div>
+
+        @if(session('error'))
+        <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span>{{ session('error') }}</span>
+        </div>
+        @endif
 
         <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-pink-100 p-4 sm:p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-10 mb-6 sm:mb-8">
             <div class="w-full md:w-[420px] shrink-0">
@@ -31,11 +45,20 @@
                     @else
                         <div class="text-gray-400 text-sm">Tidak ada foto</div>
                     @endif
+                    
+                    @if($cake->sku)
+                    <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-xs text-white text-xs font-mono font-semibold px-2.5 py-1 rounded-lg">
+                        {{ $cake->sku }}
+                    </div>
+                    @endif
                 </div>
             </div>
 
             <div class="flex-grow flex flex-col">
-                <div class="mb-3">
+                <div class="mb-2">
+                    <div class="text-xs font-bold uppercase tracking-wider text-pink-600 mb-1">
+                        {{ $cake->category->nama ?? 'Cake Premium By.Reesha' }}
+                    </div>
                     <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-snug">{{ $cake->nama_kue }}</h1>
                 </div>
                 
@@ -50,9 +73,28 @@
                     <div class="text-gray-500"><span class="font-bold text-gray-800">358</span> Terjual</div>
                 </div>
 
-                <div class="bg-pink-50/60 p-4 sm:p-5 rounded-2xl border border-pink-100 flex items-baseline gap-2 mb-6">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600">Rp {{ number_format($cake->harga, 0, ',', '.') }}</div>
-                    <span class="text-xs text-gray-400 font-medium">/ porsi</span>
+                <div class="bg-pink-50/60 p-4 sm:p-5 rounded-2xl border border-pink-100 flex items-baseline justify-between gap-2 mb-5">
+                    <div class="flex items-baseline gap-2">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600">Rp {{ number_format($cake->harga, 0, ',', '.') }}</div>
+                        <span class="text-xs text-gray-400 font-medium">/ porsi</span>
+                    </div>
+
+                    <!-- Quota Batch Indicator -->
+                    <div>
+                        @if($cake->stok <= 0)
+                            <span class="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-100 px-3 py-1 rounded-full">
+                                ● Slot Batch Penuh
+                            </span>
+                        @elseif($cake->isLowStock())
+                            <span class="inline-flex items-center gap-1 text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full animate-pulse">
+                                ● Sisa {{ $cake->stok }} Slot PO
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+                                ● Kuota {{ $cake->stok }} Slot Tersedia
+                            </span>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="space-y-4 sm:space-y-5 text-sm mb-6 flex-grow">
@@ -76,67 +118,75 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 pt-1">
-                        <div class="w-auto sm:w-28 text-gray-500 text-xs sm:text-sm font-semibold">Kuantitas</div>
+                        <div class="w-auto sm:w-28 text-gray-500 text-xs sm:text-sm font-semibold">Kuantitas PO</div>
                         <div class="flex items-center gap-3">
                             <div class="flex items-center border border-gray-300 rounded-xl overflow-hidden bg-white">
-                                <button onclick="decreaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-r border-gray-200 font-bold">-</button>
+                                <button type="button" onclick="decreaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-r border-gray-200 font-bold">-</button>
                                 <input type="text" id="qty-input" value="1" class="w-12 h-8 text-center text-gray-800 font-semibold text-sm focus:outline-none" readonly>
-                                <button onclick="increaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-l border-gray-200 font-bold">+</button>
+                                <button type="button" onclick="increaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-l border-gray-200 font-bold">+</button>
                             </div>
-                            <span class="text-gray-400 text-xs">Pre-Order 2 Hari</span>
+                            <span class="text-gray-400 text-xs">Pre-Order 2 Hari (Maks: {{ $cake->stok }} slot)</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- CTA Order Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 pt-4 sm:pt-6 mt-auto w-full">
-                    <a href="javascript:void(0)" onclick="addToCart()" class="flex-1 flex items-center justify-center gap-2 bg-pink-50 border-2 border-pink-500 text-pink-600 hover:bg-pink-100 font-bold py-3.5 px-4 rounded-xl transition text-sm shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                        </svg>
-                        <span>Masukkan Keranjang</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="checkout()" class="flex-1 flex items-center justify-center bg-pink-600 hover:bg-pink-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-pink-200 transition text-sm">
-                        <span>Beli Sekarang</span>
-                    </a>
+                    @if($cake->stok > 0)
+                        <a href="javascript:void(0)" onclick="addToCart()" class="flex-1 flex items-center justify-center gap-2 bg-pink-50 border-2 border-pink-500 text-pink-600 hover:bg-pink-100 font-bold py-3.5 px-4 rounded-xl transition text-sm shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                            </svg>
+                            <span>Masukkan Keranjang</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="checkout()" class="flex-1 flex items-center justify-center bg-pink-600 hover:bg-pink-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-pink-200 transition text-sm">
+                            <span>Beli Sekarang</span>
+                        </a>
+                    @else
+                        <div class="w-full bg-slate-100 border border-slate-200 rounded-xl p-3.5 text-center text-xs font-semibold text-slate-500">
+                            Slot kuota baking untuk kue ini telah habis pada batch saat ini. Mohon periksa kembali pada batch berikutnya atau pilih varian lain.
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
+        <!-- Spesifikasi Produk -->
         <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-pink-100 p-5 sm:p-8 mb-8">
             <h2 class="bg-pink-50 text-pink-700 px-4 py-3 rounded-xl text-sm sm:text-base font-bold mb-5 uppercase tracking-wider flex items-center gap-2">
                 <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                Spesifikasi Produk
+                Spesifikasi & Informasi Produk
             </h2>
             
             <div class="text-xs sm:text-sm text-gray-700 mb-8 divide-y divide-gray-100">
                 <div class="flex flex-col sm:flex-row py-3 px-2 gap-1 sm:gap-4 hover:bg-pink-50/40 rounded-lg transition">
-                    <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">Kategori</div>
+                    <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">SKU / Kode Produk</div>
+                    <div class="flex-1 font-mono font-bold text-gray-800">{{ $cake->sku ?? '-' }}</div>
+                </div>
+                <div class="flex flex-col sm:flex-row py-3 px-2 gap-1 sm:gap-4 hover:bg-pink-50/40 rounded-lg transition">
+                    <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">Kategori Kue</div>
                     <div class="flex-1 flex flex-wrap items-center gap-1.5 text-gray-800">
                         <a href="/" class="text-pink-600 hover:underline">By.Reesha</a> 
                         <span class="text-gray-300">/</span> 
                         <a href="/produk" class="text-pink-600 hover:underline">Semua Kue</a> 
                         <span class="text-gray-300">/</span> 
-                        <span class="font-semibold text-gray-700">Cake Premium</span>
+                        <span class="font-semibold text-gray-700">{{ $cake->category->nama ?? 'Cake' }}</span>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row py-3 px-2 gap-1 sm:gap-4 hover:bg-pink-50/40 rounded-lg transition">
+                    <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">Sistem Pemesanan</div>
+                    <div class="flex-1 font-semibold text-gray-800">Pre-Order (PO 2 Hari Kerja) • Freshly Baked</div>
+                </div>
+                <div class="flex flex-col sm:flex-row py-3 px-2 gap-1 sm:gap-4 hover:bg-pink-50/40 rounded-lg transition">
                     <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">Masa Penyimpanan</div>
-                    <div class="flex-1 font-semibold text-gray-800">3 Hari di dalam chiller / kulkas</div>
-                </div>
-                <div class="flex flex-col sm:flex-row py-3 px-2 gap-1 sm:gap-4 hover:bg-pink-50/40 rounded-lg transition">
-                    <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">Menu Diet</div>
-                    <div class="flex-1 text-gray-800">Tidak (Mengandung Gula & Butter Asli)</div>
-                </div>
-                <div class="flex flex-col sm:flex-row py-3 px-2 gap-1 sm:gap-4 hover:bg-pink-50/40 rounded-lg transition">
-                    <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">Berat Produk</div>
-                    <div class="flex-1 text-gray-800">500g - 1500g (tergantung varian)</div>
+                    <div class="flex-1 font-semibold text-gray-800">3 Hari di dalam chiller / kulkas pendingin</div>
                 </div>
                 <div class="flex flex-col sm:flex-row py-3 px-2 gap-1 sm:gap-4 hover:bg-pink-50/40 rounded-lg transition">
                     <div class="w-full sm:w-44 text-gray-400 shrink-0 font-medium">Dikirim Dari</div>
                     <div class="flex-1">
                         <a href="https://maps.app.goo.gl/zhTvGPQhEThNEfEi9" target="_blank" class="text-pink-600 hover:underline font-semibold flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 inline flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            Lhokseumawe, Aceh
+                            Kitchen By.Reesha, Lhokseumawe, Aceh
                         </a>
                     </div>
                 </div>
@@ -147,21 +197,7 @@
                 Deskripsi Produk
             </h2>
             <div class="text-xs sm:text-sm text-gray-600 leading-relaxed whitespace-pre-line px-2">
-                {{ $cake->deskripsi ?? 'Cake istimewa dari By.Reesha yang dibuat khusus dengan bahan-bahan premium dan sentuhan cinta. Cocok untuk merayakan momen berharga Anda.
-
-                Mengapa memilih cake dari By.Reesha?
-                - Dibuat dari 100% bahan premium, butter asli, dan coklat impor berkualitas
-                - Freshly baked! Cake hanya dibuat saat pesanan masuk
-                - Desain elegan dan bisa dicustom sesuai keinginan Anda
-                - Tekstur lembut, manisnya pas, dan lumer di mulut
-                
-                CARA PEMESANAN:
-                1. Pilih ukuran dan varian rasa yang diinginkan.
-                2. Untuk custom desain / tulisan, mohon cantumkan di kolom catatan saat checkout atau hubungi kami via WhatsApp setelah pembayaran.
-                3. Harap order H-2 atau H-3 sebelum kue digunakan.
-                
-                CATATAN PENGIRIMAN:
-                Disarankan menggunakan pengiriman instant (Gojek/Grab) atau diambil sendiri ke toko untuk menghindari kerusakan kue di perjalanan.' }}
+                {{ $cake->deskripsi ?? 'Cake istimewa dari By.Reesha yang dibuat khusus dengan bahan-bahan premium dan sentuhan cinta. Cocok untuk merayakan momen berharga Anda.' }}
             </div>
         </div>
     </div>
@@ -171,13 +207,18 @@
     </footer>
 
     <script>
+        const maxStock = {{ (int) $cake->stok }};
         let selectedUkuran = 'Standard';
         let selectedVarian = 'Vanilla Milky';
 
         const qtyInput = document.getElementById('qty-input');
         function increaseQty() {
             let val = parseInt(qtyInput.value) || 1;
-            qtyInput.value = val + 1;
+            if (val < maxStock) {
+                qtyInput.value = val + 1;
+            } else {
+                alert('Maksimal pemesanan sesuai kuota slot PO tersedia: ' + maxStock + ' slot.');
+            }
         }
         function decreaseQty() {
             let val = parseInt(qtyInput.value) || 1;
@@ -224,10 +265,7 @@
 
             const newItem = { id, nama, gambar, harga, qty, ukuran, varian };
 
-            // Ambil keranjang lama dari localStorage
             let cart = JSON.parse(localStorage.getItem('my_cart')) || [];
-            
-            // Cek apakah item dengan varian dan ukuran sama sudah ada
             const existingIndex = cart.findIndex(item => item.id === id && item.varian === varian && item.ukuran === ukuran);
             
             if (existingIndex > -1) {
@@ -237,7 +275,7 @@
             }
 
             localStorage.setItem('my_cart', JSON.stringify(cart));
-            localStorage.removeItem('cart_cleared'); // Pastikan keranjang tidak kosong
+            localStorage.removeItem('cart_cleared');
             
             window.location.href = '/keranjang';
         }

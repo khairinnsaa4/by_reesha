@@ -30,7 +30,7 @@
             <div class="bg-gray-50 rounded-xl p-5 mb-8 border border-gray-100">
                 <div class="flex justify-between items-center mb-3 text-sm">
                     <span class="text-gray-500">Nomor Pesanan</span>
-                    <span class="font-bold text-gray-800">#TRX-{{ $trx ? str_pad($trx->id, 3, '0', STR_PAD_LEFT) : '001' }}</span>
+                    <span class="font-bold text-gray-800">#{{ $trx ? ($trx->kode_transaksi ?? 'TRX-' . str_pad($trx->id, 4, '0', STR_PAD_LEFT)) : 'TRX-001' }}</span>
                 </div>
                 <div class="flex justify-between items-center mb-3 text-sm">
                     <span class="text-gray-500">Metode Pembayaran</span>

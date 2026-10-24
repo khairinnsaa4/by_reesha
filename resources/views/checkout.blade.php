@@ -32,6 +32,7 @@
     <!-- MAIN CONTENT -->
     <form action="/checkout/proses" method="POST" onsubmit="localStorage.setItem('cart_cleared', 'true')" class="max-w-6xl mx-auto px-4 py-8 w-full flex-grow">
         @csrf
+        <input type="hidden" name="produk_id" value="{{ $id }}">
         <input type="hidden" name="nama_produk" value="{{ $nama }}">
         <input type="hidden" name="gambar_produk" value="{{ $gambar }}">
         <input type="hidden" name="varian" value="{{ $varian }}">
@@ -41,6 +42,13 @@
         <input type="hidden" name="total_harga" id="input-total-harga" value="{{ ($harga * $qty) + 15000 + 1000 }}">
         <input type="hidden" name="metode_pengiriman" id="input-metode-pengiriman" value="Kurir Instan / Grab (Rp 15.000)">
         <input type="hidden" name="metode_pembayaran" id="input-metode-pembayaran" value="QRIS">
+
+        @if(session('error'))
+        <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm rounded-xl flex items-center gap-2.5 shadow-sm">
+            <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span class="font-medium">{{ session('error') }}</span>
+        </div>
+        @endif
 
         <div class="flex flex-col lg:flex-row gap-6">
             
@@ -195,8 +203,10 @@
                             <img src="{{ asset('images/' . $gambar) }}" alt="{{ $nama }}" class="w-16 h-16 object-cover rounded border border-gray-200" onerror="this.src='{{ asset('images/logo.png') }}'">
                             <div class="flex-grow">
                                 <h4 class="font-medium text-gray-800 text-sm">{{ $nama }}</h4>
-                                <p class="text-xs text-gray-500 mt-1">Varian: {{ $varian }}</p>
-                                <p class="text-xs text-gray-500">Ukuran: {{ $ukuran }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Varian: {{ $varian }} • Ukuran: {{ $ukuran }}</p>
+                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-pink-700 bg-pink-50 border border-pink-100 px-2 py-0.5 rounded-md mt-1.5">
+                                    Pre-Order 2 Hari • Kuota Tersedia: {{ $stok ?? 10 }} Slot
+                                </span>
                             </div>
                             <div class="text-sm text-gray-800 font-medium text-right">
                                 Rp {{ number_format($harga, 0, ',', '.') }} <br>

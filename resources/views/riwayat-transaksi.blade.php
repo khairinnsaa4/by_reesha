@@ -35,6 +35,13 @@
         </div>
         @endif
 
+        @if(session('error'))
+        <div class="mb-4 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span>{{ session('error') }}</span>
+        </div>
+        @endif
+
         <div class="flex flex-col gap-4">
             @forelse($transaksis as $trx)
             @php
@@ -52,7 +59,7 @@
                             <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
                         </svg>
                         <span class="text-xs sm:text-sm font-semibold text-gray-700">Pesanan Kue</span>
-                        <span class="text-gray-400 text-[11px] sm:text-xs ml-1 sm:ml-2">#TRX-{{ str_pad($trx->id, 3, '0', STR_PAD_LEFT) }} • {{ $trx->created_at->format('d M Y, H:i') }}</span>
+                        <span class="text-gray-400 text-[11px] sm:text-xs ml-1 sm:ml-2">#{{ $trx->kode_transaksi ?? str_pad($trx->id, 4, '0', STR_PAD_LEFT) }} • {{ $trx->created_at->format('d M Y, H:i') }}</span>
                     </div>
                     <span class="{{ $badgeStyle }} text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full">
                         @if(in_array($trx->status, ['Diproses', 'Sedang Diproses'])) Sedang Diproses
@@ -94,9 +101,17 @@
                             </button>
                         </form>
                         @elseif(in_array($trx->status, ['Diproses', 'Sedang Diproses']))
-                        <span class="text-xs text-amber-700 font-medium">
-                            Pesanan sedang dipersiapkan oleh tim dapur
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-amber-700 font-medium">
+                                Pesanan sedang dipersiapkan oleh tim dapur
+                            </span>
+                            <form action="/riwayat-transaksi/{{ $trx->id }}/batal" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini? Kuota slot baking akan dikembalikan ke stok.')" class="inline">
+                                @csrf
+                                <button type="submit" class="text-xs text-rose-600 hover:text-rose-800 font-semibold border border-rose-200 hover:bg-rose-50 px-2.5 py-1 rounded-lg transition">
+                                    Batalkan
+                                </button>
+                            </form>
+                        </div>
                         @elseif($trx->status === 'Dikemas')
                         <span class="text-xs text-purple-700 font-medium">
                             Pesanan siap dan sedang dikemas rapi

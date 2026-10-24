@@ -4,80 +4,69 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produk;
+use App\Models\Category;
 
 class ProdukController extends Controller
 {
-    public function index()
+    /**
+     * Menampilkan katalog produk dengan fitur pencarian, filter kategori, dan status kuota PO.
+     */
+    public function index(Request $request)
     {
-        $semua_cake = Produk::all();
-        
-        if ($semua_cake->isEmpty()) {
-            Produk::create([
-                'nama_kue' => 'Mini Cake',
-                'harga' => 35000,
-                'gambar' => 'mini_cake.jpg',
-                'deskripsi' => 'Mini cake super gemas dengan porsi yang sesuai, tampilan estetik, dan rasa manis yang pas untuk memanjakan dirimu atau orang tersayang.'
-            ]);
+        $categories = Category::withCount('produks')->orderBy('nama')->get();
 
-            Produk::create([
-                'nama_kue' => 'Bento Cake',
-                'harga' => 45000,
-                'gambar' => 'bento_cake.jpg',
-                'deskripsi' => 'Bikin momen spesial makin berkesan dengan bento cake estetik yang bisa custom desain sesukamu'
-            ]);
+        $query = Produk::with('category');
 
-            Produk::create([
-                'nama_kue' => 'Box Cake',
-                'harga' => 85000,
-                'gambar' => 'box_cake.jpg',
-                'deskripsi' => 'Cake dengan dekorasi yang elegan dan menawan, dikemas dalam kotak eksklusif untuk memberikan kesan hadiah mewah, berkelas, dan istimewa di setiap perayaanmu.' 
-            ]);
-
-            Produk::create([
-                'nama_kue' => 'Duo Cake',
-                'harga' => 95000,
-                'gambar' => 'duo_cake.jpg',
-                'deskripsi' => 'Cake dengan dekorasi yang elegan dan menawan, dikemas dalam kotak eksklusif untuk memberikan kesan hadiah mewah, berkelas, dan istimewa di setiap perayaanmu.' 
-            ]);
-
-            Produk ::create([
-                'nama_kue' => 'Love Cake',
-                'harga' => 100000,
-                'gambar' => 'love_cake.jpg',
-                'deskripsi' => 'Cake berbentuk love yang minimalis dan clean, memancarkan kesan romantis yang anggun.'
-            ]);
-
-             Produk::create([
-                'nama_kue' => 'Midi Cake',
-                'harga' => 120000,
-                'gambar' => 'midi_cake.jpg',
-                'deskripsi' => 'Cake midi dengan ukuran yang lebih pas, tekstur selembut awan, dan tampilan estetik yang siap menyempurnakan setiap sudut foto perayaanmu.'
-            ]);
-
-            Produk::create([
-                'nama_kue' => 'Flower Cake',
-                'harga' => 135000,
-                'gambar' => 'flower_cake.jpg',
-                'deskripsi' => 'Cake dengan desain flower yang cantik dan aesthetic dengan pilihan warna bunga yang bisa di custom.'
-            ]);
-
-            Produk::create([
-                'nama_kue' => 'Dua Tier Cake',
-                'harga' => 150000,
-                'gambar' => 'dua_tier_cake.jpg',
-                'deskripsi' => 'Cake 2 tingkat yang elegan untuk berbagai momen spesial. Tersedia custom desain sesuai keinginan.'
-            ]);
-
-           
-            $semua_cake = Produk::all();
+        // Filter pencarian berdasarkan nama kue, SKU, atau deskripsi
+        if ($request->filled('q')) {
+            $keyword = strtolower(trim($request->input('q')));
+            $query->where(function ($q) use ($keyword) {
+                $q->whereRaw('LOWER(nama_kue) LIKE ?', ["%{$keyword}%"])
+                  ->orWhereRaw('LOWER(COALESCE(sku, \'\')) LIKE ?', ["%{$keyword}%"])
+                  ->orWhereRaw('LOWER(COALESCE(deskripsi, \'\')) LIKE ?', ["%{$keyword}%"]);
+            });
         }
 
-        return view('katalog', compact('semua_cake'));
+        // Filter kategori berdasarkan slug atau category_id
+        if ($request->filled('kategori') && $request->input('kategori') !== 'semua') {
+            $kat = $request->input('kategori');
+            $query->whereHas('category', function ($q) use ($kat) {
+                $q->where('slug', $kat)->orWhere('id', $kat);
+            });
+        }
+
+        // Pengurutan (Sorting)
+        $sort = $request->input('sort', 'default');
+        if ($sort === 'termurah') {
+            $query->orderBy('harga', 'asc');
+        } elseif ($sort === 'termahal') {
+            $query->orderBy('harga', 'desc');
+        } elseif ($sort === 'terbaru') {
+            $query->latest();
+        } else {
+            $query->orderBy('id', 'asc');
+        }
+
+        $semua_cake = $query->get();
+
+        return view('katalog', compact('semua_cake', 'categories', 'sort'));
     }
 
+    /**
+     * Menampilkan detail spesifikasi produk, stok kuota PO, dan opsi pemesanan.
+     */
     public function detailProduk($id)
     {
-        $cake = Produk::findOrFail($id);
-        return view('detail', compact('cake'));
+        $cake = Produk::with('category')->findOrFail($id);
+        $terkait = Produk::where('id', '!=', $id)
+            ->where('category_id', $cake->category_id)
+            ->take(4)
+            ->get();
+
+        if ($terkait->isEmpty()) {
+            $terkait = Produk::where('id', '!=', $id)->take(4)->get();
+        }
+
+        return view('detail', compact('cake', 'terkait'));
     }
 }

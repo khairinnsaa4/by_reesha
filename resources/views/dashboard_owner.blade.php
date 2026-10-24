@@ -135,24 +135,55 @@
                     </div>
                 </div>
 
-                <!-- Metric 4: Product Units Sold -->
+                <!-- Metric 4: Low-Stock Alert & Kuota -->
                 <div class="p-5 sm:p-6 transition hover:bg-slate-50/50">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Output Produk Terjual</span>
-                        <span class="text-[10px] font-semibold text-slate-400">Fulfillment</span>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Peringatan Kuota & Stok</span>
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold {{ $low_stock_count > 0 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-50 text-emerald-700' }}">
+                            {{ $low_stock_count > 0 ? 'Perlu Restock' : 'Semua Aman' }}
+                        </span>
                     </div>
                     <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-mono-nums flex items-baseline gap-1.5">
-                        <span>{{ number_format($produk_terjual, 0, ',', '.') }}</span>
-                        <span class="text-xs font-semibold text-slate-400 font-sans">Pcs Kue</span>
+                        <span class="{{ $low_stock_count > 0 ? 'text-amber-600' : 'text-slate-900' }}">{{ $low_stock_count }}</span>
+                        <span class="text-xs font-semibold text-slate-400 font-sans">Produk Menipis</span>
                     </div>
                     <div class="mt-2 text-[11px] text-slate-500 flex items-center justify-between">
-                        <span>Kategori:</span>
-                        <span class="font-semibold text-pink-600">Bakery & Pastry</span>
+                        <span>Batas minimum:</span>
+                        <span class="font-semibold text-slate-700 font-mono-nums">&le; 3 Kuota PO</span>
                     </div>
                 </div>
 
             </div>
         </div>
+
+        @if($low_stock_count > 0)
+        <!-- Visual Low-Stock Alert Banner -->
+        <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
+            <div class="flex items-start sm:items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="text-xs sm:text-sm font-bold text-amber-900">Peringatan: Kuota Slot Baking Mendekati Batas Kritis</h4>
+                    <p class="text-xs text-amber-700 mt-0.5">Terdapat {{ $low_stock_count }} varian kue dengan kuota PO tersisa &le; 3 slot. Lakukan penambahan kuota batch agar pelanggan tetap dapat memesan.</p>
+                    <div class="flex flex-wrap gap-1.5 mt-2">
+                        @foreach($low_stock_products as $lp)
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-white border border-amber-300 text-amber-900 shadow-2xs">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                {{ $lp->nama_kue }} (Sisa {{ $lp->stok }} slot)
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <a href="/logistik" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-xs transition shrink-0">
+                <span>Restock Kuota Batch</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+        @endif
 
         <!-- ========================================== -->
         <!-- CORE ANALYTICS: VELOCITY & LEADERBOARD     -->

@@ -69,7 +69,7 @@
                     <span class="text-pink-600 font-semibold">Logistik & Inventaris</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Logistik & Stok Bahan</h1>
-                <p class="text-xs sm:text-sm text-slate-500 mt-1">Pemantauan ketersediaan bahan baku produksi, persediaan kemasan, dan pencatatan restock.</p>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Pemantauan ketersediaan bahan baku produksi, persediaan kemasan, dan pencatatan restock kuota PO.</p>
             </div>
 
             <div class="flex items-center gap-3">
@@ -141,7 +141,7 @@
             </div>
         </div>
 
-        <!-- Table Card Container -->
+        <!-- Table Card Container 1: Bahan Baku & Packaging -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
             <!-- Table Toolbar -->
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -249,6 +249,100 @@
                             <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                                 Belum ada data barang logistik yang tercatat.
                             </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- KUOTA BATCH BAKING & RESTOCK PRODUK (FINISHED GOODS)    -->
+        <!-- ======================================================= -->
+        <div class="mt-8 bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <!-- Header -->
+            <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50">
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                        <span>Kuota Slot Baking & Batch Produk Kue</span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-100 text-pink-700">Pre-Order PO 2 Hari</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Pemantauan ketersediaan slot batch kue untuk dipesan pelanggan dan pencatatan penambahan slot batch (Restocking).</p>
+                </div>
+                <span class="text-xs font-semibold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs">
+                    Total: {{ isset($produks) ? $produks->count() : 0 }} Varian Kue
+                </span>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-slate-50/80 text-slate-500 border-b border-slate-200 text-[11px] font-semibold uppercase tracking-wider">
+                            <th class="px-5 py-3.5">SKU & Varian Kue</th>
+                            <th class="px-5 py-3.5">Kategori</th>
+                            <th class="px-5 py-3.5 text-right">HPP (Modal)</th>
+                            <th class="px-5 py-3.5 text-right">Harga Jual</th>
+                            <th class="px-5 py-3.5 text-center">Batas Min.</th>
+                            <th class="px-5 py-3.5 text-center">Sisa Slot PO</th>
+                            <th class="px-5 py-3.5 text-right">Tambah Kuota Batch</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse($produks ?? [] as $p)
+                        <tr class="hover:bg-slate-50/60 transition-colors">
+                            <td class="px-5 py-3.5">
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ asset('images/' . $p->gambar) }}" alt="{{ $p->nama_kue }}" class="w-10 h-10 object-cover rounded-lg border border-slate-100 shrink-0" onerror="this.src='{{ asset('images/logo.png') }}'">
+                                    <div>
+                                        <div class="font-bold text-slate-900 text-xs sm:text-sm">{{ $p->nama_kue }}</div>
+                                        <div class="font-mono text-[10px] text-slate-400">{{ $p->sku }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-5 py-3.5">
+                                <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700">
+                                    {{ $p->category->nama ?? 'Bakery' }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-3.5 text-right font-mono text-slate-500">
+                                Rp {{ number_format($p->harga_modal ?? 0, 0, ',', '.') }}
+                            </td>
+                            <td class="px-5 py-3.5 text-right font-mono font-bold text-slate-800">
+                                Rp {{ number_format($p->harga, 0, ',', '.') }}
+                            </td>
+                            <td class="px-5 py-3.5 text-center font-mono text-slate-500">
+                                {{ $p->stok_minimum }} slot
+                            </td>
+                            <td class="px-5 py-3.5 text-center">
+                                @if($p->stok <= 0)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700">
+                                        Penuh (0)
+                                    </span>
+                                @elseif($p->isLowStock())
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 animate-pulse">
+                                        Kritis ({{ $p->stok }})
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        Aman ({{ $p->stok }})
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-5 py-3.5 text-right">
+                                <form action="/produk/{{ $p->id }}/restock-kuota" method="POST" class="inline-flex items-center gap-1.5 justify-end">
+                                    @csrf
+                                    <input type="number" name="tambah_slot" value="5" min="1" max="50" class="w-14 text-center text-xs border border-slate-200 rounded-lg py-1 px-1.5 font-semibold focus:outline-none focus:ring-1 focus:ring-pink-500">
+                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs font-semibold rounded-lg transition shadow-2xs">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        <span>+Slot</span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-slate-400">Belum ada data produk kue.</td>
                         </tr>
                         @endforelse
                     </tbody>
