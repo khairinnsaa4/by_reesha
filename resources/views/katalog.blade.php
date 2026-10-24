@@ -19,9 +19,8 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 w-full flex-grow">
         <!-- Header Banner -->
         <div class="text-center mb-6 md:mb-8">
-            <span class="text-pink-600 font-bold text-xs uppercase tracking-widest bg-pink-100 px-3.5 py-1 rounded-full">Katalog Resmi & Kuota Baking</span>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800 mt-3">Koleksi Kue Eksklusif By.Reesha</h1>
-            <p class="text-gray-500 text-xs sm:text-sm mt-2 max-w-xl mx-auto">Sistem Pre-Order (PO 2 Hari) dengan slot baking terbatas per batch untuk menjaga kesegaran dan cita rasa premium setiap kue.</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800">Koleksi Kue By.Reesha</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-1.5">Pilihan kue artisanal segar untuk setiap momen spesial Anda.</p>
         </div>
 
         <!-- Filter & Search Controls -->
@@ -78,77 +77,42 @@
         <!-- Product Cards Grid -->
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5 md:gap-6">
             @forelse($semua_cake as $cake)
-            <div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition duration-300 group">
-                <!-- Image & Top Badges -->
-                <div class="relative overflow-hidden h-36 sm:h-44 md:h-52 bg-pink-50/40">
-                    <img src="{{ asset('images/' . $cake->gambar) }}" alt="{{ $cake->nama_kue }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='{{ asset('images/logo.png') }}'">
-                    
-                    <!-- SKU Badge (Top Left) -->
-                    @if($cake->sku)
-                    <div class="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md shadow-xs">
-                        {{ $cake->sku }}
-                    </div>
+            <div class="bg-white rounded-2xl shadow-xs border border-pink-100/80 overflow-hidden flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition duration-200 group">
+                <!-- Image -->
+                <div class="relative overflow-hidden h-36 sm:h-44 md:h-48 bg-pink-50/30">
+                    <img src="{{ asset('images/' . $cake->gambar) }}" alt="{{ $cake->nama_kue }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='{{ asset('images/logo.png') }}'">
+                    @if($cake->stock <= 0)
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                            <span class="bg-black/70 text-white text-[11px] font-semibold px-2.5 py-1 rounded-md">Habis</span>
+                        </div>
                     @endif
-
-                    <!-- Stock Quota Badge (Top Right) -->
-                    <div class="absolute top-2 right-2">
-                        @if($cake->stock <= 0)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-rose-600 text-white shadow-xs">
-                                Stok Habis
-                            </span>
-                        @elseif($cake->isLowStock())
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-amber-500 text-white shadow-xs animate-pulse">
-                                Sisa {{ $cake->stock }} Stok
-                            </span>
-                        @else
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold bg-white/90 backdrop-blur-xs text-emerald-700 border border-emerald-200 shadow-xs">
-                                Sisa {{ $cake->stock }} Stok
-                            </span>
-                        @endif
-                    </div>
                 </div>
 
                 <!-- Product Info -->
-                <div class="p-3 sm:p-4 flex flex-col justify-between flex-grow space-y-2 sm:space-y-3">
+                <div class="p-3.5 flex flex-col justify-between flex-grow gap-2.5">
                     <div>
-                        <!-- Category Tag -->
-                        <div class="text-[10px] font-semibold uppercase tracking-wider text-pink-600 mb-1">
-                            {{ $cake->category->nama ?? 'Cake By.Reesha' }}
-                        </div>
-                        <h3 class="font-bold text-gray-800 text-xs sm:text-sm md:text-base line-clamp-1 group-hover:text-pink-600 transition-colors">
+                        <h3 class="font-semibold text-gray-800 text-xs sm:text-sm line-clamp-1 group-hover:text-pink-600 transition-colors">
                             {{ $cake->nama_kue }}
                         </h3>
-                        <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed hidden sm:block">
-                            {{ $cake->deskripsi }}
-                        </p>
+                        <div class="flex items-center gap-2 mt-1 text-[11px] text-gray-400">
+                            <span>Stok {{ $cake->stock }}</span>
+                            <span>•</span>
+                            <span>{{ $cake->sold_count ?? 0 }} terjual</span>
+                        </div>
                     </div>
 
-                    <div class="pt-2 border-t border-pink-50 space-y-2">
-                        <div class="flex items-baseline justify-between">
-                            <div>
-                                <span class="text-[10px] text-gray-400 block -mb-1">Harga</span>
-                                <span class="text-pink-600 font-extrabold text-xs sm:text-sm md:text-base">Rp {{ number_format($cake->harga, 0, ',', '.') }}</span>
-                            </div>
-                            <span class="text-[10px] sm:text-[11px] text-gray-500 font-medium">Terjual: {{ $cake->sold_count ?? 0 }}</span>
-                        </div>
-
-                        <div class="text-[11px] text-gray-500">
-                            Stok Tersedia: <strong class="{{ $cake->stock <= 0 ? 'text-rose-600' : 'text-gray-700' }}">{{ $cake->stock }}</strong>
-                        </div>
-
-                        <div class="pt-1">
-                            @if($cake->stock > 0)
-                                <a href="/produk/{{ $cake->id }}"
-                                   class="block w-full bg-pink-600 hover:bg-pink-700 text-white text-[11px] sm:text-xs font-bold py-2 rounded-xl transition shadow-xs text-center">
-                                    Pesan
-                                </a>
-                            @else
-                                <button type="button" disabled
-                                   class="block w-full bg-gray-200 text-gray-400 cursor-not-allowed text-[11px] sm:text-xs font-bold py-2 rounded-xl shadow-none text-center select-none pointer-events-none" title="Stok Produk Habis">
-                                    Stok Habis
-                                </button>
-                            @endif
-                        </div>
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-gray-50">
+                        <span class="text-pink-600 font-bold text-xs sm:text-sm">Rp {{ number_format($cake->harga, 0, ',', '.') }}</span>
+                        @if($cake->stock > 0)
+                            <a href="/produk/{{ $cake->id }}"
+                               class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition text-center shadow-2xs">
+                                Pesan
+                            </a>
+                        @else
+                            <span class="bg-gray-100 text-gray-400 text-xs font-medium px-2.5 py-1.5 rounded-lg select-none cursor-not-allowed">
+                                Habis
+                            </span>
+                        @endif
                     </div>
                 </div>
             </div>

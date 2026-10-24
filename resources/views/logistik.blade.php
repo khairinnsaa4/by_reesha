@@ -264,10 +264,9 @@
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50">
                 <div>
                     <h2 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        <span>Manajemen Stok Produk & Katalog Kue</span>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-100 text-pink-700">Shopee Style Inventory</span>
+                        <span>Stok Produk & Katalog Kue</span>
                     </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Pemantauan persediaan stok produk, kuantitas terjual, dan pembaruan stok real-time.</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Pemantauan persediaan stok produk dan kuantitas terjual.</p>
                 </div>
                 <div class="flex items-center gap-2.5">
                     <span class="text-xs font-semibold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs">
@@ -324,16 +323,16 @@
                             </td>
                             <td class="px-5 py-3.5 text-center">
                                 @if($p->stock <= 0)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700">
-                                        Habis (0)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-200">
+                                        Habis
                                     </span>
                                 @elseif($p->isLowStock())
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 animate-pulse">
-                                        Kritis ({{ $p->stock }})
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                        {{ $p->stock }} (Kritis)
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        {{ $p->stock }} Tersedia
+                                    <span class="text-xs font-semibold text-slate-800">
+                                        {{ $p->stock }}
                                     </span>
                                 @endif
                             </td>

@@ -42,50 +42,42 @@
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5 md:gap-6">
             @foreach($produkBestSeller as $produk)
-            <div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition duration-300 group">
-                <div class="relative overflow-hidden h-36 sm:h-44 md:h-52">
+            <div class="bg-white rounded-2xl shadow-xs border border-pink-100/80 overflow-hidden flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition duration-200 group">
+                <div class="relative overflow-hidden h-36 sm:h-44 md:h-48 bg-pink-50/30">
                     <img src="{{ asset('images/' . $produk->gambar) }}"
                          alt="{{ $produk->nama_kue }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                          onerror="this.src='{{ asset('images/logo.png') }}'">
-                    <div class="absolute top-2 left-2">
-                        <span class="bg-pink-600 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Best Seller</span>
-                    </div>
                     @if($produk->stock <= 0)
-                    <div class="absolute top-2 right-2">
-                        <span class="bg-rose-600/90 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                            Stok Habis
-                        </span>
-                    </div>
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                            <span class="bg-black/70 text-white text-[11px] font-semibold px-2.5 py-1 rounded-md">Habis</span>
+                        </div>
                     @endif
                 </div>
-                <div class="p-3 sm:p-4 space-y-2 flex-grow flex flex-col justify-between">
+
+                <div class="p-3.5 flex flex-col justify-between flex-grow gap-2.5">
                     <div>
-                        <h4 class="text-xs sm:text-sm md:text-base font-bold text-gray-800 line-clamp-1 group-hover:text-pink-600 transition-colors">{{ $produk->nama_kue }}</h4>
-                        <p class="text-gray-500 text-[11px] sm:text-xs mt-0.5 line-clamp-2 leading-relaxed hidden sm:block">{{ $produk->deskripsi }}</p>
+                        <h4 class="text-xs sm:text-sm font-semibold text-gray-800 line-clamp-1 group-hover:text-pink-600 transition-colors">
+                            {{ $produk->nama_kue }}
+                        </h4>
+                        <div class="flex items-center gap-2 mt-1 text-[11px] text-gray-400">
+                            <span>Stok {{ $produk->stock }}</span>
+                            <span>•</span>
+                            <span>{{ $produk->sold_count ?? 0 }} terjual</span>
+                        </div>
                     </div>
 
-                    <div class="pt-2 border-t border-pink-50 space-y-2">
-                        <div class="flex items-baseline justify-between">
-                            <span class="text-pink-600 font-extrabold text-xs sm:text-sm md:text-base">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
-                            <span class="text-[10px] sm:text-[11px] text-gray-500 font-medium">Terjual: {{ $produk->sold_count ?? 0 }}</span>
-                        </div>
-
-                        <div class="text-[11px] text-gray-500">
-                            Stok Tersedia: <strong class="{{ $produk->stock <= 0 ? 'text-rose-600' : 'text-gray-700' }}">{{ $produk->stock }}</strong>
-                        </div>
-
-                        <div class="pt-1">
-                            @if($produk->stock > 0)
-                                <a href="/produk/{{ $produk->id }}" class="block w-full bg-pink-600 hover:bg-pink-700 text-white text-[11px] sm:text-xs font-bold py-2 rounded-xl transition shadow-xs text-center">
-                                    Pesan
-                                </a>
-                            @else
-                                <button type="button" disabled class="block w-full bg-gray-200 text-gray-400 cursor-not-allowed text-[11px] sm:text-xs font-bold py-2 rounded-xl shadow-none text-center select-none" title="Stok Produk Habis">
-                                    Stok Habis
-                                </button>
-                            @endif
-                        </div>
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-gray-50">
+                        <span class="text-pink-600 font-bold text-xs sm:text-sm">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                        @if($produk->stock > 0)
+                            <a href="/produk/{{ $produk->id }}" class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition text-center shadow-2xs">
+                                Pesan
+                            </a>
+                        @else
+                            <span class="bg-gray-100 text-gray-400 text-xs font-medium px-2.5 py-1.5 rounded-lg select-none cursor-not-allowed">
+                                Habis
+                            </span>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -62,43 +62,27 @@
                     <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-snug">{{ $cake->nama_kue }}</h1>
                 </div>
                 
-                <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm mb-4">
+                <div class="flex items-center gap-3 text-xs text-gray-500 mb-4">
                     <div class="flex items-center text-pink-600 gap-1 font-bold">
                         <span>5.0</span>
                         <span class="text-amber-400">★★★★★</span>
                     </div>
                     <div class="w-px h-3.5 bg-gray-200"></div>
-                    <div class="text-gray-500"><span class="font-bold text-gray-800">124</span> Penilaian</div>
-                    <div class="w-px h-3.5 bg-gray-200"></div>
-                    <div class="text-gray-500"><span class="font-bold text-gray-800">358</span> Terjual</div>
+                    <div><span class="font-bold text-gray-800">{{ $cake->sold_count ?? 0 }}</span> Terjual</div>
                 </div>
 
-                <div class="bg-pink-50/60 p-4 sm:p-5 rounded-2xl border border-pink-100 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 mb-5">
-                    <div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pink-600">Rp {{ number_format($cake->harga, 0, ',', '.') }}</div>
-                            <span class="text-xs text-gray-400 font-medium">/ porsi</span>
-                        </div>
-                        <div class="text-xs text-gray-500 flex items-center gap-3 mt-1.5 font-medium">
-                            <span>Stok Tersedia: <strong class="{{ $cake->stock <= 0 ? 'text-rose-600 font-bold' : 'text-gray-800' }}">{{ $cake->stock }}</strong></span>
-                            <span>•</span>
-                            <span>Terjual: <strong class="text-gray-800">{{ $cake->sold_count ?? 0 }}</strong></span>
-                        </div>
+                <div class="bg-pink-50/60 p-4 sm:p-5 rounded-2xl border border-pink-100 flex items-center justify-between gap-3 mb-5">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-pink-600">
+                        Rp {{ number_format($cake->harga, 0, ',', '.') }}
                     </div>
-
-                    <!-- Quota Batch Indicator -->
                     <div>
                         @if($cake->stock <= 0)
-                            <span class="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-100 px-3 py-1 rounded-full">
-                                ● Stok Habis
-                            </span>
-                        @elseif($cake->isLowStock())
-                            <span class="inline-flex items-center gap-1 text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full animate-pulse">
-                                ● Sisa {{ $cake->stock }} Stok Tersedia
+                            <span class="text-xs font-semibold text-rose-700 bg-rose-100 px-3 py-1 rounded-full">
+                                Stok Habis
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
-                                ● {{ $cake->stock }} Stok Tersedia
+                            <span class="text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+                                Stok: {{ $cake->stock }}
                             </span>
                         @endif
                     </div>
@@ -125,14 +109,14 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 pt-1">
-                        <div class="w-auto sm:w-28 text-gray-500 text-xs sm:text-sm font-semibold">Kuantitas PO</div>
+                        <div class="w-auto sm:w-28 text-gray-500 text-xs sm:text-sm font-semibold">Kuantitas</div>
                         <div class="flex items-center gap-3">
                             <div class="flex items-center border border-gray-300 rounded-xl overflow-hidden bg-white">
                                 <button type="button" onclick="decreaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-r border-gray-200 font-bold">-</button>
                                 <input type="text" id="qty-input" value="1" class="w-12 h-8 text-center text-gray-800 font-semibold text-sm focus:outline-none" readonly>
                                 <button type="button" onclick="increaseQty()" class="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 border-l border-gray-200 font-bold">+</button>
                             </div>
-                            <span class="text-gray-400 text-xs">Pre-Order 2 Hari (Maks: {{ $cake->stock }} slot)</span>
+                            <span class="text-gray-400 text-xs">Maks: {{ $cake->stock }}</span>
                         </div>
                     </div>
                 </div>
