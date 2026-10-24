@@ -231,7 +231,7 @@
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Alamat Email</label>
-                    <input type="email" name="email" required placeholder="staf@byreesha.com"
+                    <input type="email" name="email" required placeholder="staf@gmail.com"
                         class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500">
                 </div>
                 <div>

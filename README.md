@@ -154,8 +154,8 @@ Sistem telah dilengkapi dengan Database Seeder yang menyediakan 3 akun pengujian
 | Role | Email Login | Password | Hak Akses Utama |
 | :--- | :--- | :--- | :--- |
 | **Owner (Pemilik Toko)** | `byreeshaowner@gmail.com` | `password123` | Akses penuh: Dashboard Finansial, Laporan Omzet, Manajemen Karyawan, Logistik, Supplier, Pesanan, Resep |
-| **Karyawan (Baker / Staff Dapur)** | `baker@byreesha.com` | `password123` | Manajemen Pemesanan (update status dapur), Logistik & Restock Batch, Standarisasi Resep Dapur *(Dilarang akses Laporan Finansial & Dashboard Owner)* |
-| **Pelanggan (Customer)** | `pelanggan@byreesha.com` | `password123` | Katalog Kue, Pencarian & Filter Kategori, Keranjang, Checkout, Riwayat Belanja & Pembatalan Pesanan *(Dilarang akses Konsol Admin/Karyawan)* |
+| **Karyawan (Baker / Staff Dapur)** | `songkangkaryawan01@gmail.com` | `password123` | Manajemen Pemesanan (update status dapur), Logistik & Restock Batch, Standarisasi Resep Dapur *(Dilarang akses Laporan Finansial & Dashboard Owner)* |
+| **Pelanggan (Customer)** | `kharinnisa146@gmail.com` | `password123` | Katalog Kue, Pencarian & Filter Kategori, Keranjang, Checkout, Riwayat Belanja & Pembatalan Pesanan *(Dilarang akses Konsol Admin/Karyawan)* |
 
 ---
 

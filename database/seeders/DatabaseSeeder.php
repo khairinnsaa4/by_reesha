@@ -158,23 +158,23 @@ class DatabaseSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'baker@byreesha.com'],
+            ['email' => 'songkangkaryawan01@gmail.com'],
             [
-                'name' => 'Song Kang (Baker)',
+                'name' => 'songkangkaryawan01',
                 'password' => Hash::make('password123'),
                 'role' => 'karyawan',
                 'divisi' => 'Baker (Pembuat Kue)',
-                'phone' => '082199887766'
+                'phone' => '081234567891'
             ]
         );
 
         User::updateOrCreate(
-            ['email' => 'pelanggan@byreesha.com'],
+            ['email' => 'kharinnisa146@gmail.com'],
             [
-                'name' => 'Khai Pelanggan',
+                'name' => 'khai',
                 'password' => Hash::make('password123'),
                 'role' => 'pelanggan',
-                'phone' => '085711223344'
+                'phone' => '082362232393'
             ]
         );
 
