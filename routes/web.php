@@ -39,9 +39,25 @@ use App\Models\User;
 use App\Models\Logistik;
 use App\Models\Supplier;
 
+// Route Aliases agar ramah dibuka lewat HP / URL singkat (mencegah 404 Not Found)
+Route::get('/dashboard', function () {
+    if (!Auth::check()) return redirect('/login');
+    if (Auth::user()->role === 'owner') return redirect('/dashboard-owner');
+    if (Auth::user()->role === 'karyawan') return redirect('/pemesanan');
+    return redirect('/riwayat-transaksi');
+});
+Route::get('/owner', fn() => redirect('/dashboard-owner'));
+Route::get('/admin', fn() => redirect('/dashboard-owner'));
+Route::get('/dashboard_owner', fn() => redirect('/dashboard-owner'));
+Route::get('/manajemen', fn() => redirect('/dashboard-owner'));
+Route::get('/karyawan/dashboard', fn() => redirect('/pemesanan'));
+
 Route::get('/dashboard-owner', function () {
-    if (!Auth::check() || Auth::user()->role !== 'owner') {
-        return redirect(Auth::check() && Auth::user()->role === 'karyawan' ? '/pemesanan' : '/riwayat-transaksi');
+    if (!Auth::check()) {
+        return redirect('/login')->with('error', 'Silakan masuk dengan akun Owner untuk mengakses Dashboard.');
+    }
+    if (Auth::user()->role !== 'owner') {
+        return redirect(Auth::user()->role === 'karyawan' ? '/pemesanan' : '/riwayat-transaksi');
     }
     $total_pendapatan = Transaksi::sum('total_harga');
     $pesanan_aktif = Transaksi::count();

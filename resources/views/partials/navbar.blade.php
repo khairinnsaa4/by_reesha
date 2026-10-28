@@ -67,8 +67,21 @@
             @endauth
         </div>
 
-        <!-- Mobile Action Buttons (Quick Cart Shortcut) -->
+        <!-- Mobile Action Buttons (Quick Shortcut for Owner/Staff & Cart) -->
         <div class="flex items-center gap-2 md:hidden">
+            @auth
+                @if(Auth::user()->role === 'owner')
+                    <a href="/dashboard-owner" class="flex items-center gap-1.5 bg-slate-900 hover:bg-black text-white text-[11px] font-bold px-3 py-1.5 rounded-xl shadow-xs transition" title="Buka Dashboard Owner">
+                        <svg class="w-3.5 h-3.5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                        <span>Dashboard</span>
+                    </a>
+                @elseif(Auth::user()->role === 'karyawan')
+                    <a href="/pemesanan" class="flex items-center gap-1.5 bg-slate-900 hover:bg-black text-white text-[11px] font-bold px-3 py-1.5 rounded-xl shadow-xs transition" title="Buka Manajemen Pesanan">
+                        <svg class="w-3.5 h-3.5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                        <span>Pesanan</span>
+                    </a>
+                @endif
+            @endauth
             <a href="/keranjang" class="p-2 text-gray-600 hover:text-pink-600 transition rounded-xl hover:bg-pink-50 relative" aria-label="Keranjang">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

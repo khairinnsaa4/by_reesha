@@ -25,7 +25,7 @@
     <!-- ========================================== -->
     <!-- MAIN CONTENT AREA                          -->
     <!-- ========================================== -->
-    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full min-w-0 overflow-y-auto custom-scrollbar">
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full min-w-0 overflow-y-auto custom-scrollbar pb-24 md:pb-8">
         
         {{-- Flash Alerts --}}
         @if(session('sukses'))

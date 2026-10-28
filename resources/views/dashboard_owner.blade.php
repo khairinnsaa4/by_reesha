@@ -42,7 +42,7 @@
     <!-- ========================================== -->
     <!-- MAIN EXECUTIVE CONSOLE                     -->
     <!-- ========================================== -->
-    <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar space-y-6">
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar space-y-6 pb-24 md:pb-8">
 
         <!-- ========================================== -->
         <!-- EXECUTIVE COMMAND HEADER                   -->

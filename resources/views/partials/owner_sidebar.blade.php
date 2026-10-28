@@ -6,25 +6,32 @@
 <!-- ========================================== -->
 <!-- MOBILE TOPBAR                              -->
 <!-- ========================================== -->
-<header class="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-2xs no-print">
+<header class="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-xs no-print">
     <div class="flex items-center gap-2.5">
         <img src="{{ asset('images/logo.png') }}" alt="Logo By.Reesha" class="w-8 h-8 object-contain rounded-full bg-pink-50 ring-2 ring-pink-100 p-0.5" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'12\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
         <div>
-            <h1 class="text-sm font-extrabold text-pink-600 tracking-wider leading-none">BY.REESHA</h1>
-            <p class="text-[10px] text-slate-400 font-medium">Portal Manajemen</p>
+            <div class="flex items-center gap-1.5">
+                <h1 class="text-sm font-extrabold text-pink-600 tracking-wider leading-none">BY.REESHA</h1>
+                @if($user && $user->role === 'owner')
+                    <span class="bg-slate-900 text-white text-[8px] font-black px-1.5 py-0.5 rounded tracking-wider uppercase">OWNER</span>
+                @elseif($user && $user->role === 'karyawan')
+                    <span class="bg-pink-100 text-pink-700 text-[8px] font-black px-1.5 py-0.5 rounded tracking-wider uppercase">STAF</span>
+                @endif
+            </div>
+            <p class="text-[10px] text-slate-400 font-medium">Portal Manajemen Toko</p>
         </div>
     </div>
 
     <div class="flex items-center gap-2">
-        <a href="/profil" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white font-bold text-xs ring-2 ring-pink-100">
+        <a href="/profil" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white font-bold text-xs ring-2 ring-pink-100" title="Akun Saya">
             @if($user && $user->avatar)
                 <img src="{{ $user->avatar_url }}" class="w-full h-full object-cover" alt="{{ $user->name }}">
             @else
                 <span>{{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}</span>
             @endif
         </a>
-        <button id="mobile-dash-btn" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none" aria-label="Buka Menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button id="mobile-dash-btn" class="p-2 rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none border border-slate-200 transition" aria-label="Buka Menu Manajemen">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
@@ -269,6 +276,9 @@
     </div>
 </aside>
 
+{{-- Mobile Bottom Navigation Bar (Role-Aware) --}}
+@include('partials.bottom_nav', ['active' => $currentActive])
+
 <script>
     // Universal mobile drawer handler for admin portal
     (function() {
@@ -278,6 +288,13 @@
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 menu.classList.toggle('hidden');
+            });
+
+            // Tutup menu jika klik di luar
+            document.addEventListener('click', function(e) {
+                if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
             });
         }
     })();

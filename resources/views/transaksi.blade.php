@@ -49,7 +49,7 @@
     <!-- ========================================== -->
     <!-- MAIN CONTENT AREA                          -->
     <!-- ========================================== -->
-    <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar">
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar pb-24 md:pb-8">
 
         <!-- Executive Page Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200 no-print">

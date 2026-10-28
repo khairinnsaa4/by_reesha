@@ -16,7 +16,7 @@
     @include('partials.navbar', ['active' => 'produk'])
 
     <!-- CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 w-full flex-grow">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12 w-full flex-grow pb-24 md:pb-12">
         <!-- Header Banner -->
         <div class="text-center mb-6 md:mb-8">
             <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800">Koleksi Kue By.Reesha</h1>
