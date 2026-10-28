@@ -14,5 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'logout',
         '/logout',
+        'api/midtrans-callback',
+        'midtrans-callback',
     ];
 }

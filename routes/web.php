@@ -709,6 +709,9 @@ Route::post('/checkout/proses', function (Request $request) {
             $produk->decrement('stok', $qty);
             $produk->increment('sold_count', $qty);
 
+            $metodePembayaran = $request->input('metode_pembayaran', 'QRIS');
+            $isQris = ($metodePembayaran === 'QRIS');
+
             // Simpan record Transaksi
             return Transaksi::create([
                 'user_id' => Auth::id(),
@@ -723,16 +726,71 @@ Route::post('/checkout/proses', function (Request $request) {
                 'subtotal' => $subtotal,
                 'total_harga' => $totalHarga,
                 'metode_pengiriman' => $metodeKirim,
-                'metode_pembayaran' => $request->input('metode_pembayaran', 'QRIS'),
-                'status' => 'Diproses',
+                'metode_pembayaran' => $metodePembayaran,
+                'status' => $isQris ? 'Menunggu Pembayaran' : 'Diproses',
+                'payment_status' => $isQris ? 'pending' : 'cod',
             ]);
         });
+
+        // Jika metode pembayaran QRIS, mintakan QR Code dari Midtrans Core API
+        if ($trx->metode_pembayaran === 'QRIS') {
+            $midtrans = app(\App\Services\MidtransService::class);
+            if ($midtrans->isConfigured()) {
+                $charge = $midtrans->createQrisCharge($trx);
+                if ($charge['success']) {
+                    $trx->qris_url = $charge['qr_url'];
+                    $trx->qris_string = $charge['qr_string'];
+                    $trx->midtrans_transaction_id = $charge['transaction_id'];
+                    $trx->expired_at = $charge['expired_at'];
+                    $trx->save();
+                } else {
+                    \Illuminate\Support\Facades\Log::warning('Midtrans QRIS Charge notice: ' . ($charge['message'] ?? ''));
+                }
+            }
+            return redirect('/pembayaran/' . $trx->id);
+        }
 
         return redirect('/sukses?id=' . $trx->id)->with('sukses', 'Pesanan kue berhasil dibuat! Kode Transaksi: ' . $trx->kode_transaksi);
     } catch (\Exception $e) {
         return back()->with('error', $e->getMessage());
     }
 })->middleware('auth');
+
+// Halaman Pembayaran QRIS Midtrans
+Route::get('/pembayaran/{id}', function ($id) {
+    $trx = Transaksi::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+    // Jika metode bukan QRIS atau sudah lunas/selesai, arahkan ke halaman sukses
+    $isPaid = in_array($trx->payment_status, ['settlement', 'capture']) 
+        || in_array($trx->status, ['Diproses', 'Dikemas', 'Dikirim', 'Selesai']);
+
+    if ($trx->metode_pembayaran !== 'QRIS' || $isPaid) {
+        return redirect('/sukses?id=' . $trx->id);
+    }
+
+    // Jika belum ada qris_url tapi Midtrans sudah dikonfigurasi, coba generate ulang
+    if (empty($trx->qris_url)) {
+        $midtrans = app(\App\Services\MidtransService::class);
+        if ($midtrans->isConfigured()) {
+            $charge = $midtrans->createQrisCharge($trx);
+            if ($charge['success']) {
+                $trx->qris_url = $charge['qr_url'];
+                $trx->qris_string = $charge['qr_string'];
+                $trx->midtrans_transaction_id = $charge['transaction_id'];
+                $trx->expired_at = $charge['expired_at'];
+                $trx->save();
+            }
+        }
+    }
+
+    return view('pembayaran', compact('trx'));
+})->middleware('auth');
+
+// Cek status pembayaran seketika (Polling / tombol manual)
+Route::get('/transaksi/{id}/cek-status', [\App\Http\Controllers\MidtransController::class, 'checkStatus'])->middleware('auth');
+
+// Alias Webhook Callback (bisa diakses via /midtrans-callback maupun /api/midtrans-callback)
+Route::post('/midtrans-callback', [\App\Http\Controllers\MidtransController::class, 'handleNotification']);
 
 Route::get('/sukses', function (Request $request) {
     $trx = Transaksi::find($request->query('id')) ?? Transaksi::where('user_id', Auth::id())->latest()->first();
@@ -761,7 +819,7 @@ Route::post('/riwayat-transaksi/{id}/batal', function ($id) {
         DB::transaction(function () use ($id) {
             $trx = Transaksi::lockForUpdate()->where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
-            if (!in_array($trx->status, ['Diproses', 'Sedang Diproses'])) {
+            if (!in_array($trx->status, ['Menunggu Pembayaran', 'Diproses', 'Sedang Diproses'])) {
                 throw new \Exception('Pesanan yang sudah dalam tahap pengemasan atau pengiriman tidak dapat dibatalkan.');
             }
 

@@ -46,7 +46,8 @@
             @forelse($transaksis as $trx)
             @php
                 $badgeStyle = 'bg-gray-100 text-gray-700';
-                if (in_array($trx->status, ['Diproses', 'Sedang Diproses'])) $badgeStyle = 'bg-amber-100 text-amber-800';
+                if ($trx->status === 'Menunggu Pembayaran') $badgeStyle = 'bg-pink-100 text-pink-800 border border-pink-200';
+                elseif (in_array($trx->status, ['Diproses', 'Sedang Diproses'])) $badgeStyle = 'bg-amber-100 text-amber-800';
                 elseif (in_array($trx->status, ['Dikemas'])) $badgeStyle = 'bg-purple-100 text-purple-800';
                 elseif (in_array($trx->status, ['Dikirim', 'Dalam Pengiriman'])) $badgeStyle = 'bg-blue-100 text-blue-800';
                 elseif (in_array($trx->status, ['Selesai', 'Diterima'])) $badgeStyle = 'bg-emerald-100 text-emerald-800';
@@ -93,7 +94,20 @@
                 </div>
                 <div class="border-t border-gray-100 p-3 sm:p-4 flex flex-wrap justify-between items-center gap-2 bg-white">
                     <div>
-                        @if(in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']))
+                        @if($trx->status === 'Menunggu Pembayaran')
+                        <div class="flex items-center gap-2">
+                            <a href="/pembayaran/{{ $trx->id }}" class="bg-pink-600 hover:bg-pink-700 text-white text-xs sm:text-sm font-bold py-1.5 sm:py-2 px-4 rounded-xl shadow transition flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                Bayar QRIS Sekarang
+                            </a>
+                            <form action="/riwayat-transaksi/{{ $trx->id }}/batal" method="POST" onsubmit="return confirm('Batalkan pesanan ini? Stok akan dikembalikan.')" class="inline">
+                                @csrf
+                                <button type="submit" class="text-xs text-gray-500 hover:text-rose-600 font-semibold border border-gray-200 hover:border-rose-200 px-3 py-1.5 rounded-xl transition">
+                                    Batal
+                                </button>
+                            </form>
+                        </div>
+                        @elseif(in_array($trx->status, ['Dikirim', 'Dalam Pengiriman']))
                         <form action="/riwayat-transaksi/{{ $trx->id }}/terima" method="POST" onsubmit="return confirm('Konfirmasi bahwa kue telah Anda terima dengan baik?')" class="inline">
                             @csrf
                             <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold py-1.5 sm:py-2 px-4 rounded-xl shadow transition">

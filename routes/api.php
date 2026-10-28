@@ -17,3 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+/*
+|--------------------------------------------------------------------------
+| Midtrans Payment Gateway Webhook Callback
+|--------------------------------------------------------------------------
+| Endpoint ini menerima notifikasi webhook dari server Midtrans (HTTP POST)
+| ketika pelanggan telah menyelesaikan pembayaran QRIS / e-Wallet.
+*/
+Route::post('/midtrans-callback', [\App\Http\Controllers\MidtransController::class, 'handleNotification']);
+

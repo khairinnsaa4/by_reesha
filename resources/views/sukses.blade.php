@@ -16,15 +16,31 @@
         <div class="bg-pink-600 h-2 w-full absolute top-0 left-0"></div>
         
         <div class="p-5 sm:p-8 pb-8 sm:pb-10">
-            <!-- Checkmark Icon -->
-            <div class="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mb-5 sm:mb-6 shadow-sm border-4 border-white ring-2 ring-green-50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-            
-            <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Pesanan Berhasil Dibuat!</h1>
-            <p class="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8">Terima kasih telah berbelanja di By.Reesha. Mohon segera lakukan pembayaran agar pesanan Anda bisa diproses.</p>
+            @php
+                $isQrisPending = $trx && $trx->metode_pembayaran === 'QRIS' && $trx->status === 'Menunggu Pembayaran';
+            @endphp
+
+            @if($isQrisPending)
+                <!-- Warning / QRIS Info -->
+                <div class="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-pink-100 rounded-full flex items-center justify-center mb-5 sm:mb-6 shadow-sm border-4 border-white ring-2 ring-pink-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Menunggu Pembayaran QRIS</h1>
+                <p class="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8">Pesanan Anda telah dibuat. Silakan selesaikan pembayaran scan QRIS sebelum batas waktu berakhir.</p>
+            @else
+                <!-- Checkmark Icon -->
+                <div class="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mb-5 sm:mb-6 shadow-sm border-4 border-white ring-2 ring-green-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Pesanan Berhasil Dibuat!</h1>
+                <p class="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8">Terima kasih telah berbelanja di By.Reesha. Pesanan Anda akan segera diproses oleh tim kami.</p>
+            @endif
             
             <!-- Order Info -->
             <div class="bg-gray-50 rounded-xl p-5 mb-8 border border-gray-100">
@@ -44,7 +60,12 @@
 
             <!-- Action Buttons -->
             <div class="space-y-3">
-                <a href="/riwayat-transaksi" class="block w-full py-3 px-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-xl shadow-md transition">
+                @if($isQrisPending)
+                <a href="/pembayaran/{{ $trx->id }}" class="block w-full py-3.5 px-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl shadow-md transition text-sm">
+                    Scan QRIS Sekarang
+                </a>
+                @endif
+                <a href="/riwayat-transaksi" class="block w-full py-3 px-4 {{ $isQrisPending ? 'bg-pink-50 text-pink-700 hover:bg-pink-100' : 'bg-pink-600 hover:bg-pink-700 text-white' }} font-semibold rounded-xl shadow-md transition">
                     Lihat Status Pesanan
                 </a>
                 <a href="/" class="block w-full py-3 px-4 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition">

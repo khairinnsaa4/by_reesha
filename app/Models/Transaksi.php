@@ -11,6 +11,10 @@ class Transaksi extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'expired_at' => 'datetime',
+    ];
+
     /**
      * Relasi: Transaksi dilakukan oleh User pelanggan
      * Sesuai spesifikasi slide 10 PPT: Sale belongsTo User
