@@ -18,8 +18,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        // Semua yang daftar mandiri otomatis menjadi pelanggan.
-        // Karyawan hanya bisa ditambahkan oleh owner dari dashboard.
+        
         $role = 'pelanggan';
 
         User::create([
@@ -62,7 +61,7 @@ class AuthController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         } catch (\Throwable $e) {
-            // Abaikan jika sesi telah kedaluwarsa sebelumnya
+            
         }
         return redirect('/');
     }
@@ -85,20 +84,19 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
 
-        // Opsi hapus foto profil jika diminta
         if ($request->has('hapus_avatar') && $request->hapus_avatar == '1') {
             if ($user->avatar && !str_starts_with($user->avatar, 'data:') && file_exists(public_path($user->avatar))) {
                 @unlink(public_path($user->avatar));
             }
             $user->avatar = null;
         } elseif ($request->filled('avatar_base64') && str_starts_with($request->input('avatar_base64'), 'data:image/')) {
-            // Gunakan avatar base64 hasil canvas browser (ringan dan aman untuk serverless Vercel)
+            
             if ($user->avatar && !str_starts_with($user->avatar, 'data:') && file_exists(public_path($user->avatar))) {
                 @unlink(public_path($user->avatar));
             }
             $user->avatar = $request->input('avatar_base64');
         } elseif ($request->hasFile('avatar')) {
-            // Fallback aman untuk serverless: baca konten file dan konversi ke base64 data URI
+            
             $file = $request->file('avatar');
             $mime = $file->getMimeType() ?: 'image/jpeg';
             $content = file_get_contents($file->getRealPath());

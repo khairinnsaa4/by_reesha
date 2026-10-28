@@ -34,12 +34,9 @@
 
     @include('partials.owner_sidebar', ['active' => 'supplier'])
 
-    <!-- ========================================== -->
-    <!-- MAIN CONTENT AREA                          -->
-    <!-- ========================================== -->
+    
     <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar pb-24 md:pb-8">
 
-        {{-- Alerts --}}
         @if(session('sukses'))
         <div class="mb-6 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-xl flex items-center gap-2.5 shadow-2xs">
             <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,7 +46,6 @@
         </div>
         @endif
 
-        <!-- Executive Page Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
                 <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
@@ -74,9 +70,8 @@
             </div>
         </div>
 
-        <!-- Table Card Container -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-            <!-- Toolbar -->
+            
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="relative flex-1 max-w-md">
                     <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +87,6 @@
                 </div>
             </div>
 
-            <!-- Table Body -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
                     <thead>
@@ -107,7 +101,7 @@
                     <tbody class="divide-y divide-slate-100" id="tabel-supplier">
                         @forelse($suppliers as $sup)
                         <tr class="hover:bg-slate-50/60 transition-colors sup-row">
-                            <!-- Name -->
+                            
                             <td class="px-5 py-4 font-semibold text-slate-800 text-xs sm:text-sm">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 border border-pink-100">
@@ -119,24 +113,20 @@
                                 </div>
                             </td>
 
-                            <!-- Category -->
                             <td class="px-5 py-4">
                                 <span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-md border border-slate-200">
                                     {{ $sup->kategori }}
                                 </span>
                             </td>
 
-                            <!-- Contact -->
                             <td class="px-5 py-4 text-slate-700 font-mono text-xs">
                                 {{ $sup->kontak }}
                             </td>
 
-                            <!-- Address -->
                             <td class="px-5 py-4 text-slate-500 text-xs max-w-xs truncate">
                                 {{ $sup->alamat }}
                             </td>
 
-                            <!-- Actions -->
                             <td class="px-5 py-4 text-right">
                                 <div class="inline-flex items-center gap-1.5">
                                     <button onclick="openEditModal({{ $sup }})" class="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-lg transition" title="Ubah Data">
@@ -169,7 +159,6 @@
 
     </main>
 
-    <!-- Modal Tambah Supplier -->
     <div id="modal-tambah" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
@@ -209,7 +198,6 @@
         </div>
     </div>
 
-    <!-- Modal Edit Supplier -->
     <div id="modal-edit" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
@@ -249,7 +237,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script>
         function toggleModal(id) {
             document.getElementById(id).classList.toggle('hidden');

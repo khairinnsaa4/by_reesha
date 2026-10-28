@@ -8,16 +8,13 @@ use App\Models\Category;
 
 class ProdukController extends Controller
 {
-    /**
-     * Menampilkan katalog produk dengan fitur pencarian, filter kategori, dan status kuota PO.
-     */
+    
     public function index(Request $request)
     {
         $categories = Category::withCount('produks')->orderBy('nama')->get();
 
         $query = Produk::with('category');
 
-        // Filter pencarian berdasarkan nama kue, SKU, atau deskripsi
         if ($request->filled('q')) {
             $keyword = strtolower(trim($request->input('q')));
             $query->where(function ($q) use ($keyword) {
@@ -27,7 +24,6 @@ class ProdukController extends Controller
             });
         }
 
-        // Filter kategori berdasarkan slug atau category_id
         if ($request->filled('kategori') && $request->input('kategori') !== 'semua') {
             $kat = $request->input('kategori');
             $query->whereHas('category', function ($q) use ($kat) {
@@ -35,7 +31,6 @@ class ProdukController extends Controller
             });
         }
 
-        // Pengurutan (Sorting)
         $sort = $request->input('sort', 'default');
         if ($sort === 'termurah') {
             $query->orderBy('harga', 'asc');
@@ -52,9 +47,6 @@ class ProdukController extends Controller
         return view('katalog', compact('semua_cake', 'categories', 'sort'));
     }
 
-    /**
-     * Menampilkan detail spesifikasi produk, stok kuota PO, dan opsi pemesanan.
-     */
     public function detailProduk($id)
     {
         $cake = Produk::with('category')->findOrFail($id);

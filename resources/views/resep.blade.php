@@ -14,12 +14,12 @@
 
     @include('partials.owner_sidebar', ['active' => 'resep'])
 
-    <!-- ========================================== -->
-    <!-- MAIN CONTENT AREA                          -->
-    <!-- ========================================== -->
+    
+    
+    
     <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar pb-24 md:pb-8">
 
-        {{-- Flash Alerts --}}
+        
         @if(session('sukses'))
         <div class="mb-6 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-xl flex items-center justify-between shadow-2xs">
             <div class="flex items-center gap-2">
@@ -40,7 +40,7 @@
         </div>
         @endif
 
-        <!-- Executive Page Header -->
+        
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
                 <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        {{-- ===== SEARCH & FILTER BAR ===== --}}
+        
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-pink-50 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="relative w-full md:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
@@ -90,7 +90,7 @@
             </div>
         </div>
 
-        {{-- ===== RECIPE CARDS GRID ===== --}}
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="grid-resep">
             @forelse($reseps as $r)
             @php
@@ -109,7 +109,7 @@
                 data-kesulitan="{{ $r->tingkat_kesulitan }}">
                 
                 <div>
-                    {{-- Image & Badge --}}
+                    
                     <a href="/resep/{{ $r->id }}" class="block relative h-44 w-full bg-pink-50 overflow-hidden group">
                         <img src="{{ asset('images/' . ($r->produk->gambar ?? 'logo.png')) }}" 
                              alt="{{ $r->produk->nama_kue ?? 'Kue' }}" 
@@ -127,7 +127,7 @@
                         </div>
                     </a>
 
-                    {{-- Content Header --}}
+                    
                     <div class="p-4">
                         <div class="text-xs font-semibold text-pink-600 mb-0.5 uppercase tracking-wider">
                             {{ $r->produk->nama_kue ?? 'Kue Custom' }}
@@ -138,7 +138,7 @@
                             </h3>
                         </a>
 
-                        {{-- Specs Strip --}}
+                        
                         <div class="grid grid-cols-3 gap-1 py-2 px-2 bg-gray-50 rounded-xl mb-3 text-center text-xs">
                             <div>
                                 <span class="block text-[10px] text-gray-400">Persiapan</span>
@@ -154,7 +154,7 @@
                             </div>
                         </div>
 
-                        {{-- Bahan Ringkas --}}
+                        
                         <div class="text-xs text-gray-500 mb-3">
                             <span class="font-semibold text-gray-700 block mb-1">Bahan Baku ({{ $totalBahan }} bahan):</span>
                             <ul class="space-y-0.5 text-gray-500 line-clamp-3 pl-1">
@@ -169,7 +169,7 @@
                     </div>
                 </div>
 
-                {{-- Action Button (Direct Link to Full Page) --}}
+                
                 <div class="p-4 pt-0 border-t border-gray-50 flex items-center gap-2">
                     <a href="/resep/{{ $r->id }}"
                         class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-semibold text-xs py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm shadow-pink-100">
@@ -188,14 +188,14 @@
             @endforelse
         </div>
 
-        {{-- No Result Alert --}}
+        
         <div id="no-result" class="hidden bg-white p-12 text-center rounded-2xl border border-gray-200 mt-4">
             <p class="text-gray-600 font-medium">Tidak ada resep yang sesuai dengan kata kunci pencarian Anda.</p>
         </div>
 
     </main>
 
-    {{-- ===== MODAL TAMBAH RESEP BARU ===== --}}
+    
     <div id="modal-form" class="hidden fixed inset-0 bg-black/60 z-50 overflow-y-auto p-4 flex items-center justify-center">
         <div class="bg-white rounded-3xl shadow-2xl max-w-xl w-full p-6 md:p-8 my-8 relative">
             <div class="flex items-center justify-between mb-6 pb-3 border-b border-gray-100">
@@ -291,7 +291,7 @@
         </div>
     </div>
 
-    {{-- SEARCH & FILTER SCRIPT --}}
+    
     <script>
         let filterKesulitanAktif = 'Semua';
 

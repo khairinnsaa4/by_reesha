@@ -18,10 +18,6 @@ class MidtransController extends Controller
         $this->midtrans = $midtrans;
     }
 
-    /**
-     * Webhook Handler: Menerima notifikasi otomatis dari Midtrans (HTTP Notification)
-     * URL Callback: POST /api/midtrans-callback
-     */
     public function handleNotification(Request $request)
     {
         $payload = $request->all();
@@ -38,7 +34,6 @@ class MidtransController extends Controller
             return response()->json(['message' => 'Payload tidak lengkap.'], 400);
         }
 
-        // Verifikasi Signature Hash keamanan
         if (!$this->midtrans->verifySignature($orderId, $statusCode, $grossAmount, $signatureKey)) {
             Log::warning('Midtrans Webhook: Invalid Signature Hash for order ' . $orderId);
             return response()->json(['message' => 'Invalid signature.'], 403);
@@ -66,7 +61,7 @@ class MidtransController extends Controller
                 }
             } elseif ($transactionStatus === 'settlement') {
                 $trx->payment_status = 'settlement';
-                $trx->status = 'Diproses'; // Lunas, masuk antrean pesanan
+                $trx->status = 'Diproses'; 
             } elseif ($transactionStatus === 'pending') {
                 $trx->payment_status = 'pending';
                 if ($trx->status !== 'Diproses') {
@@ -77,7 +72,6 @@ class MidtransController extends Controller
                 $trx->payment_status = $transactionStatus;
                 $trx->status = 'Dibatalkan';
 
-                // Kembalikan stok kuota produk jika pesanan expired atau dibatalkan
                 if (!in_array($oldStatus, ['Dibatalkan', 'Batal'])) {
                     $p = $trx->produk_id ? Produk::find($trx->produk_id) : Produk::where('nama_kue', $trx->nama_produk)->first();
                     if ($p) {
@@ -96,15 +90,10 @@ class MidtransController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Notifikasi berhasil diproses.']);
     }
 
-    /**
-     * Polling / Pengecekan status pembayaran seketika oleh frontend
-     * URL: GET /transaksi/{id}/cek-status
-     */
     public function checkStatus($id)
     {
         $trx = Transaksi::findOrFail($id);
 
-        // Jika di DB lokal sudah lunas, langsung return success
         $isPaid = in_array($trx->payment_status, ['settlement', 'capture']) 
             || in_array($trx->status, ['Diproses', 'Dikemas', 'Dikirim', 'Selesai']);
 
@@ -117,7 +106,6 @@ class MidtransController extends Controller
             ]);
         }
 
-        // Jika belum lunas dan ada kode_transaksi, coba sync langsung ke Midtrans API
         if ($trx->kode_transaksi && $this->midtrans->isConfigured()) {
             $midtransCheck = $this->midtrans->checkStatus($trx->kode_transaksi);
             if ($midtransCheck['success']) {

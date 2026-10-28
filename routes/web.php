@@ -7,17 +7,6 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\ProdukController;
 use App\Models\Produk;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Route::get('/', function () {
     $produkBestSeller = Produk::take(4)->get();
     return view('welcome', compact('produkBestSeller'));
@@ -38,8 +27,10 @@ use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Logistik;
 use App\Models\Supplier;
+use App\Models\Category;
+use App\Models\Resep;
+use Illuminate\Support\Facades\Auth;
 
-// Route Aliases agar ramah dibuka lewat HP / URL singkat (mencegah 404 Not Found)
 Route::get('/dashboard', function () {
     if (!Auth::check()) return redirect('/login');
     if (Auth::user()->role === 'owner') return redirect('/dashboard-owner');
@@ -51,6 +42,19 @@ Route::get('/admin', fn() => redirect('/dashboard-owner'));
 Route::get('/dashboard_owner', fn() => redirect('/dashboard-owner'));
 Route::get('/manajemen', fn() => redirect('/dashboard-owner'));
 Route::get('/karyawan/dashboard', fn() => redirect('/pemesanan'));
+Route::get('/pesanan', fn() => redirect('/pemesanan'));
+Route::get('/orders', fn() => redirect('/pemesanan'));
+Route::get('/order', fn() => redirect('/pemesanan'));
+Route::get('/kasir', fn() => redirect('/pemesanan'));
+Route::get('/katalog', fn() => redirect('/produk'));
+Route::get('/menu', fn() => redirect('/produk'));
+Route::get('/kue', fn() => redirect('/produk'));
+Route::get('/stok', fn() => redirect('/logistik'));
+Route::get('/inventory', fn() => redirect('/logistik'));
+Route::get('/keuangan', fn() => redirect('/laporan'));
+Route::get('/finance', fn() => redirect('/laporan'));
+Route::get('/riwayat', fn() => redirect('/riwayat-transaksi'));
+Route::get('/cart', fn() => redirect('/keranjang'));
 
 Route::get('/dashboard-owner', function () {
     if (!Auth::check()) {
@@ -59,13 +63,25 @@ Route::get('/dashboard-owner', function () {
     if (Auth::user()->role !== 'owner') {
         return redirect(Auth::user()->role === 'karyawan' ? '/pemesanan' : '/riwayat-transaksi');
     }
+
     $total_pendapatan = Transaksi::sum('total_harga');
-    $pesanan_aktif = Transaksi::count();
+    $pesanan_aktif_count = Transaksi::whereIn('status', ['Menunggu Pembayaran', 'Dikemas', 'Diproses', 'Menunggu Konfirmasi', 'Dalam Pengiriman', 'Dikirim'])->count();
+    $total_transaksi = Transaksi::count();
+    $pesanan_aktif = $pesanan_aktif_count > 0 ? $pesanan_aktif_count : $total_transaksi;
+    
     $total_pelanggan = User::where('role', 'pelanggan')->count();
     $produk_terjual = Transaksi::sum('qty');
-    $transaksis = Transaksi::with('user')->latest()->take(5)->get();
+    $rata_rata_order = $total_transaksi > 0 ? (int) round($total_pendapatan / $total_transaksi) : 0;
+    
+    $pesanan_menunggu = Transaksi::whereIn('status', ['Menunggu Pembayaran', 'Menunggu Konfirmasi'])->count();
+    $pesanan_proses = Transaksi::whereIn('status', ['Diproses', 'Dikemas', 'Dalam Pengiriman', 'Dikirim'])->count();
+    $pesanan_selesai = Transaksi::whereIn('status', ['Selesai', 'Diterima', 'Sukses'])->count();
 
-    // Data grafik tren penjualan 7 hari terakhir
+    $transaksis = Transaksi::with('user')->latest()->take(6)->get();
+
+    $omzet_hari_ini = Transaksi::whereDate('created_at', now()->toDateString())->sum('total_harga');
+    $pesanan_hari_ini = Transaksi::whereDate('created_at', now()->toDateString())->count();
+
     $chartDays = collect(range(6, 0))->map(function ($daysAgo) {
         $date = now()->subDays($daysAgo);
         $omzet = Transaksi::whereDate('created_at', $date->toDateString())->sum('total_harga');
@@ -77,7 +93,6 @@ Route::get('/dashboard-owner', function () {
     $chartLabels = $chartDays->pluck('label')->toArray();
     $chartOmzet = $chartDays->pluck('omzet')->toArray();
 
-    // Data grafik 5 produk terlaris
     $produkStats = Transaksi::all()->groupBy('nama_produk')->map(function ($items, $nama) {
         return [
             'nama' => $nama,
@@ -90,12 +105,15 @@ Route::get('/dashboard-owner', function () {
     $chartProdukOmzet  = $produkStats->pluck('total_omzet')->values()->toArray();
     $chartProdukQty    = $produkStats->pluck('total_qty')->values()->toArray();
 
-    // Data Peringatan Stok & Kuota Kritis (Low-Stock Alert)
-    $low_stock_products = Produk::lowStock()->get();
+    $low_stock_products = Produk::where('stok', '<=', 3)->orWhere(function($q) {
+        $q->whereNotNull('stok_minimum')->whereColumn('stok', '<=', 'stok_minimum');
+    })->get();
     $low_stock_count = $low_stock_products->count();
 
     return view('dashboard_owner', compact(
-        'total_pendapatan', 'pesanan_aktif', 'total_pelanggan', 'produk_terjual', 'transaksis',
+        'total_pendapatan', 'pesanan_aktif', 'total_transaksi', 'total_pelanggan', 'produk_terjual', 'rata_rata_order',
+        'pesanan_menunggu', 'pesanan_proses', 'pesanan_selesai', 'transaksis',
+        'omzet_hari_ini', 'pesanan_hari_ini',
         'chartLabels', 'chartOmzet', 'chartProdukLabels', 'chartProdukOmzet', 'chartProdukQty',
         'low_stock_products', 'low_stock_count'
     ));
@@ -136,7 +154,6 @@ Route::get('/bantuan', function () {
 Route::post('/profil/update', [AuthController::class, 'updateProfil'])->middleware('auth');
 Route::post('/profil/update-password', [AuthController::class, 'updatePassword'])->middleware('auth');
 
-// Simpan alamat & telepon pelanggan ke database (AJAX)
 Route::post('/profil/update-alamat', function (Request $request) {
     $request->validate([
         'phone'   => 'nullable|string|max:20',
@@ -151,7 +168,6 @@ Route::post('/profil/update-alamat', function (Request $request) {
     return response()->json(['status' => 'ok']);
 })->middleware('auth');
 
-// Simpan alamat dari form halaman profil (redirect biasa)
 Route::post('/profil/update-alamat-form', function (Request $request) {
     $request->validate([
         'phone'   => 'nullable|string|max:20',
@@ -182,7 +198,6 @@ Route::get('/karyawan', function () {
     return view('karyawan', compact('karyawan'));
 })->middleware('auth');
 
-// Tambah karyawan — hanya owner
 Route::post('/karyawan/tambah', function (Request $request) {
     if (!Auth::check() || Auth::user()->role !== 'owner') abort(403);
 
@@ -204,7 +219,6 @@ Route::post('/karyawan/tambah', function (Request $request) {
     return back()->with('sukses', 'Akun karyawan ' . $request->name . ' berhasil ditambahkan!');
 })->middleware('auth');
 
-// Hapus karyawan — hanya owner
 Route::delete('/karyawan/{id}/hapus', function ($id) {
     if (!Auth::check() || Auth::user()->role !== 'owner') abort(403);
 
@@ -215,7 +229,6 @@ Route::delete('/karyawan/{id}/hapus', function ($id) {
     return back()->with('sukses', 'Akun karyawan ' . $nama . ' berhasil dihapus!');
 })->middleware('auth');
 
-// Edit karyawan — hanya owner
 Route::put('/karyawan/{id}/edit', function (Illuminate\Http\Request $request, $id) {
     if (!Auth::check() || Auth::user()->role !== 'owner') abort(403);
 
@@ -239,11 +252,9 @@ Route::put('/karyawan/{id}/edit', function (Illuminate\Http\Request $request, $i
     return back()->with('sukses', 'Data karyawan ' . $request->name . ' berhasil diperbarui!');
 })->middleware('auth');
 
-
-
 Route::get('/pelanggan', function () {
-    if (!Auth::check() || Auth::user()->role !== 'owner') {
-        return redirect(Auth::check() && Auth::user()->role === 'karyawan' ? '/dashboard-owner' : '/riwayat-transaksi');
+    if (!Auth::check() || (Auth::user()->role !== 'owner' && !Auth::user()->isKasir())) {
+        return redirect(Auth::check() && Auth::user()->role === 'karyawan' ? '/pemesanan' : '/riwayat-transaksi');
     }
     $pelanggan = User::where('role', 'pelanggan')->withCount('transaksis')->withSum('transaksis', 'total_harga')->latest()->get();
     return view('pelanggan', compact('pelanggan'));
@@ -265,7 +276,6 @@ Route::post('/pemesanan/{id}/update-status', function (Request $request, $id) {
         $trx = Transaksi::lockForUpdate()->findOrFail($id);
         $oldStatus = $trx->status;
 
-        // Konsistensi Stok: Jika status diubah ke 'Dibatalkan' atau 'Batal', kembalikan stok kuota slot PO
         if (!in_array($oldStatus, ['Dibatalkan', 'Batal']) && in_array($newStatus, ['Dibatalkan', 'Batal'])) {
             $p = $trx->produk_id ? Produk::find($trx->produk_id) : Produk::where('nama_kue', $trx->nama_produk)->first();
             if ($p) {
@@ -277,7 +287,6 @@ Route::post('/pemesanan/{id}/update-status', function (Request $request, $id) {
             }
         }
 
-        // Jika sebelumnya batal lalu diaktifkan kembali oleh admin, kurangi kembali stok jika masih mencukupi
         if (in_array($oldStatus, ['Dibatalkan', 'Batal']) && !in_array($newStatus, ['Dibatalkan', 'Batal'])) {
             $p = $trx->produk_id ? Produk::find($trx->produk_id) : Produk::where('nama_kue', $trx->nama_produk)->first();
             if ($p) {
@@ -295,8 +304,8 @@ Route::post('/pemesanan/{id}/update-status', function (Request $request, $id) {
 })->middleware('auth');
 
 Route::get('/transaksi', function (Request $request) {
-    if (!Auth::check() || Auth::user()->role !== 'owner') {
-        return redirect(Auth::check() && Auth::user()->role === 'karyawan' ? '/dashboard-owner' : '/riwayat-transaksi');
+    if (!Auth::check() || (Auth::user()->role !== 'owner' && !Auth::user()->isKasir())) {
+        return redirect(Auth::check() && Auth::user()->role === 'karyawan' ? '/pemesanan' : '/riwayat-transaksi');
     }
 
     $filter = $request->query('filter', 'semua');
@@ -381,45 +390,37 @@ Route::get('/logistik', function () {
         return redirect('/riwayat-transaksi');
     }
 
-    // Helper: hitung status otomatis dari stok
-    $autoStatus = function ($stok) {
-        if ($stok <= 5)  return 'Kritis';
-        if ($stok <= 15) return 'Menipis';
-        return 'Aman';
-    };
-
-    if (Logistik::count() === 0) {
-        $seed = [
-            ['nama' => 'Tepung Terigu',  'kategori' => 'Bahan Utama',     'stok' => 25,  'satuan' => 'Kg'],
-            ['nama' => 'Telur',          'kategori' => 'Bahan Utama',     'stok' => 2,   'satuan' => 'Tray'],
-            ['nama' => 'Mentega',        'kategori' => 'Bahan Utama',     'stok' => 8,   'satuan' => 'Kg'],
-            ['nama' => 'Gula Pasir',     'kategori' => 'Bahan Utama',     'stok' => 18,  'satuan' => 'Kg'],
-            ['nama' => 'Cokelat Blok',   'kategori' => 'Bahan Penunjang', 'stok' => 12,  'satuan' => 'Kg'],
-            ['nama' => 'Box Cake 20x20', 'kategori' => 'Packaging',       'stok' => 150, 'satuan' => 'Pcs'],
-            ['nama' => 'Pita Dekorasi',  'kategori' => 'Packaging',       'stok' => 4,   'satuan' => 'Roll'],
-        ];
-        foreach ($seed as $s) {
-            Logistik::create(array_merge($s, ['status' => $autoStatus($s['stok'])]));
-        }
-    } else {
-        // Sinkronisasi status semua barang yang sudah ada berdasarkan stok terkini
-        Logistik::all()->each(function ($item) use ($autoStatus) {
-            $newStatus = $autoStatus($item->stok);
-            if ($item->status !== $newStatus) {
-                $item->update(['status' => $newStatus]);
+    try {
+        if (Logistik::count() === 0) {
+            $seed = [
+                ['nama' => 'Tepung Terigu',  'kategori' => 'Bahan Utama',     'stok' => 25,  'satuan' => 'Kg',   'status' => 'Aman'],
+                ['nama' => 'Telur',          'kategori' => 'Bahan Utama',     'stok' => 2,   'satuan' => 'Tray', 'status' => 'Kritis'],
+                ['nama' => 'Mentega',        'kategori' => 'Bahan Utama',     'stok' => 8,   'satuan' => 'Kg',   'status' => 'Menipis'],
+                ['nama' => 'Gula Pasir',     'kategori' => 'Bahan Utama',     'stok' => 18,  'satuan' => 'Kg',   'status' => 'Aman'],
+                ['nama' => 'Cokelat Blok',   'kategori' => 'Bahan Penunjang', 'stok' => 12,  'satuan' => 'Kg',   'status' => 'Menipis'],
+                ['nama' => 'Box Cake 20x20', 'kategori' => 'Packaging',       'stok' => 150, 'satuan' => 'Pcs',  'status' => 'Aman'],
+                ['nama' => 'Pita Dekorasi',  'kategori' => 'Packaging',       'stok' => 4,   'satuan' => 'Roll', 'status' => 'Kritis'],
+            ];
+            foreach ($seed as $s) {
+                Logistik::create($s);
             }
-        });
+        }
+
+        $logistiks = Logistik::latest()->get();
+        $produks = Produk::with('category')->orderBy('id')->get();
+        $categories = Category::orderBy('nama')->get();
+    } catch (\Throwable $e) {
+        $logistiks = Logistik::latest()->get();
+        $produks = Produk::orderBy('id')->get();
+        $categories = class_exists(Category::class) ? Category::all() : collect([]);
     }
 
-    $logistiks = Logistik::latest()->get();
-    $produks = Produk::with('category')->orderBy('id')->get();
-    $categories = Category::orderBy('nama')->get();
     return view('logistik', compact('logistiks', 'produks', 'categories'));
 })->middleware('auth');
 
 Route::post('/logistik/tambah', function (Request $request) {
     $stok = (int) $request->input('stok', 0);
-    // Status otomatis berdasarkan jumlah stok
+    
     $status = $stok <= 5 ? 'Kritis' : ($stok <= 15 ? 'Menipis' : 'Aman');
 
     Logistik::create([
@@ -435,7 +436,7 @@ Route::post('/logistik/tambah', function (Request $request) {
 Route::post('/logistik/{id}/update', function (Request $request, $id) {
     $item = Logistik::findOrFail($id);
     $stok = (int) $request->input('stok', 0);
-    // Status otomatis berdasarkan jumlah stok
+    
     $status = $stok <= 5 ? 'Kritis' : ($stok <= 15 ? 'Menipis' : 'Aman');
 
     $item->update([
@@ -448,7 +449,6 @@ Route::post('/logistik/{id}/update', function (Request $request, $id) {
     return back()->with('sukses', 'Data logistik berhasil diperbarui!');
 })->middleware('auth');
 
-// Catat barang masuk (Restock) manual oleh staf gudang
 Route::post('/logistik/{id}/restock', function (Request $request, $id) {
     $item = Logistik::findOrFail($id);
     $tambah = (int) $request->input('jumlah_masuk', 0);
@@ -471,8 +471,7 @@ Route::get('/supplier', function () {
     if (Auth::check() && !in_array(Auth::user()->role, ['owner', 'karyawan'])) {
         return redirect('/riwayat-transaksi');
     }
-    
-    // Paksa update supplier lama ke data Lhokseumawe (jika masih ada data lama)
+
     $supplierData = [
         [
             'nama_supplier' => 'UD Sumber Terigu Lhokseumawe',
@@ -494,11 +493,9 @@ Route::get('/supplier', function () {
         ],
     ];
 
-    // Hapus supplier lama dari luar Lhokseumawe (jika masih ada)
     $namaLama = ['PT Boga Flour Indonesia', 'Toko Plastik Jaya Packaging', 'Distributor Telur Fresh'];
     Supplier::whereIn('nama_supplier', $namaLama)->delete();
 
-    // Tambahkan supplier Lhokseumawe jika belum ada
     foreach ($supplierData as $s) {
         Supplier::updateOrCreate(['nama_supplier' => $s['nama_supplier']], $s);
     }
@@ -600,7 +597,6 @@ Route::get('/laporan', function (Request $request) {
     })->values();
     $logistik = Logistik::latest()->get();
 
-    // Data laporan tahunan — daftar tahun database-agnostic (kompatibel PostgreSQL & MySQL)
     $allYears = Transaksi::all()->pluck('created_at')
         ->map(fn($d) => $d ? (int)$d->format('Y') : null)
         ->filter()->unique()->sortDesc()->values()->toArray();
@@ -680,7 +676,7 @@ Route::post('/checkout/proses', function (Request $request) {
 
     try {
         $trx = DB::transaction(function () use ($request) {
-            // Locking row produk untuk mencegah race condition (Concurrency Control)
+            
             $produk = null;
             if ($request->filled('produk_id')) {
                 $produk = Produk::lockForUpdate()->find($request->input('produk_id'));
@@ -694,17 +690,14 @@ Route::post('/checkout/proses', function (Request $request) {
 
             $qty = max(1, (int) $request->input('qty', 1));
 
-            // Business Logic: Validasi Konsistensi Stok (Backend Validation)
             $availableStock = (int) ($produk->stock ?? $produk->stok ?? 0);
             if ($availableStock < $qty) {
                 throw new \Exception("Maaf, stok {$produk->nama_kue} tidak mencukupi.");
             }
 
-            // Server-side Price Calculation (Otoritatif di server, tidak mempercayai input klien)
             $hargaSatuan = (int) $produk->harga;
             $subtotal = $hargaSatuan * $qty;
 
-            // Kalkulasi ongkos kirim server-side
             $metodeKirim = $request->input('metode_pengiriman', 'Kurir Instan / Grab (Rp 15.000)');
             $ongkir = 15000;
             if (str_contains(strtolower($metodeKirim), 'ambil') || str_contains(strtolower($metodeKirim), 'pickup')) {
@@ -717,10 +710,8 @@ Route::post('/checkout/proses', function (Request $request) {
             $biayaLayanan = 1000;
             $totalHarga = $subtotal + $ongkir + $biayaLayanan;
 
-            // Generate Kode Transaksi Otomatis: TRX-YYYYMMDD-XXXX
             $kodeTransaksi = 'TRX-' . date('Ymd') . '-' . strtoupper(Str::random(5));
 
-            // Pengurangan stok secara atomik & penambahan sold_count
             $produk->decrement('stock', $qty);
             $produk->decrement('stok', $qty);
             $produk->increment('sold_count', $qty);
@@ -728,7 +719,6 @@ Route::post('/checkout/proses', function (Request $request) {
             $metodePembayaran = $request->input('metode_pembayaran', 'QRIS');
             $isQris = ($metodePembayaran === 'QRIS');
 
-            // Simpan record Transaksi
             return Transaksi::create([
                 'user_id' => Auth::id(),
                 'produk_id' => $produk->id,
@@ -748,7 +738,6 @@ Route::post('/checkout/proses', function (Request $request) {
             ]);
         });
 
-        // Jika metode pembayaran QRIS, mintakan QR Code dari Midtrans Core API
         if ($trx->metode_pembayaran === 'QRIS') {
             $midtrans = app(\App\Services\MidtransService::class);
             if ($midtrans->isConfigured()) {
@@ -772,11 +761,9 @@ Route::post('/checkout/proses', function (Request $request) {
     }
 })->middleware('auth');
 
-// Halaman Pembayaran QRIS Midtrans
 Route::get('/pembayaran/{id}', function ($id) {
     $trx = Transaksi::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
-    // Jika metode bukan QRIS atau sudah lunas/selesai, arahkan ke halaman sukses
     $isPaid = in_array($trx->payment_status, ['settlement', 'capture']) 
         || in_array($trx->status, ['Diproses', 'Dikemas', 'Dikirim', 'Selesai']);
 
@@ -786,7 +773,6 @@ Route::get('/pembayaran/{id}', function ($id) {
 
     $midtransError = null;
 
-    // Jika belum ada qris_url tapi Midtrans sudah dikonfigurasi, coba generate ulang
     if (empty($trx->qris_url)) {
         $midtrans = app(\App\Services\MidtransService::class);
         if (!$midtrans->isConfigured()) {
@@ -794,7 +780,6 @@ Route::get('/pembayaran/{id}', function ($id) {
         } else {
             $charge = $midtrans->createQrisCharge($trx);
 
-            // Jika order_id sudah pernah dipakai sebelumnya di Midtrans, buat order_id baru dan coba lagi
             if (!$charge['success'] && str_contains(strtolower($charge['message'] ?? ''), 'already been taken')) {
                 $trx->kode_transaksi = 'TRX-' . date('Ymd') . '-' . strtoupper(Str::random(5));
                 $trx->save();
@@ -816,10 +801,8 @@ Route::get('/pembayaran/{id}', function ($id) {
     return view('pembayaran', compact('trx', 'midtransError'));
 })->middleware('auth');
 
-// Cek status pembayaran seketika (Polling / tombol manual)
 Route::get('/transaksi/{id}/cek-status', [\App\Http\Controllers\MidtransController::class, 'checkStatus'])->middleware('auth');
 
-// Alias Webhook Callback (bisa diakses via /midtrans-callback maupun /api/midtrans-callback)
 Route::post('/midtrans-callback', [\App\Http\Controllers\MidtransController::class, 'handleNotification']);
 
 Route::get('/sukses', function (Request $request) {
@@ -835,7 +818,6 @@ Route::get('/riwayat-transaksi', function () {
     return view('riwayat-transaksi', compact('transaksis'));
 })->middleware('auth');
 
-// Konfirmasi pesanan telah diterima oleh pelanggan
 Route::post('/riwayat-transaksi/{id}/terima', function ($id) {
     $trx = Transaksi::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
     $trx->status = 'Selesai';
@@ -843,7 +825,6 @@ Route::post('/riwayat-transaksi/{id}/terima', function ($id) {
     return back()->with('sukses', 'Terima kasih telah berbelanja di By.Reesha! Pesanan Anda telah selesai.');
 })->middleware('auth');
 
-// Batalkan pesanan oleh pelanggan dengan pengembalian stok (hanya jika masih status 'Diproses')
 Route::post('/riwayat-transaksi/{id}/batal', function ($id) {
     try {
         DB::transaction(function () use ($id) {
@@ -853,7 +834,6 @@ Route::post('/riwayat-transaksi/{id}/batal', function ($id) {
                 throw new \Exception('Pesanan yang sudah dalam tahap pengemasan atau pengiriman tidak dapat dibatalkan.');
             }
 
-            // Kembalikan kuota stok produk & kurangi sold_count
             $p = $trx->produk_id ? Produk::find($trx->produk_id) : Produk::where('nama_kue', $trx->nama_produk)->first();
             if ($p) {
                 $p->increment('stock', $trx->qty);
@@ -873,7 +853,6 @@ Route::post('/riwayat-transaksi/{id}/batal', function ($id) {
     }
 })->middleware('auth');
 
-// Tambah Master Produk Baru oleh Owner / Karyawan
 Route::post('/produk/tambah', function (Request $request) {
     if (!Auth::check() || !in_array(Auth::user()->role, ['owner', 'karyawan'])) {
         abort(403);
@@ -918,7 +897,6 @@ Route::post('/produk/tambah', function (Request $request) {
     return back()->with('sukses', "Produk '{$produk->nama_kue}' berhasil ditambahkan dengan stok {$stock} unit!");
 })->middleware('auth');
 
-// Update Data Produk & Ubah Stok oleh Owner / Karyawan
 Route::post('/produk/{id}/update', function (Request $request, $id) {
     if (!Auth::check() || !in_array(Auth::user()->role, ['owner', 'karyawan'])) {
         abort(403);
@@ -962,7 +940,6 @@ Route::post('/produk/{id}/update', function (Request $request, $id) {
     return back()->with('sukses', "Data produk '{$produk->nama_kue}' berhasil diperbarui! Stok saat ini: {$newStock} unit.");
 })->middleware('auth');
 
-// Restock kuota slot baking batch produk oleh Owner / Karyawan Baker
 Route::post('/produk/{id}/restock-kuota', function (Request $request, $id) {
     if (!Auth::check() || !in_array(Auth::user()->role, ['owner', 'karyawan'])) {
         abort(403);
@@ -987,8 +964,6 @@ Route::get('/tentang-kami', function () {
 Route::get('/kontak', function () {
     return redirect('/');
 });
-
-use App\Models\Resep;
 
 Route::get('/resep', function () {
     if (!Auth::check()) return redirect('/login');
@@ -1050,3 +1025,17 @@ Route::get('/resep/{id}', function ($id) {
     $resep = Resep::with('produk')->findOrFail($id);
     return view('resep_detail', compact('resep'));
 })->middleware('auth');
+
+Route::fallback(function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+        if ($user->role === 'owner') {
+            return redirect('/dashboard-owner');
+        }
+        if ($user->role === 'karyawan') {
+            return redirect('/pemesanan');
+        }
+        return redirect('/riwayat-transaksi');
+    }
+    return redirect('/');
+});

@@ -9,7 +9,7 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f9fafb; color: #1e293b; }
 
-        /* ===== PRINT STYLES ===== */
+        
         @media print {
             body * { visibility: hidden !important; }
             #print-area, #print-area * { visibility: visible !important; }
@@ -27,12 +27,12 @@
 
     @include('partials.owner_sidebar', ['active' => 'laporan'])
 
-    <!-- ========================================== -->
-    <!-- MAIN CONTENT AREA                          -->
-    <!-- ========================================== -->
+    
+    
+    
     <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar pb-24 md:pb-8">
 
-        <!-- Executive Page Header -->
+        
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200 no-print">
             <div>
                 <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        {{-- ===== DEDICATED FILTER CARD ===== --}}
+        
         <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-pink-100 p-4 sm:p-6 mb-6 no-print">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-gray-100">
                 <div class="flex items-center gap-2">
@@ -70,7 +70,7 @@
             </div>
 
             <form action="/laporan" method="GET" id="form-filter" class="pt-4 space-y-4">
-                {{-- Period Selector Pills --}}
+                
                 <div class="flex flex-wrap items-center gap-2">
                     <button type="button" onclick="selectFilterMode('semua')" id="pill-semua"
                         class="filter-pill px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'semua' ? 'bg-pink-600 text-white border-pink-600 shadow-sm' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100' }}">
@@ -96,10 +96,10 @@
 
                 <input type="hidden" name="filter" id="input-filter-mode" value="{{ $filter }}">
 
-                {{-- Interactive Selector Inputs Area --}}
+                
                 <div class="bg-gray-50/80 rounded-2xl p-4 border border-gray-100">
                     
-                    {{-- 1. Input Harian --}}
+                    
                     <div id="box-harian" class="{{ $filter === 'harian' ? 'block' : 'hidden' }} space-y-3">
                         <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Pilih Tanggal Spesifik:
@@ -118,7 +118,7 @@
                         </div>
                     </div>
 
-                    {{-- 2. Input Mingguan --}}
+                    
                     <div id="box-mingguan" class="{{ $filter === 'mingguan' ? 'block' : 'hidden' }} space-y-3">
                         <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Pilih Pekan / Minggu Kalender:
@@ -134,7 +134,7 @@
                         </div>
                     </div>
 
-                    {{-- 3. Input Bulanan --}}
+                    
                     <div id="box-bulanan" class="{{ $filter === 'bulanan' ? 'block' : 'hidden' }} space-y-3">
                         <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Pilih Bulan & Tahun:
@@ -150,7 +150,7 @@
                         </div>
                     </div>
 
-                    {{-- 4. Input Tahunan --}}
+                    
                     <div id="box-tahunan" class="{{ $filter === 'tahunan' ? 'block' : 'hidden' }} space-y-3">
                         <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Pilih Tahun Rekap:
@@ -166,14 +166,14 @@
                         </div>
                     </div>
 
-                    {{-- 5. Semua Waktu Info --}}
+                    
                     <div id="box-semua" class="{{ $filter === 'semua' ? 'block' : 'hidden' }}">
                         <p class="text-xs text-gray-500">
                             Menampilkan seluruh riwayat transaksi By.Reesha dari awal toko beroperasi hingga saat ini tanpa batasan rentang waktu.
                         </p>
                     </div>
 
-                    {{-- Action Buttons --}}
+                    
                     <div class="pt-3 flex items-center gap-2 border-t border-gray-200 mt-3">
                         <button type="submit"
                             class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
@@ -192,7 +192,7 @@
                 </div>
             </form>
 
-            {{-- Active Period Status Banner --}}
+            
             <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-pink-50/60 rounded-xl border border-pink-100 text-xs">
                 <div class="flex items-center gap-2">
                     <svg class="w-4 h-4 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -207,7 +207,7 @@
             </div>
         </div>
 
-        {{-- ===== 4 KEY STATISTIC METRICS ===== --}}
+        
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 no-print">
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-pink-50 border border-pink-100 text-pink-600 flex items-center justify-center shrink-0">
@@ -258,7 +258,7 @@
             </div>
         </div>
 
-        {{-- ===== TAB NAVIGATION BAR ===== --}}
+        
         <div class="no-print flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto pb-0.5">
             <button onclick="showTab('penjualan')" id="tab-penjualan"
                 class="tab-btn whitespace-nowrap px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-pink-600 text-pink-700 bg-white -mb-px transition flex items-center gap-2">
@@ -282,13 +282,13 @@
             </button>
         </div>
 
-        {{-- ========================================== --}}
-        {{-- TAB 1: LAPORAN PENJUALAN --}}
-        {{-- ========================================== --}}
+        
+        
+        
         <div id="panel-penjualan" class="tab-panel">
             <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                 
-                {{-- Panel Top Toolbar --}}
+                
                 <div class="p-4 sm:p-5 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div>
                         <h3 class="text-base sm:text-lg font-bold text-gray-900">Rincian Penjualan Kue</h3>
@@ -301,7 +301,7 @@
                     </button>
                 </div>
 
-                {{-- Printable Content Area --}}
+                
                 <div id="print-penjualan" class="p-4 sm:p-6 space-y-6">
                     <div class="hidden print-header border-b-2 border-black pb-3 mb-4 text-center">
                         <div class="flex items-center justify-center gap-3 mb-1">
@@ -324,7 +324,7 @@
                         </div>
                     </div>
 
-                    {{-- 1. Rekap Per Produk --}}
+                    
                     <div>
                         <h4 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                             <span class="w-1.5 h-4 bg-pink-600 rounded-full inline-block"></span>
@@ -379,7 +379,7 @@
                         </div>
                     </div>
 
-                    {{-- 2. Detail Seluruh Transaksi --}}
+                    
                     <div class="pt-2">
                         <h4 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                             <span class="w-1.5 h-4 bg-pink-600 rounded-full inline-block"></span>
@@ -451,7 +451,7 @@
                         </div>
                     </div>
 
-                    {{-- Formal Signature Block --}}
+                    
                     <div class="hidden print-footer pt-6 grid grid-cols-2 text-center text-xs text-black" style="page-break-inside: avoid;">
                         <div>
                             <p class="text-gray-600 mb-1">Dibuat & Diverifikasi Oleh:</p>
@@ -472,9 +472,9 @@
             </div>
         </div>
 
-        {{-- ========================================== --}}
-        {{-- TAB 2: LAPORAN KEUANGAN --}}
-        {{-- ========================================== --}}
+        
+        
+        
         <div id="panel-keuangan" class="tab-panel hidden">
             <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                 <div class="p-4 sm:p-5 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -511,7 +511,7 @@
                         </div>
                     </div>
 
-                    {{-- Cards Ringkasan Keuangan --}}
+                    
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
                             <span class="text-xs text-emerald-700 font-bold uppercase tracking-wider block mb-1">Total Pemasukan</span>
@@ -530,7 +530,7 @@
                         </div>
                     </div>
 
-                    {{-- Rekap Metode Pembayaran --}}
+                    
                     @php
                         $per_metode = $transaksis->groupBy('metode_pembayaran');
                     @endphp
@@ -575,7 +575,7 @@
                             </table>
                     </div>
 
-                    {{-- Formal Signature Block --}}
+                    
                     <div class="hidden print-footer pt-6 grid grid-cols-2 text-center text-xs text-black" style="page-break-inside: avoid;">
                         <div>
                             <p class="text-gray-600 mb-1">Dibuat & Diverifikasi Oleh:</p>
@@ -596,9 +596,9 @@
             </div>
         </div>
 
-        {{-- ========================================== --}}
-        {{-- TAB 3: LAPORAN TAHUNAN & BULANAN --}}
-        {{-- ========================================== --}}
+        
+        
+        
         <div id="panel-tahunan" class="tab-panel hidden">
             <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                 <div class="p-4 sm:p-5 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -662,7 +662,7 @@
                         </div>
                     </div>
 
-                    {{-- Tabel 12 Bulan --}}
+                    
                     <div class="overflow-x-auto border border-gray-200 rounded-xl">
                         <table class="w-full text-left border-collapse text-xs sm:text-sm">
                             <thead>
@@ -715,7 +715,7 @@
                         </table>
                     </div>
 
-                    {{-- Formal Signature Block --}}
+                    
                     <div class="hidden print-footer pt-6 grid grid-cols-2 text-center text-xs text-black" style="page-break-inside: avoid;">
                         <div>
                             <p class="text-gray-600 mb-1">Dibuat & Diverifikasi Oleh:</p>
@@ -736,9 +736,9 @@
             </div>
         </div>
 
-        {{-- ========================================== --}}
-        {{-- TAB 4: LAPORAN LOGISTIK & STOK --}}
-        {{-- ========================================== --}}
+        
+        
+        
         <div id="panel-logistik" class="tab-panel hidden">
             <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                 <div class="p-4 sm:p-5 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -839,7 +839,7 @@
                         </table>
                     </div>
 
-                    {{-- Formal Signature Block --}}
+                    
                     <div class="hidden print-footer pt-6 grid grid-cols-2 text-center text-xs text-black" style="page-break-inside: avoid;">
                         <div>
                             <p class="text-gray-600 mb-1">Dibuat & Diverifikasi Oleh:</p>
@@ -862,28 +862,24 @@
 
     </main>
 
-    {{-- Hidden Print Container --}}
+    
     <div id="print-area" class="hidden"></div>
 
     <script>
-        // Pill filter switcher
         function selectFilterMode(mode) {
             document.getElementById('input-filter-mode').value = mode;
 
-            // Reset all pills
             document.querySelectorAll('.filter-pill').forEach(pill => {
                 pill.classList.remove('bg-pink-600', 'text-white', 'border-pink-600', 'shadow-sm');
                 pill.classList.add('bg-gray-50', 'text-gray-600', 'border-gray-200');
             });
 
-            // Activate chosen pill
             const activePill = document.getElementById('pill-' + mode);
             if (activePill) {
                 activePill.classList.remove('bg-gray-50', 'text-gray-600', 'border-gray-200');
                 activePill.classList.add('bg-pink-600', 'text-white', 'border-pink-600', 'shadow-sm');
             }
 
-            // Toggle selector input boxes
             const boxes = ['semua', 'harian', 'mingguan', 'bulanan', 'tahunan'];
             boxes.forEach(b => {
                 const el = document.getElementById('box-' + b);
@@ -898,13 +894,11 @@
                 }
             });
 
-            // If "semua" clicked, immediately submit form
             if (mode === 'semua') {
                 document.getElementById('form-filter').submit();
             }
         }
 
-        // Quick date setter for Harian
         function setQuickDate(type) {
             const dateInput = document.getElementById('input-tanggal');
             const today = new Date();
@@ -918,7 +912,6 @@
             document.getElementById('form-filter').submit();
         }
 
-        // Tab Switching
         function showTab(name) {
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => {
@@ -934,7 +927,6 @@
             }
         }
 
-        // Print utility
         function cetakLaporan(type) {
             const area   = document.getElementById('print-area');
             const source = document.getElementById('print-' + type);
@@ -948,7 +940,6 @@
             area.innerHTML = '';
         }
 
-        // If yearly filter is active on page load, switch to yearly tab
         @if(isset($filter) && $filter === 'tahunan')
         window.addEventListener('DOMContentLoaded', () => showTab('tahunan'));
         @endif

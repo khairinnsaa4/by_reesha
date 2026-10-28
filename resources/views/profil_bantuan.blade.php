@@ -12,13 +12,10 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-20 md:pb-8">
 
-    <!-- NAVIGATION BAR -->
     @include('partials.navbar', ['active' => 'profil'])
 
-    <!-- MAIN CONTAINER -->
     <main class="max-w-xl mx-auto px-4 py-6 sm:py-8 w-full flex-grow">
-        
-        <!-- HEADER NAVIGASI KEMBALI KE PROFIL -->
+
         <div class="flex items-center gap-3.5 mb-6">
             <a href="/profil" class="w-10 h-10 rounded-2xl bg-white border border-pink-100 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-300 transition shadow-xs flex-shrink-0" title="Kembali ke Profil">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -31,10 +28,8 @@
             </div>
         </div>
 
-        <!-- KARTU HUBUNGI KAMI LANGSUNG -->
         <div class="space-y-3.5 mb-6">
-            
-            <!-- WhatsApp CS -->
+
             <div class="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-start gap-3.5">
                     <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
@@ -54,7 +49,6 @@
                 </a>
             </div>
 
-            <!-- Lokasi Toko di Google Maps -->
             <div class="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-start gap-3.5">
                     <div class="w-10 h-10 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0">
@@ -77,7 +71,6 @@
 
         </div>
 
-        <!-- PANDUAN & FAQ TERTATA RAPI -->
         <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-pink-100">
             <h2 class="text-sm font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
                 <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

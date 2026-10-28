@@ -34,12 +34,9 @@
 
     @include('partials.owner_sidebar', ['active' => 'pemesanan'])
 
-    <!-- ========================================== -->
-    <!-- MAIN CONTENT AREA                          -->
-    <!-- ========================================== -->
+    
     <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar pb-24 md:pb-8">
 
-        {{-- Alert Notifikasi --}}
         @if(session('sukses'))
         <div class="mb-6 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-xl flex items-center gap-2.5 shadow-2xs">
             <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,7 +46,6 @@
         </div>
         @endif
 
-        <!-- Executive Page Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
                 <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
@@ -80,7 +76,6 @@
             $countBatal     = $transaksis->filter(fn($t) => in_array($t->status, ['Dibatalkan', 'Batal']))->count();
         @endphp
 
-        <!-- Filter Status Tabs -->
         <div class="flex flex-wrap items-center gap-2 mb-6">
             <button type="button" onclick="filterStatusPemesanan('semua')" id="btn-filter-semua"
                 class="status-filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-pink-600 text-white shadow-2xs border border-pink-600 transition flex items-center gap-1.5">
@@ -114,9 +109,8 @@
             </button>
         </div>
 
-        <!-- Table Card Container -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-            <!-- Table Toolbar -->
+            
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="relative flex-1 max-w-md">
                     <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +125,6 @@
                 </div>
             </div>
 
-            <!-- Table Body -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
                     <thead>
@@ -142,19 +135,19 @@
                             <th class="px-5 py-3.5">Waktu Transaksi</th>
                             <th class="px-5 py-3.5">Total Bayar</th>
                             <th class="px-5 py-3.5 text-center">Status & Penanganan</th>
+                            <th class="px-5 py-3.5 text-center">Struk Kasir</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100" id="tabel-pemesanan">
                         @forelse($transaksis as $trx)
                         <tr class="hover:bg-slate-50/60 transition-colors pms-row" data-status="{{ strtolower($trx->status) }}">
-                            <!-- ID -->
+                            
                             <td class="px-5 py-4 font-mono font-bold text-slate-800 text-xs">
                                 <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700">
                                     #{{ $trx->kode_transaksi ?? 'TRX-' . str_pad($trx->id, 4, '0', STR_PAD_LEFT) }}
                                 </span>
                             </td>
 
-                            <!-- Pelanggan -->
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-7 h-7 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center font-bold text-xs shrink-0">
@@ -166,7 +159,6 @@
                                 </div>
                             </td>
 
-                            <!-- Produk & Qty -->
                             <td class="px-5 py-4 text-xs">
                                 <div class="flex items-center gap-1.5">
                                     <span class="font-medium text-slate-800">{{ $trx->nama_produk }}</span>
@@ -176,17 +168,14 @@
                                 </div>
                             </td>
 
-                            <!-- Tanggal -->
                             <td class="px-5 py-4 text-xs text-slate-500">
                                 {{ $trx->created_at ? $trx->created_at->locale('id')->isoFormat('D MMM Y, HH:mm') : '-' }}
                             </td>
 
-                            <!-- Total -->
                             <td class="px-5 py-4 font-bold text-slate-900 text-xs">
                                 Rp {{ number_format($trx->total_harga, 0, ',', '.') }}
                             </td>
 
-                            <!-- Status Dropdown & Action -->
                             <td class="px-5 py-4 text-center">
                                 <div class="flex flex-col items-center gap-1.5">
                                     <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline-block">
@@ -206,7 +195,6 @@
                                         </select>
                                     </form>
 
-                                    {{-- Quick Action Buttons with Crisp SVG Icons --}}
                                     @if(in_array($trx->status, ['Diproses', 'Sedang Diproses']))
                                         <form action="/pemesanan/{{ $trx->id }}/update-status" method="POST" class="inline">
                                             @csrf
@@ -237,10 +225,31 @@
                                     @endif
                                 </div>
                             </td>
+
+                            <td class="px-5 py-4 text-center">
+                                <button type="button"
+                                    data-kode="{{ $trx->kode_transaksi ?? 'TRX-' . str_pad($trx->id, 4, '0', STR_PAD_LEFT) }}"
+                                    data-tanggal="{{ $trx->created_at ? $trx->created_at->locale('id')->isoFormat('D MMM Y, HH:mm') . ' WIB' : '-' }}"
+                                    data-pelanggan="{{ $trx->user ? $trx->user->name : 'Pelanggan Tamu' }}"
+                                    data-produk="{{ $trx->nama_produk }}"
+                                    data-qty="{{ $trx->qty }}"
+                                    data-satuan="{{ $trx->harga_satuan ?: ($trx->qty > 0 ? (int)($trx->total_harga / $trx->qty) : $trx->total_harga) }}"
+                                    data-total="{{ $trx->total_harga }}"
+                                    data-metode="{{ $trx->metode_pembayaran ?? 'QRIS' }}"
+                                    data-pengiriman="{{ $trx->metode_pengiriman ?? 'Ambil di Toko' }}"
+                                    data-status="{{ $trx->status }}"
+                                    onclick="bukaModalStrukDariEl(this)"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 text-xs font-semibold shadow-2xs transition hover:shadow">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                    </svg>
+                                    <span>Struk</span>
+                                </button>
+                            </td>
                         </tr>
                         @empty
                         <tr id="row-empty-pms">
-                            <td colspan="6" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-6 py-12 text-center">
                                 <div class="max-w-xs mx-auto text-slate-400">
                                     <svg class="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -258,7 +267,8 @@
 
     </main>
 
-    <!-- Scripts -->
+    @include('partials.modal_struk')
+
     <script>
         let activeStatusFilter = 'semua';
 

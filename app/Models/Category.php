@@ -11,10 +11,6 @@ class Category extends Model
 
     protected $guarded = [];
 
-    /**
-     * Relasi Eloquent: 1 Kategori memiliki banyak Produk (One to Many)
-     * Sesuai spesifikasi slide 10 PPT: Category hasMany Products
-     */
     public function produks()
     {
         return $this->hasMany(Produk::class, 'category_id');

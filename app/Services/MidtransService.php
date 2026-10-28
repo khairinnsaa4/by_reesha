@@ -23,20 +23,11 @@ class MidtransService
         $this->apiUrl       = config('midtrans.api_url', 'https://api.sandbox.midtrans.com');
     }
 
-    /**
-     * Cek apakah kredensial Midtrans sudah diset di .env
-     */
     public function isConfigured(): bool
     {
         return !empty($this->serverKey);
     }
 
-    /**
-     * Core API: Generate QRIS Charge langsung dari Midtrans
-     *
-     * @param Transaksi $trx
-     * @return array
-     */
     public function createQrisCharge(Transaksi $trx): array
     {
         if (!$this->isConfigured()) {
@@ -49,7 +40,6 @@ class MidtransService
         $orderId = $trx->kode_transaksi ?: ('TRX-' . date('Ymd') . '-' . $trx->id);
         $grossAmount = (int) $trx->total_harga;
 
-        // Rincian item details harus bernilai sama dengan total gross_amount
         $itemDetails = [];
         $subtotal = (int) ($trx->harga_satuan * $trx->qty);
         $itemDetails[] = [
@@ -103,7 +93,7 @@ class MidtransService
             $data = $response->json();
 
             if ($response->successful() && isset($data['status_code']) && in_array($data['status_code'], ['201', '200'])) {
-                // Ambil URL QR code dari actions
+                
                 $qrUrl = null;
                 if (!empty($data['actions']) && is_array($data['actions'])) {
                     foreach ($data['actions'] as $action) {
@@ -147,12 +137,6 @@ class MidtransService
         }
     }
 
-    /**
-     * Cek status pembayaran ke server Midtrans (GET /v2/{order_id}/status)
-     *
-     * @param string $orderId
-     * @return array
-     */
     public function checkStatus(string $orderId): array
     {
         if (!$this->isConfigured()) {
@@ -191,10 +175,6 @@ class MidtransService
         }
     }
 
-    /**
-     * Verifikasi signature hash notifikasi webhook Midtrans
-     * Formula: SHA512(order_id + status_code + gross_amount + ServerKey)
-     */
     public function verifySignature(string $orderId, string $statusCode, string $grossAmount, string $signatureKey): bool
     {
         $calculatedHash = hash('sha512', $orderId . $statusCode . $grossAmount . $this->serverKey);

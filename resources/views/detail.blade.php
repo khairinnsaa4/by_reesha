@@ -12,12 +12,10 @@
 </head>
 <body class="min-h-screen flex flex-col pb-20 md:pb-0">
 
-    <!-- NAVIGATION BAR -->
     @include('partials.navbar', ['active' => 'produk'])
 
     <div class="max-w-6xl mx-auto px-4 py-6 w-full flex-grow">
-  
-        <!-- Breadcrumb -->
+
         <div class="text-sm text-gray-500 mb-4 flex items-center gap-2 flex-wrap">
             <a href="/" class="text-pink-600 hover:text-pink-700 transition">By.Reesha</a>
             <span class="text-gray-400">></span>
@@ -121,7 +119,6 @@
                     </div>
                 </div>
 
-                <!-- CTA Order Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 pt-4 sm:pt-6 mt-auto w-full">
                     @if($cake->stock > 0)
                         <a href="javascript:void(0)" onclick="addToCart()" class="flex-1 flex items-center justify-center gap-2 bg-pink-50 border-2 border-pink-500 text-pink-600 hover:bg-pink-100 font-bold py-3.5 px-4 rounded-xl transition text-sm shadow-sm">
@@ -143,7 +140,6 @@
             </div>
         </div>
 
-        <!-- Spesifikasi Produk -->
         <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-pink-100 p-5 sm:p-8 mb-8">
             <h2 class="bg-pink-50 text-pink-700 px-4 py-3 rounded-xl text-sm sm:text-base font-bold mb-5 uppercase tracking-wider flex items-center gap-2">
                 <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>

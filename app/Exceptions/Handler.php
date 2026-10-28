@@ -4,44 +4,28 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Session\TokenMismatchException;
+use Illuminate\Support\Facades\Auth;
 
 class Handler extends ExceptionHandler
 {
-    /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array<int, class-string<Throwable>>
-     */
-    protected $dontReport = [
-        //
-    ];
+    protected $dontReport = [];
 
-    /**
-     * A list of the inputs that are never flashed for validation exceptions.
-     *
-     * @var array<int, string>
-     */
     protected $dontFlash = [
         'current_password',
         'password',
         'password_confirmation',
     ];
 
-    /**
-     * Register the exception handling callbacks for the application.
-     *
-     * @return void
-     */
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
         });
 
-        // Tangani sesi kedaluwarsa (419 TokenMismatchException) secara anggun
-        $this->renderable(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+        $this->renderable(function (TokenMismatchException $e, $request) {
             if ($request->is('logout') || $request->is('*/logout')) {
-                \Illuminate\Support\Facades\Auth::logout();
+                Auth::logout();
                 return redirect('/');
             }
             if ($request->is('login') || $request->is('*/login')) {
@@ -51,6 +35,38 @@ class Handler extends ExceptionHandler
                 return redirect('/register')->with('error', 'Sesi formulir telah diperbarui. Silakan daftar kembali.');
             }
             return redirect()->back()->with('error', 'Sesi Anda telah diperbarui. Silakan ulangi tindakan Anda.');
+        });
+
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Halaman tidak ditemukan.'], 404);
+            }
+            if (Auth::check()) {
+                $user = Auth::user();
+                if ($user->role === 'owner') {
+                    return redirect('/dashboard-owner');
+                }
+                if ($user->role === 'karyawan') {
+                    return redirect('/pemesanan');
+                }
+                return redirect('/riwayat-transaksi');
+            }
+            return redirect('/');
+        });
+
+        $this->renderable(function (Throwable $e, $request) {
+            if (!config('app.debug') && !$request->expectsJson() && !$this->isHttpException($e)) {
+                if (Auth::check()) {
+                    $user = Auth::user();
+                    if ($user->role === 'owner') {
+                        return redirect('/dashboard-owner')->with('error', 'Terjadi kendala sistem, dialihkan kembali ke Dashboard.');
+                    }
+                    if ($user->role === 'karyawan') {
+                        return redirect('/pemesanan')->with('error', 'Terjadi kendala sistem, dialihkan kembali ke Pemesanan.');
+                    }
+                }
+                return redirect('/')->with('error', 'Terjadi kendala sistem, dialihkan kembali ke Beranda.');
+            }
         });
     }
 }

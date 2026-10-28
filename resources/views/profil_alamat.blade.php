@@ -12,13 +12,10 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-20 md:pb-8">
 
-    <!-- NAVIGATION BAR -->
     @include('partials.navbar', ['active' => 'profil'])
 
-    <!-- MAIN CONTAINER -->
     <main class="max-w-xl mx-auto px-4 py-6 sm:py-8 w-full flex-grow">
-        
-        <!-- HEADER NAVIGASI KEMBALI KE PROFIL -->
+
         <div class="flex items-center gap-3.5 mb-6">
             <a href="/profil" class="w-10 h-10 rounded-2xl bg-white border border-pink-100 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-300 transition shadow-xs flex-shrink-0" title="Kembali ke Profil">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -31,7 +28,6 @@
             </div>
         </div>
 
-        <!-- NOTIFIKASI SUKSES / ERROR -->
         @if(session('sukses'))
         <div class="mb-5 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-2xl flex items-center gap-2.5 shadow-xs">
             <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -53,7 +49,6 @@
         </div>
         @endif
 
-        <!-- PREVIEW ALAMAT AKTIF SAAT INI (JIKA SUDAH ADA) -->
         @if(Auth::user()->address)
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 mb-5">
             <div class="flex items-center justify-between mb-2">
@@ -75,7 +70,6 @@
         </div>
         @endif
 
-        <!-- FORMULIR PERBARUI ALAMAT PENGIRIMAN -->
         <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-pink-100">
             <h2 class="text-sm font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
                 <span>{{ Auth::user()->address ? 'Perbarui Alamat Pengiriman' : 'Tambah Alamat Pengiriman' }}</span>
@@ -84,14 +78,12 @@
             <form action="/profil/update-alamat-form" method="POST" class="space-y-4">
                 @csrf
 
-                <!-- Nama Penerima -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">Nama Penerima</label>
                     <input type="text" value="{{ Auth::user()->name }}" disabled class="w-full text-xs sm:text-sm bg-gray-50 text-gray-500 border border-gray-200 rounded-xl px-3.5 py-2.5 cursor-not-allowed">
                     <span class="text-[10px] text-gray-400 mt-1 block">Sesuai nama profil akun Anda. Ubah nama di menu Informasi Akun jika diperlukan.</span>
                 </div>
 
-                <!-- Nomor HP / WhatsApp -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">
                         No. WhatsApp / HP Penerima <span class="text-pink-600">*</span>
@@ -100,7 +92,6 @@
                     <span class="text-[10px] text-gray-400 mt-1 block">Nomor aktif untuk konfirmasi pengantaran oleh kurir.</span>
                 </div>
 
-                <!-- Alamat Lengkap -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">
                         Alamat Lengkap & Patokan <span class="text-pink-600">*</span>

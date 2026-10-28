@@ -34,12 +34,9 @@
 
     @include('partials.owner_sidebar', ['active' => 'pelanggan'])
 
-    <!-- ========================================== -->
-    <!-- MAIN CONTENT AREA                          -->
-    <!-- ========================================== -->
+    
     <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar pb-24 md:pb-8">
 
-        <!-- Executive Page Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
                 <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
@@ -63,9 +60,8 @@
             </div>
         </div>
 
-        <!-- Table Card Container -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-            <!-- Table Header Toolbar -->
+            
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="relative flex-1 max-w-md">
                     <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +76,6 @@
                 </div>
             </div>
 
-            <!-- Table Body -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
                     <thead>
@@ -95,7 +90,7 @@
                     <tbody class="divide-y divide-slate-100" id="tabel-pelanggan">
                         @forelse($pelanggan as $p)
                         <tr class="hover:bg-slate-50/60 transition-colors plg-row">
-                            <!-- Name & Avatar -->
+                            
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white font-bold text-xs shrink-0 ring-1 ring-slate-200">
@@ -109,24 +104,20 @@
                                 </div>
                             </td>
 
-                            <!-- Email -->
                             <td class="px-5 py-4 text-xs text-slate-600 font-mono">
                                 {{ $p->email }}
                             </td>
 
-                            <!-- Order Frequency -->
                             <td class="px-5 py-4 text-center">
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700">
                                     {{ $p->transaksis_count ?? 0 }} pesanan
                                 </span>
                             </td>
 
-                            <!-- Total Spend -->
                             <td class="px-5 py-4 font-bold text-slate-900 text-xs">
                                 Rp {{ number_format($p->transaksis_sum_total_harga ?? 0, 0, ',', '.') }}
                             </td>
 
-                            <!-- Loyalty Badge -->
                             <td class="px-5 py-4 text-center">
                                 @if(($p->transaksis_count ?? 0) > 3)
                                     <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200 text-[11px] font-semibold rounded-md">
@@ -163,7 +154,6 @@
                 </table>
             </div>
 
-            <!-- Table Footer -->
             <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 bg-slate-50/40">
                 <span>Menampilkan <strong id="plg-count" class="text-slate-800">{{ count($pelanggan) }}</strong> data pelanggan</span>
                 <span id="no-result-plg" class="hidden text-rose-500 font-medium">Tidak ada pelanggan yang cocok dengan kata kunci pencarian.</span>
@@ -172,7 +162,6 @@
 
     </main>
 
-    <!-- Scripts -->
     <script>
         function cariPelanggan() {
             const keyword = document.getElementById('search-pelanggan').value.toLowerCase();

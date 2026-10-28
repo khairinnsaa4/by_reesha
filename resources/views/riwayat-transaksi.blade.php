@@ -9,13 +9,10 @@
 </head>
 <body class="bg-[#FFF8F9] font-[Poppins] min-h-screen flex flex-col justify-between pb-20 md:pb-8">
 
-    <!-- NAVIGATION BAR -->
     @include('partials.navbar', ['active' => 'profil'])
 
-    <!-- Content -->
     <main class="max-w-4xl mx-auto px-4 py-6 sm:py-8 w-full flex-grow">
-        
-        <!-- HEADER NAVIGASI KEMBALI KE PROFIL -->
+
         <div class="flex items-center gap-3.5 mb-6">
             <a href="/profil" class="w-10 h-10 rounded-2xl bg-white border border-pink-100 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-300 transition shadow-xs flex-shrink-0" title="Kembali ke Profil">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -79,8 +76,7 @@
                             <h3 class="font-bold text-gray-800 text-sm md:text-base mb-0.5 truncate">{{ $trx->nama_produk }}</h3>
                             <p class="text-xs text-gray-500 mb-0.5">Varian: {{ $trx->varian }} | Ukuran: {{ $trx->ukuran }}</p>
                             <p class="text-xs text-gray-500 mb-2">{{ $trx->qty }} barang x Rp {{ number_format($trx->harga_satuan, 0, ',', '.') }}</p>
-                            
-                            <!-- Info Tambahan -->
+
                             <div class="bg-pink-50/50 p-2 rounded-lg text-[11px] sm:text-xs text-gray-600 space-y-0.5">
                                 <p><span class="font-medium text-gray-700">Pengiriman:</span> {{ $trx->metode_pengiriman }}</p>
                                 <p><span class="font-medium text-gray-700">Pembayaran:</span> {{ $trx->metode_pembayaran }}</p>

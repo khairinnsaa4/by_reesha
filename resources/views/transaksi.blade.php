@@ -29,7 +29,6 @@
             background: #94a3b8;
         }
 
-        /* ===== PRINT STYLES ===== */
         @media print {
             body * { visibility: hidden !important; }
             #print-area, #print-area * { visibility: visible !important; }
@@ -46,12 +45,9 @@
 
     @include('partials.owner_sidebar', ['active' => 'transaksi'])
 
-    <!-- ========================================== -->
-    <!-- MAIN CONTENT AREA                          -->
-    <!-- ========================================== -->
+    
     <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar pb-24 md:pb-8">
 
-        <!-- Executive Page Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200 no-print">
             <div>
                 <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
@@ -76,7 +72,6 @@
             </div>
         </div>
 
-        <!-- Filter Periode Card -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 mb-6 no-print">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-2">
@@ -89,7 +84,7 @@
             </div>
 
             <form action="/transaksi" method="GET" id="form-filter-trx" class="pt-4 space-y-4">
-                {{-- Period Selector Pills --}}
+                
                 <div class="flex flex-wrap items-center gap-2">
                     <button type="button" onclick="selectFilterModeTrx('semua')" id="pill-trx-semua"
                         class="filter-pill-trx px-3.5 py-2 rounded-xl text-xs font-semibold transition border {{ $filter === 'semua' ? 'bg-pink-600 text-white border-pink-600 shadow-2xs' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100' }}">
@@ -115,9 +110,8 @@
 
                 <input type="hidden" name="filter" id="input-filter-trx-mode" value="{{ $filter }}">
 
-                {{-- Interactive Selector Inputs Area --}}
                 <div class="bg-slate-50/70 rounded-xl p-4 border border-slate-100">
-                    {{-- 1. Input Harian --}}
+                    
                     <div id="box-trx-harian" class="{{ $filter === 'harian' ? 'block' : 'hidden' }} space-y-2">
                         <label class="block text-xs font-semibold text-slate-700">Tanggal Transaksi:</label>
                         <div class="flex flex-wrap items-center gap-2">
@@ -134,7 +128,6 @@
                         </div>
                     </div>
 
-                    {{-- 2. Input Mingguan --}}
                     <div id="box-trx-mingguan" class="{{ $filter === 'mingguan' ? 'block' : 'hidden' }} space-y-2">
                         <label class="block text-xs font-semibold text-slate-700">Minggu / Pekan:</label>
                         <div class="flex flex-wrap items-center gap-3">
@@ -148,7 +141,6 @@
                         </div>
                     </div>
 
-                    {{-- 3. Input Bulanan --}}
                     <div id="box-trx-bulanan" class="{{ $filter === 'bulanan' ? 'block' : 'hidden' }} space-y-2">
                         <label class="block text-xs font-semibold text-slate-700">Bulan & Tahun:</label>
                         <div class="flex flex-wrap items-center gap-3">
@@ -162,7 +154,6 @@
                         </div>
                     </div>
 
-                    {{-- 4. Input Tahunan --}}
                     <div id="box-trx-tahunan" class="{{ $filter === 'tahunan' ? 'block' : 'hidden' }} space-y-2">
                         <label class="block text-xs font-semibold text-slate-700">Tahun:</label>
                         <div class="flex items-center gap-3">
@@ -175,14 +166,12 @@
                         </div>
                     </div>
 
-                    {{-- 5. Semua Waktu Info --}}
                     <div id="box-trx-semua" class="{{ $filter === 'semua' ? 'block' : 'hidden' }}">
                         <p class="text-xs text-slate-500">
                             Menampilkan seluruh riwayat transaksi By.Reesha secara menyeluruh.
                         </p>
                     </div>
 
-                    {{-- Action Buttons --}}
                     <div class="pt-3 flex items-center gap-2 border-t border-slate-200/80 mt-3">
                         <button type="submit"
                             class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5">
@@ -201,7 +190,6 @@
                 </div>
             </form>
 
-            {{-- Summary Pill Bar --}}
             <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
                 <div class="flex items-center gap-2">
                     <svg class="w-4 h-4 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,9 +209,8 @@
             </div>
         </div>
 
-        <!-- Table Card Container -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden no-print">
-            <!-- Toolbar -->
+            
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="relative flex-1 max-w-md">
                     <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,7 +225,6 @@
                 </div>
             </div>
 
-            <!-- Table Body -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
                     <thead>
@@ -250,6 +236,7 @@
                             <th class="px-5 py-3.5">Metode Bayar</th>
                             <th class="px-5 py-3.5">Status</th>
                             <th class="px-5 py-3.5 text-right">Total Bayar</th>
+                            <th class="px-5 py-3.5 text-center">Aksi / Struk</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100" id="tabel-transaksi">
@@ -258,37 +245,32 @@
                             $st = strtolower($trx->status);
                         @endphp
                         <tr class="hover:bg-slate-50/60 transition-colors trx-row">
-                            <!-- ID -->
+                            
                             <td class="px-5 py-4 font-mono font-bold text-slate-800 text-xs">
                                 <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700">
                                     #TRX-{{ str_pad($trx->id, 4, '0', STR_PAD_LEFT) }}
                                 </span>
                             </td>
 
-                            <!-- Date / Time -->
                             <td class="px-5 py-4 text-xs text-slate-500">
                                 {{ $trx->created_at ? $trx->created_at->locale('id')->isoFormat('D MMM Y, HH:mm') : '-' }}
                             </td>
 
-                            <!-- Product & Buyer -->
                             <td class="px-5 py-4">
                                 <p class="font-semibold text-slate-800 text-xs sm:text-sm">{{ $trx->nama_produk }}</p>
                                 <p class="text-[11px] text-slate-400">Pembeli: {{ $trx->user ? $trx->user->name : 'Pelanggan Tamu' }}</p>
                             </td>
 
-                            <!-- Qty -->
                             <td class="px-5 py-4 text-center font-semibold text-slate-700 text-xs">
                                 {{ $trx->qty }} item
                             </td>
 
-                            <!-- Method -->
                             <td class="px-5 py-4">
                                 <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                                     {{ $trx->metode_pembayaran ?? 'QRIS' }}
                                 </span>
                             </td>
 
-                            <!-- Status -->
                             <td class="px-5 py-4">
                                 @if(in_array($st, ['selesai', 'diterima']))
                                     <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-semibold rounded-md">
@@ -312,14 +294,34 @@
                                 @endif
                             </td>
 
-                            <!-- Total -->
                             <td class="px-5 py-4 text-right font-bold text-slate-900 text-xs">
                                 Rp {{ number_format($trx->total_harga, 0, ',', '.') }}
+                            </td>
+
+                            <td class="px-5 py-4 text-center">
+                                <button type="button"
+                                    data-kode="{{ $trx->kode_transaksi ?? 'TRX-' . str_pad($trx->id, 4, '0', STR_PAD_LEFT) }}"
+                                    data-tanggal="{{ $trx->created_at ? $trx->created_at->locale('id')->isoFormat('D MMM Y, HH:mm') . ' WIB' : '-' }}"
+                                    data-pelanggan="{{ $trx->user ? $trx->user->name : 'Pelanggan Tamu' }}"
+                                    data-produk="{{ $trx->nama_produk }}"
+                                    data-qty="{{ $trx->qty }}"
+                                    data-satuan="{{ $trx->harga_satuan ?: ($trx->qty > 0 ? (int)($trx->total_harga / $trx->qty) : $trx->total_harga) }}"
+                                    data-total="{{ $trx->total_harga }}"
+                                    data-metode="{{ $trx->metode_pembayaran ?? 'QRIS' }}"
+                                    data-pengiriman="{{ $trx->metode_pengiriman ?? 'Ambil di Toko' }}"
+                                    data-status="{{ $trx->status }}"
+                                    onclick="bukaModalStrukDariEl(this)"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 text-xs font-semibold shadow-2xs transition hover:shadow">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                    </svg>
+                                    <span>Struk</span>
+                                </button>
                             </td>
                         </tr>
                         @empty
                         <tr id="row-empty-trx">
-                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-400">
                                 Belum ada transaksi yang tercatat pada periode ini.
                             </td>
                         </tr>
@@ -334,6 +336,7 @@
                             <td class="px-5 py-3.5 text-right text-pink-700 font-extrabold text-sm">
                                 Rp {{ number_format($total_pendapatan, 0, ',', '.') }}
                             </td>
+                            <td></td>
                         </tr>
                     </tfoot>
                     @endif
@@ -341,9 +344,7 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- FORMAL PRINT LAYOUT                        -->
-        <!-- ========================================== -->
+        
         <div id="print-transaksi-formal" class="hidden">
             <div class="border-b-2 border-black pb-3 mb-4 text-center">
                 <div class="flex items-center justify-center gap-3 mb-1">
@@ -453,9 +454,10 @@
 
     </main>
 
+    @include('partials.modal_struk')
+
     <div id="print-area" class="hidden"></div>
 
-    <!-- Scripts -->
     <script>
         function selectFilterModeTrx(mode) {
             document.getElementById('input-filter-trx-mode').value = mode;

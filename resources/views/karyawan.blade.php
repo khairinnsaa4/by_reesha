@@ -34,12 +34,9 @@
 
     @include('partials.owner_sidebar', ['active' => 'karyawan'])
 
-    <!-- ========================================== -->
-    <!-- MAIN CONTENT AREA                          -->
-    <!-- ========================================== -->
+    
     <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-7xl mx-auto w-full custom-scrollbar pb-24 md:pb-8">
 
-        {{-- Alert Notifikasi --}}
         @if(session('sukses'))
         <div class="mb-6 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-xl flex items-center gap-2.5 shadow-2xs">
             <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +54,6 @@
         </div>
         @endif
 
-        <!-- Executive Page Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
                 <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1.5">
@@ -82,9 +78,8 @@
             </div>
         </div>
 
-        <!-- Table Card Container -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-            <!-- Table Header Toolbar -->
+            
             <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="relative flex-1 max-w-md">
                     <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +100,6 @@
                 </div>
             </div>
 
-            <!-- Table Body -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
                     <thead>
@@ -120,7 +114,7 @@
                     <tbody class="divide-y divide-slate-100" id="tabel-karyawan">
                         @forelse($karyawan as $i => $k)
                         <tr class="hover:bg-slate-50/60 transition-colors kar-row">
-                            <!-- Name & Avatar -->
+                            
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-pink-500 to-rose-400 text-white font-bold text-xs shrink-0 ring-1 ring-slate-200">
@@ -136,12 +130,10 @@
                                 </div>
                             </td>
 
-                            <!-- Email -->
                             <td class="px-5 py-4 text-xs text-slate-600 font-mono">
                                 {{ $k->email }}
                             </td>
 
-                            <!-- Divisi -->
                             <td class="px-5 py-4 text-center">
                                 @if($k->divisi)
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-violet-50 text-violet-700 border border-violet-200">
@@ -152,12 +144,10 @@
                                 @endif
                             </td>
 
-                            <!-- Registered Date -->
                             <td class="px-5 py-4 text-xs text-slate-500">
                                 {{ $k->created_at ? $k->created_at->locale('id')->isoFormat('D MMMM Y') : '-' }}
                             </td>
 
-                            <!-- Action Buttons -->
                             <td class="px-5 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <button onclick="openModalEdit({{ $k->id }}, '{{ addslashes($k->name) }}', '{{ addslashes($k->email) }}', '{{ $k->divisi }}')"
@@ -202,9 +192,7 @@
 
     </main>
 
-    <!-- ========================================== -->
-    <!-- MODAL TAMBAH KARYAWAN                      -->
-    <!-- ========================================== -->
+    
     <div id="modal-tambah" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md p-6">
             <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
@@ -276,9 +264,7 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- MODAL EDIT KARYAWAN                        -->
-    <!-- ========================================== -->
+    
     <div id="modal-edit" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md p-6">
             <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
@@ -350,7 +336,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script>
         function openModalEdit(id, name, email, divisi) {
             document.getElementById('modal-edit').classList.remove('hidden');

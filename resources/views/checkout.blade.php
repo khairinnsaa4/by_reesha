@@ -15,7 +15,6 @@
 </head>
 <body class="min-h-screen flex flex-col pb-16 md:pb-0">
 
-    <!-- NAVIGATION BAR -->
     <nav class="bg-white shadow-sm border-b border-pink-100 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-2.5 sm:gap-3">
@@ -29,7 +28,6 @@
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
     <form action="/checkout/proses" method="POST" onsubmit="localStorage.setItem('cart_cleared', 'true')" class="max-w-6xl mx-auto px-4 py-8 w-full flex-grow">
         @csrf
         <input type="hidden" name="produk_id" value="{{ $id }}">
@@ -51,13 +49,11 @@
         @endif
 
         <div class="flex flex-col lg:flex-row gap-6">
-            
-            <!-- Left Side: Order Details -->
+
             <div class="w-full lg:w-2/3 space-y-6">
-                
-                <!-- Alamat Pengiriman -->
+
                 <div class="rounded-xl border-2 border-pink-100 bg-white shadow-md relative overflow-hidden">
-                    {{-- Header strip --}}
+                    
                     <div class="bg-gradient-to-r from-pink-500 to-pink-400 px-6 py-3 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
@@ -67,10 +63,9 @@
 
                     @php $userAddress = Auth::user()->address ?? ''; @endphp
 
-                    {{-- Wrapper tunggal yang akan diganti JS setelah simpan --}}
                     <div id="address-section-wrapper" class="p-5">
                     @if($userAddress)
-                        {{-- SUDAH ADA ALAMAT --}}
+                        
                         <div class="flex items-start justify-between gap-4">
                             <div class="flex items-start gap-3 flex-1">
                                 <div class="mt-0.5 bg-green-100 rounded-full p-1.5 flex-shrink-0">
@@ -97,7 +92,7 @@
                             </button>
                         </div>
                     @else
-                        {{-- BELUM ADA ALAMAT --}}
+                        
                         <div class="flex flex-col gap-3">
                             <div class="flex items-start gap-3">
                                 <div class="mt-0.5 bg-yellow-100 rounded-full p-1.5 flex-shrink-0">
@@ -128,8 +123,6 @@
                     </div>
                 </div>
 
-
-                <!-- Modal Ubah Alamat -->
                 <div id="address-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden opacity-0 transition-opacity">
                     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden transform scale-95 transition-transform duration-300" id="address-modal-content">
                         <div class="p-5 border-b border-gray-100 flex justify-between items-center">
@@ -143,7 +136,7 @@
                         </div>
 
                         <div class="p-6 space-y-4">
-                            {{-- Tombol Gunakan Lokasi Saya --}}
+                            
                             <button type="button" onclick="gunakanLokasiSaya()"
                                 id="btn-lokasi"
                                 class="w-full flex items-center justify-center gap-2 border-2 border-dashed border-pink-300 text-pink-600 hover:bg-pink-50 rounded-xl py-3 font-semibold text-sm transition">
@@ -154,7 +147,6 @@
                                 <span id="btn-lokasi-text">Gunakan Lokasi Terkini (GPS)</span>
                             </button>
 
-                            {{-- Status lokasi --}}
                             <div id="status-lokasi" class="hidden text-xs text-center py-2 px-3 rounded-lg"></div>
 
                             <div class="relative flex items-center">
@@ -163,7 +155,6 @@
                                 <div class="flex-grow border-t border-gray-200"></div>
                             </div>
 
-                            {{-- Form manual --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Penerima</label>
                                 <input type="text" id="input-name"
@@ -192,13 +183,11 @@
                     </div>
                 </div>
 
-
-                <!-- Produk Dipesan -->
                 <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
                     <h3 class="font-semibold text-gray-800 border-b border-gray-100 pb-4 mb-4">Produk Dipesan</h3>
                     
                     <div class="flex flex-col gap-6">
-                        <!-- Item 1 -->
+                        
                         <div class="flex gap-4">
                             <img src="{{ asset('images/' . $gambar) }}" alt="{{ $nama }}" class="w-16 h-16 object-cover rounded border border-gray-200" onerror="this.src='{{ asset('images/logo.png') }}'">
                             <div class="flex-grow">
@@ -220,7 +209,6 @@
                             </div>
                         </div>
 
-                        <!-- Opsi Pengiriman -->
                         <div class="border-t border-gray-100 pt-5 mt-5">
                             <p class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
@@ -228,7 +216,7 @@
                             </p>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <!-- Option 1 -->
+                                
                                 <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-pink-500 transition relative flex gap-3 items-start shipping-label border-pink-500 bg-pink-50">
                                     <input type="radio" name="shipping" value="15000" data-label="Kurir Instan / Grab (Rp 15.000)" class="mt-1 text-pink-600 focus:ring-pink-500" checked onchange="updateOngkirRadio(this)">
                                     <div class="flex-grow">
@@ -239,8 +227,7 @@
                                         <p class="text-xs text-gray-500">Lhokseumawe (Dalam Kota)</p>
                                     </div>
                                 </label>
-                                
-                                <!-- Option 2 -->
+
                                 <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-pink-500 transition relative flex gap-3 items-start shipping-label">
                                     <input type="radio" name="shipping" value="30000" data-label="Kurir Reguler (Rp 30.000)" class="mt-1 text-pink-600 focus:ring-pink-500" onchange="updateOngkirRadio(this)">
                                     <div class="flex-grow">
@@ -252,7 +239,6 @@
                                     </div>
                                 </label>
 
-                                <!-- Option 3 -->
                                 <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-pink-500 transition relative flex gap-3 items-start shipping-label">
                                     <input type="radio" name="shipping" value="60000" data-label="Travel / Kargo (Rp 60.000)" class="mt-1 text-pink-600 focus:ring-pink-500" onchange="updateOngkirRadio(this)">
                                     <div class="flex-grow">
@@ -264,7 +250,6 @@
                                     </div>
                                 </label>
 
-                                <!-- Option 4: Ambil di tempat -->
                                 <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-pink-500 transition relative flex gap-3 items-start shipping-label">
                                     <input type="radio" name="shipping" value="0" data-label="Ambil di Tempat (Toko)" class="mt-1 text-pink-600 focus:ring-pink-500" onchange="updateOngkirRadio(this)">
                                     <div class="flex-grow">
@@ -278,7 +263,6 @@
                             </div>
                         </div>
 
-                        <!-- Pesan -->
                         <div class="flex items-center gap-4 mt-2 text-sm border-t border-gray-100 pt-4">
                             <label class="text-gray-700 whitespace-nowrap font-medium">Pesan:</label>
                             <input type="text" placeholder="(Opsional) Tinggalkan pesan ke penjual..." class="flex-grow border-b border-gray-300 focus:border-pink-500 pb-1 px-2 focus:outline-none bg-transparent">
@@ -286,7 +270,6 @@
                     </div>
                 </div>
 
-                <!-- Metode Pembayaran -->
                 <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
                     <h3 class="font-semibold text-gray-800 border-b border-gray-100 pb-4 mb-4">Metode Pembayaran</h3>
                     
@@ -305,7 +288,6 @@
                 
             </div>
 
-            <!-- Right Side: Order Summary -->
             <div class="w-full lg:w-1/3">
                 <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 sticky top-24">
                     <h2 class="text-lg font-bold text-gray-800 border-b border-gray-100 pb-4 mb-4">Ringkasan Belanja</h2>
@@ -345,13 +327,12 @@
         </div>
     </form>
 
-    <!-- FOOTER -->
     <footer class="bg-white border-t border-gray-200 text-center py-6 text-xs text-gray-500 mt-auto">
         &copy; 2026 By.Reesha. All rights reserved.
     </footer>
 
     <script>
-        // ── Modal ──────────────────────────────────────────────
+
         const modal = document.getElementById('address-modal');
         const modalContent = document.getElementById('address-modal-content');
 
@@ -381,7 +362,6 @@
 
             showStatus('Menyimpan alamat...', 'info');
 
-            // Simpan ke database via fetch
             fetch('/profil/update-alamat', {
                 method: 'POST',
                 headers: {
@@ -393,8 +373,7 @@
             .then(r => r.json())
             .then(data => {
                 if (data.status === 'ok') {
-                    // Replace SELURUH wrapper dengan tampilan "sudah ada alamat"
-                    // Ini mengatasi masalah: setelah simpan alamat masih tampil "belum diatur"
+
                     const wrapper = document.getElementById('address-section-wrapper');
                     const displayName  = name  || '{{ Auth::user()->name }}';
                     const displayPhone = phone ? `(${phone})` : '';
@@ -427,7 +406,6 @@
                         </div>
                     `;
 
-                    // Aktifkan tombol Buat Pesanan
                     const btn = document.getElementById('btn-buat-pesanan');
                     btn.disabled = false;
                     btn.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -439,7 +417,6 @@
             .catch(() => showStatus('Gagal menyimpan alamat. Coba lagi.', 'error'));
         }
 
-        // Blokir submit jika belum ada alamat
         const hasAddress = {{ Auth::user()->address ? 'true' : 'false' }};
         window.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('btn-buat-pesanan');
@@ -450,8 +427,6 @@
             }
         });
 
-
-        // ── GPS / Lokasi Terkini ───────────────────────────────
         function gunakanLokasiSaya() {
             if (!navigator.geolocation) {
                 showStatus('Browser Anda tidak mendukung layanan lokasi GPS.', 'error');
@@ -471,14 +446,13 @@
                     const lon = pos.coords.longitude;
                     showStatus('Lokasi ditemukan. Mengambil detail alamat...', 'info');
 
-                    // Reverse geocoding via OpenStreetMap Nominatim (gratis)
                     fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`, {
                         headers: { 'Accept-Language': 'id' }
                     })
                     .then(r => r.json())
                     .then(data => {
                         const a = data.address || {};
-                        // Susun alamat dari komponen yang tersedia
+
                         const parts = [
                             a.road || a.pedestrian || a.footway || '',
                             a.village || a.suburb || a.neighbourhood || '',
@@ -527,7 +501,6 @@
             el.innerText = msg;
         }
 
-        // ── Ongkos Kirim ───────────────────────────────────────
         const subtotal     = {{ $harga * $qty }};
         const biayaLayanan = 1000;
         let currentOngkir  = 15000;
@@ -551,7 +524,6 @@
             document.getElementById('input-metode-pengiriman').value = radioElem.getAttribute('data-label') || 'Pengiriman';
         }
 
-        // ── Pembayaran ──────────────────────────────────────────
         function selectPayment(clickedBtn, paymentName) {
             const buttons = document.getElementById('payment-container').querySelectorAll('.payment-btn');
             buttons.forEach(btn => {

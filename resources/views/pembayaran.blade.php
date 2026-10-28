@@ -22,7 +22,7 @@
 <body class="min-h-screen flex flex-col items-center justify-center p-4 py-8">
 
     <div class="bg-white max-w-lg w-full rounded-3xl shadow-2xl overflow-hidden border border-pink-100 relative">
-        {{-- Header Strip --}}
+        
         <div class="bg-gradient-to-r from-pink-600 via-pink-500 to-rose-500 text-white p-6 text-center relative">
             <div class="flex items-center justify-center gap-2 mb-2">
                 <img src="{{ asset('images/logo.png') }}" alt="By.Reesha" class="h-9 w-9 rounded-full bg-white p-0.5 shadow" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\' fill=\'%23fce7f3\'/><text x=\'12\' y=\'16\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23db2777\' font-weight=\'bold\'>BR</text></svg>'">
@@ -34,7 +34,6 @@
 
         <div class="p-6 sm:p-8">
 
-            {{-- Status Banner & Timer --}}
             <div class="flex items-center justify-between bg-pink-50 rounded-2xl p-4 mb-6 border border-pink-200">
                 <div class="flex items-center gap-2.5">
                     <span class="relative flex h-3 w-3">
@@ -53,7 +52,6 @@
                 </div>
             </div>
 
-            {{-- Ringkasan Tagihan --}}
             <div class="text-center mb-6">
                 <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Total yang harus dibayar</p>
                 <div class="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-1 flex items-center justify-center gap-1.5">
@@ -68,10 +66,8 @@
                 </div>
             </div>
 
-            {{-- Kotak Gambar QRIS --}}
             <div class="bg-gray-50 border-2 border-dashed border-pink-200 rounded-3xl p-6 flex flex-col items-center justify-center text-center shadow-inner relative group mb-6">
-                
-                {{-- Logo QRIS & GPN --}}
+
                 <div class="flex items-center justify-between w-full max-w-[260px] mb-3 px-2">
                     <span class="text-xs font-extrabold tracking-widest text-gray-800 flex items-center gap-1">
                         <span class="bg-red-600 text-white px-1.5 py-0.5 rounded text-[10px] font-black">QRIS</span>
@@ -106,7 +102,6 @@
                 </p>
             </div>
 
-            {{-- Supported e-Wallets and Banks --}}
             <div class="mb-6">
                 <p class="text-center text-[11px] uppercase tracking-wider text-gray-400 font-semibold mb-2.5">Mendukung Semua Pembayaran QRIS</p>
                 <div class="flex flex-wrap items-center justify-center gap-2 text-[11px] font-semibold text-gray-600">
@@ -122,7 +117,6 @@
                 </div>
             </div>
 
-            {{-- Cara Pembayaran (Accordion/List) --}}
             <div class="border border-gray-200 rounded-2xl p-4 mb-6 bg-gray-50/50">
                 <p class="font-semibold text-gray-800 text-xs sm:text-sm flex items-center gap-1.5 mb-2.5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -137,7 +131,6 @@
                 </ol>
             </div>
 
-            {{-- Action Buttons --}}
             <div class="space-y-3">
                 <button type="button" id="btn-cek-status" onclick="cekStatusManual()" class="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl shadow-md transition text-sm">
                     <svg id="icon-refresh" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
@@ -157,7 +150,6 @@
         </div>
     </div>
 
-    {{-- Toast Notifikasi --}}
     <div id="toast" class="fixed bottom-5 right-5 z-50 bg-gray-900 text-white text-xs px-4 py-2.5 rounded-xl shadow-lg transform translate-y-10 opacity-0 transition-all duration-300 pointer-events-none">
         Teks disalin
     </div>
@@ -167,7 +159,6 @@
         const expiredAtStr = "{{ $trx->expired_at ? $trx->expired_at->toIso8601String() : '' }}";
         let expireDate = expiredAtStr ? new Date(expiredAtStr) : new Date(Date.now() + 15 * 60 * 1000);
 
-        // ── 1. Countdown Timer ───────────────────────────────
         function updateTimer() {
             const now = new Date().getTime();
             const distance = expireDate.getTime() - now;
@@ -189,7 +180,6 @@
         setInterval(updateTimer, 1000);
         updateTimer();
 
-        // ── 2. Toast Notifikasi ─────────────────────────────
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -205,7 +195,6 @@
             });
         }
 
-        // ── 3. Auto Polling & Manual Cek Status ──────────────
         let isPolling = true;
 
         async function periksaStatus(isManual = false) {
@@ -259,7 +248,6 @@
             }, 800);
         }
 
-        // Auto check every 4 seconds
         const pollInterval = setInterval(() => {
             if (!isPolling) {
                 clearInterval(pollInterval);

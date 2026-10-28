@@ -12,13 +12,10 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-20 md:pb-8">
 
-    <!-- NAVIGATION BAR -->
     @include('partials.navbar', ['active' => 'profil'])
 
-    <!-- MAIN CONTAINER -->
     <main class="max-w-xl mx-auto px-4 py-6 sm:py-8 w-full flex-grow">
-        
-        <!-- HEADER NAVIGASI KEMBALI KE PROFIL -->
+
         <div class="flex items-center gap-3.5 mb-6">
             <a href="/profil" class="w-10 h-10 rounded-2xl bg-white border border-pink-100 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-300 transition shadow-xs flex-shrink-0" title="Kembali ke Profil">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -31,7 +28,6 @@
             </div>
         </div>
 
-        <!-- NOTIFIKASI SUKSES / ERROR -->
         @if(session('sukses'))
         <div class="mb-5 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-2xl flex items-center gap-2.5 shadow-xs">
             <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -53,12 +49,10 @@
         </div>
         @endif
 
-        <!-- FORMULIR GANTI PASSWORD -->
         <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-pink-100">
             <form action="/profil/update-password" method="POST" class="space-y-4">
                 @csrf
 
-                <!-- Kata Sandi Saat Ini -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">
                         Kata Sandi Saat Ini <span class="text-pink-600">*</span>
@@ -74,7 +68,6 @@
                     </div>
                 </div>
 
-                <!-- Kata Sandi Baru -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">
                         Kata Sandi Baru <span class="text-pink-600">*</span>
@@ -90,7 +83,6 @@
                     </div>
                 </div>
 
-                <!-- Konfirmasi Kata Sandi Baru -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">
                         Konfirmasi Kata Sandi Baru <span class="text-pink-600">*</span>
@@ -106,7 +98,6 @@
                     </div>
                 </div>
 
-                <!-- Tips Keamanan Singkat & Rapi -->
                 <div class="bg-pink-50/30 p-3.5 rounded-2xl border border-pink-100/60 text-[11px] text-gray-500 space-y-1">
                     <div class="font-semibold text-gray-700 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -115,7 +106,6 @@
                     <p class="leading-relaxed pl-5">Gunakan kombinasi minimal 6 karakter dengan huruf dan angka untuk mencegah akses yang tidak sah.</p>
                 </div>
 
-                <!-- Tombol Simpan -->
                 <div class="pt-2">
                     <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 active:scale-[0.99] text-white font-bold text-xs sm:text-sm py-3 rounded-xl shadow-xs transition flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -129,7 +119,6 @@
 
     </main>
 
-    <!-- SCRIPT LIHAT/SEMBUNYIKAN PASSWORD -->
     <script>
         function togglePasswordVisibility(inputId, iconId) {
             const input = document.getElementById(inputId);

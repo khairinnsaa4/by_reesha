@@ -22,12 +22,12 @@
 
     @include('partials.owner_sidebar', ['active' => 'resep'])
 
-    <!-- ========================================== -->
-    <!-- MAIN CONTENT AREA                          -->
-    <!-- ========================================== -->
+    
+    
+    
     <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full min-w-0 overflow-y-auto custom-scrollbar pb-24 md:pb-8">
         
-        {{-- Flash Alerts --}}
+        
         @if(session('sukses'))
         <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl flex items-center justify-between no-print">
             <div class="flex items-center gap-2">
@@ -40,7 +40,7 @@
         </div>
         @endif
 
-        {{-- Top Navigation & Action Toolbar --}}
+        
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-200 no-print">
             <div class="flex items-center gap-3">
                 <a href="/resep" 
@@ -74,10 +74,10 @@
             </div>
         </div>
 
-        {{-- ===== HEADER CARD (HERO) ===== --}}
+        
         <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-pink-50 mb-8 print-card">
             <div class="flex flex-col md:flex-row gap-6 md:items-center">
-                {{-- Product Image --}}
+                
                 <div class="w-full md:w-56 h-48 md:h-44 rounded-2xl overflow-hidden bg-pink-50 border border-gray-100 flex-shrink-0">
                     <img src="{{ asset('images/' . ($resep->produk->gambar ?? 'logo.png')) }}" 
                          alt="{{ $resep->produk->nama_kue ?? 'Kue' }}" 
@@ -85,7 +85,7 @@
                          onerror="this.src='{{ asset('images/logo.png') }}'">
                 </div>
 
-                {{-- Product & Recipe Title --}}
+                
                 <div class="flex-1">
                     <div class="flex flex-wrap items-center gap-2 mb-2">
                         <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-pink-100 text-pink-700">
@@ -112,7 +112,7 @@
                         &bull; Harga Jual: <span class="text-pink-600 font-semibold">Rp {{ number_format($resep->produk->harga ?? 0, 0, ',', '.') }}</span>
                     </p>
 
-                    {{-- Technical Specifications Grid --}}
+                    
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-gray-100 text-xs">
                         <div class="p-3 bg-gray-50 rounded-xl">
                             <span class="text-gray-400 font-medium block text-[11px] mb-0.5">Waktu Persiapan</span>
@@ -135,7 +135,7 @@
             </div>
         </div>
 
-        {{-- ===== MAIN TWO-COLUMN CONTENT ===== --}}
+        
         @php
             $barisBahan = array_filter(explode("\n", str_replace("\r", "", $resep->bahan_bahan)));
             $barisLangkah = array_filter(explode("\n", str_replace("\r", "", $resep->langkah_langkah)));
@@ -143,7 +143,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {{-- KOLOM KIRI (5/12): DAFTAR BAHAN BAKU --}}
+            
             <div class="lg:col-span-5 space-y-6">
                 <div class="bg-white rounded-3xl p-6 md:p-7 shadow-sm border border-pink-50 sticky top-6 print-card">
                     <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-4">
@@ -184,10 +184,10 @@
                 </div>
             </div>
 
-            {{-- KOLOM KANAN (7/12): LANGKAH PEMBUATAN & TIPS --}}
+            
             <div class="lg:col-span-7 space-y-6">
                 
-                {{-- Langkah Pembuatan Card --}}
+                
                 <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-pink-50 print-card">
                     <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
                         <div>
@@ -221,7 +221,7 @@
                     </div>
                 </div>
 
-                {{-- Catatan Teknis & Tips Produksi --}}
+                
                 @if(!empty($resep->tips))
                 <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border-l-4 border-pink-500 border-t border-r border-b border-pink-100 print-card">
                     <div class="flex items-start gap-4">
@@ -247,7 +247,7 @@
 
     </main>
 
-    {{-- ===== MODAL EDIT RESEP ===== --}}
+    
     <div id="modal-edit" class="hidden fixed inset-0 bg-black/60 z-50 overflow-y-auto p-4 flex items-center justify-center no-print">
         <div class="bg-white rounded-3xl shadow-2xl max-w-xl w-full p-6 md:p-8 my-8 relative">
             <div class="flex items-center justify-between mb-6 pb-3 border-b border-gray-100">

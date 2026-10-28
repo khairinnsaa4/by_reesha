@@ -13,13 +13,10 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-20 md:pb-8">
 
-    <!-- NAVIGATION BAR -->
     @include('partials.navbar', ['active' => 'profil'])
 
-    <!-- MAIN CONTAINER -->
     <main class="max-w-xl mx-auto px-4 py-6 sm:py-8 w-full flex-grow">
-        
-        <!-- HEADER IDENTITAS PENGGUNA BY.REESHA -->
+
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 flex items-center gap-4 mb-4">
             <div class="relative flex-shrink-0">
                 <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-tr from-pink-500 to-rose-400 text-white shadow-md flex items-center justify-center border-2 border-pink-100 overflow-hidden">
@@ -31,7 +28,7 @@
                         </span>
                     @endif
                 </div>
-                <!-- Tombol Edit / Ubah Profil Pensil -->
+                
                 <a href="/profil/edit" class="absolute -bottom-1 -right-1 w-7 h-7 sm:w-8 sm:h-8 bg-pink-600 hover:bg-pink-700 text-white rounded-full flex items-center justify-center shadow-md border-2 border-white transition transform hover:scale-110 active:scale-95" title="Ubah Profil">
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -57,7 +54,6 @@
             </div>
         </div>
 
-        <!-- NOTIFIKASI SUKSES / ERROR -->
         @if(session('sukses'))
         <div class="mb-4 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm rounded-2xl flex items-center gap-2.5 shadow-xs">
             <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -79,7 +75,6 @@
         </div>
         @endif
 
-        <!-- AKSES KHUSUS OWNER & KARYAWAN -->
         @if(Auth::user()->role === 'owner')
             <div class="mb-4">
                 <a href="/dashboard-owner" class="flex items-center justify-between p-4 bg-gray-900 hover:bg-black text-white rounded-2xl shadow-sm transition">
@@ -112,10 +107,8 @@
             </div>
         @endif
 
-        <!-- DAFTAR MENU UTAMA AKUN (NAVIGASI KE HALAMAN MASING-MASING) -->
         <div class="bg-white rounded-3xl shadow-sm border border-pink-100 overflow-hidden divide-y divide-gray-100 mb-6">
-            
-            {{-- 1. PESANAN SAYA (Masuk ke halaman Riwayat Transaksi) --}}
+
             <a href="/riwayat-transaksi" class="flex items-center justify-between px-5 py-4 text-left transition hover:bg-pink-50/30 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0 group-hover:bg-pink-100 transition">
@@ -133,7 +126,6 @@
                 </svg>
             </a>
 
-            {{-- 2. ALAMAT PENGIRIMAN (Masuk ke halaman Alamat) --}}
             <a href="/profil/alamat" class="flex items-center justify-between px-5 py-4 text-left transition hover:bg-pink-50/30 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0 group-hover:bg-pink-100 transition">
@@ -152,7 +144,6 @@
                 </svg>
             </a>
 
-            {{-- 3. INFORMASI AKUN (Masuk ke halaman Ubah Profil) --}}
             <a href="/profil/edit" class="flex items-center justify-between px-5 py-4 text-left transition hover:bg-pink-50/30 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0 group-hover:bg-pink-100 transition">
@@ -170,7 +161,6 @@
                 </svg>
             </a>
 
-            {{-- 4. KEAMANAN & KATA SANDI (Masuk ke halaman Ubah Password) --}}
             <a href="/profil/keamanan" class="flex items-center justify-between px-5 py-4 text-left transition hover:bg-pink-50/30 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0 group-hover:bg-pink-100 transition">
@@ -188,7 +178,6 @@
                 </svg>
             </a>
 
-            {{-- 5. BANTUAN & CUSTOMER SERVICE (Masuk ke halaman Bantuan) --}}
             <a href="/profil/bantuan" class="flex items-center justify-between px-5 py-4 text-left transition hover:bg-pink-50/30 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0 group-hover:bg-pink-100 transition">
@@ -206,7 +195,6 @@
                 </svg>
             </a>
 
-            {{-- 6. KELUAR DARI AKUN (Modal Konfirmasi Rapi) --}}
             <button type="button" onclick="openLogoutModal()" class="w-full flex items-center justify-between px-5 py-4 text-left transition hover:bg-red-50/50 group focus:outline-none">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0 group-hover:bg-red-100 transition">
@@ -226,7 +214,6 @@
 
         </div>
 
-        <!-- TAUTAN KEMBALI KE BERANDA -->
         <div class="text-center text-xs text-gray-400">
             <a href="/" class="hover:text-pink-600 transition font-medium inline-flex items-center gap-1">
                 <span>&larr; Kembali ke Beranda</span>
@@ -235,7 +222,6 @@
 
     </main>
 
-    <!-- MODAL KONFIRMASI KELUAR (BERSIH & ELEGAN) -->
     <div id="logout-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-xl border border-pink-100 transform transition-all text-center">
             <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-600 mx-auto flex items-center justify-center mb-4">
@@ -267,7 +253,7 @@
             const modal = document.getElementById('logout-modal');
             if (modal) modal.classList.add('hidden');
         }
-        // Tutup jika klik backdrop
+
         document.getElementById('logout-modal')?.addEventListener('click', function(e) {
             if (e.target === this) closeLogoutModal();
         });
