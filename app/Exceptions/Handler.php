@@ -44,7 +44,13 @@ class Handler extends ExceptionHandler
                 \Illuminate\Support\Facades\Auth::logout();
                 return redirect('/');
             }
-            return redirect()->back()->with('error', 'Sesi Anda telah kedaluwarsa. Silakan coba kembali.');
+            if ($request->is('login') || $request->is('*/login')) {
+                return redirect('/login')->with('error', 'Sesi login Anda telah diperbarui. Silakan masuk kembali.');
+            }
+            if ($request->is('register') || $request->is('*/register')) {
+                return redirect('/register')->with('error', 'Sesi formulir telah diperbarui. Silakan daftar kembali.');
+            }
+            return redirect()->back()->with('error', 'Sesi Anda telah diperbarui. Silakan ulangi tindakan Anda.');
         });
     }
 }
