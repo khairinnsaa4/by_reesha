@@ -94,7 +94,7 @@ class MidtransService
         ];
 
         try {
-            $response = Http::withHeaders([
+            $response = Http::withoutVerifying()->withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
                 'Authorization' => 'Basic ' . base64_encode($this->serverKey . ':'),
@@ -160,7 +160,7 @@ class MidtransService
         }
 
         try {
-            $response = Http::withHeaders([
+            $response = Http::withoutVerifying()->withHeaders([
                 'Accept'        => 'application/json',
                 'Authorization' => 'Basic ' . base64_encode($this->serverKey . ':'),
             ])->get($this->apiUrl . '/v2/' . $orderId . '/status');

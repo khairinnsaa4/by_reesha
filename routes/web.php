@@ -768,22 +768,36 @@ Route::get('/pembayaran/{id}', function ($id) {
         return redirect('/sukses?id=' . $trx->id);
     }
 
+    $midtransError = null;
+
     // Jika belum ada qris_url tapi Midtrans sudah dikonfigurasi, coba generate ulang
     if (empty($trx->qris_url)) {
         $midtrans = app(\App\Services\MidtransService::class);
-        if ($midtrans->isConfigured()) {
+        if (!$midtrans->isConfigured()) {
+            $midtransError = "Kunci MIDTRANS_SERVER_KEY belum terbaca di server Vercel. Pastikan Anda sudah menambahkan 4 Environment Variables di dashboard Vercel lalu klik tombol Redeploy.";
+        } else {
             $charge = $midtrans->createQrisCharge($trx);
+
+            // Jika order_id sudah pernah dipakai sebelumnya di Midtrans, buat order_id baru dan coba lagi
+            if (!$charge['success'] && str_contains(strtolower($charge['message'] ?? ''), 'already been taken')) {
+                $trx->kode_transaksi = 'TRX-' . date('Ymd') . '-' . strtoupper(Str::random(5));
+                $trx->save();
+                $charge = $midtrans->createQrisCharge($trx);
+            }
+
             if ($charge['success']) {
                 $trx->qris_url = $charge['qr_url'];
                 $trx->qris_string = $charge['qr_string'];
                 $trx->midtrans_transaction_id = $charge['transaction_id'];
                 $trx->expired_at = $charge['expired_at'];
                 $trx->save();
+            } else {
+                $midtransError = $charge['message'] ?? 'Midtrans gagal membuat QRIS.';
             }
         }
     }
 
-    return view('pembayaran', compact('trx'));
+    return view('pembayaran', compact('trx', 'midtransError'));
 })->middleware('auth');
 
 // Cek status pembayaran seketika (Polling / tombol manual)
